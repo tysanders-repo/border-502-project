@@ -969,3 +969,5 @@ Processing by Api::UsersController#index as HTML
 Completed 200 OK in 1ms (Views: 1.0ms | ActiveRecord: 0.3ms (1 query, 0 cached) | GC: 0.0ms)
 
 
+  [1m[35m (622.2ms)[0m  [1m[35mCREATE DATABASE "backend_development" ENCODING = 'unicode'[0m
+  [1m[35m (395.1ms)[0m  [1m[35mCREATE DATABASE "backend_test" ENCODING = 'unicode'[0m
