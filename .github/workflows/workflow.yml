@@ -22,10 +22,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # Navigate to the backend directory for all further steps
-      - name: Change directory to backend
-        run: cd backend
-
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
@@ -45,10 +41,10 @@ jobs:
           bundler exec rails db:create RAILS_ENV=test
           bundler exec rails db:migrate RAILS_ENV=test
 
-      - uses: borales/actions-yarn@v3.0.0
-        with:
-          cmd: install
-        working-directory: backend
+      - name: Install Yarn dependencies
+        run: |
+          cd backend
+          yarn install
 
       - name: Run tests
         run: |
