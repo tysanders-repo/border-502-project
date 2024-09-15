@@ -3,7 +3,7 @@ import axios from 'axios'
 
 function getAPIData() {
   return axios
-    .get('http://localhost:3000/api/users')
+    .get('http://localhost:3001/api/users')
     .then((response) => response.data)
 }
 
