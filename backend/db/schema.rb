@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_15_022034) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_15_021646) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -35,14 +35,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_15_022034) do
     t.index ["uin"], name: "index_members_on_uin", unique: true
   end
 
-  create_table "members_projects", id: false, force: :cascade do |t|
-    t.integer "uin", null: false
-    t.integer "project_id", null: false
-    t.index ["project_id"], name: "index_members_projects_on_project_id"
-    t.index ["uin", "project_id"], name: "index_members_projects_on_uin_and_project_id", unique: true
-    t.index ["uin"], name: "index_members_projects_on_uin"
-  end
-
   create_table "projects", force: :cascade do |t|
     t.string "title"
     t.string "description"
@@ -59,7 +51,4 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_15_022034) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
-
-  add_foreign_key "members_projects", "members", column: "uin", primary_key: "uin"
-  add_foreign_key "members_projects", "projects"
 end
