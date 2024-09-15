@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :members
   namespace :api do
     resources :users
   end
