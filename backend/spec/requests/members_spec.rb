@@ -21,7 +21,7 @@ RSpec.describe "/members", type: :request do
       name: "John Doe",
       uin: 132123555,
       major: "Comp Sci",
-      year: "junior",
+      year: 2025,
       email: "ajzhou2003@tamu.edu",
       phone: 1234567890,
       tshirt_size: "S",
