@@ -17,11 +17,33 @@ RSpec.describe "/members", type: :request do
   # Member. As you add validations to Member, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
+    {
+      name: "John Doe",
+      uin: 132123555,
+      major: "Comp Sci",
+      year: "junior",
+      email: "ajzhou2003@tamu.edu",
+      phone: 1234567890,
+      tshirt_size: "S",
+      aggie_ring_day: Date.today,
+      birthday: Date.today,
+      graduation_day: Date.today
+    }
   }
 
   let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
+    {
+      name: "John Doe",
+      uin: 132123555,
+      major: "Comp Sci",
+      year: "junior",
+      email: "ajzhou2003tamu.edu",
+      phone: 1234567890,
+      tshirt_size: "S",
+      aggie_ring_day: Date.today,
+      birthday: Date.today,
+      graduation_day: Date.today
+    }
   }
 
   # This should return the minimal set of values that should be in the headers
