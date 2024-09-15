@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
+  resources :project_members
   resources :projects
-  resources :members
+  resources :members, param: :uin
   namespace :api do
     resources :users
   end

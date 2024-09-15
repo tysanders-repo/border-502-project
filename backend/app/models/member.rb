@@ -1,19 +1,9 @@
 class Member < ApplicationRecord
-    has_many :project
+    has_many :project, through: :project_members
+    has_many :project_members
+    
     validates :uin, presence: true, uniqueness: true
-    validates :name, presence: true
-    validates :role, presence: true
-    validates :major, presence: true
-    validates :year, presence: true
+    validates :name, :role, :major, :year, :phone, :paid_dues, :join_date, :aggie_ring_day, :birthday, :graduation_day, :archived, :accepted, presence: true
     validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
-    validates :phone, presence: true
-    validates :tshirt_size, presence: true, inclusion: { in: %w(S M L XL XXL), message: "%{value} is not a valid size" }
-    validates :paid_dues, presence: true
-    validates :join_date, presence: true
-    validates :aggie_ring_day, presence: true
-    validates :birthday, presence: true
-    validates :graduation_day, presence: true
-    validates :archived, presence: true
-    validates :accepted, presence: true
-    validates :accomplishments, presence: true
+    validates :tshirt_size, presence: true, inclusion: { in: %w(XS S M L XL XXL), message: "%{value} is not a valid size" }
 end
