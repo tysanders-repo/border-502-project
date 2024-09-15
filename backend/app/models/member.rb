@@ -1,4 +1,5 @@
 class Member < ApplicationRecord
+    has_many :project
     validates :uin, presence: true, uniqueness: true
     validates :name, presence: true
     validates :role, presence: true

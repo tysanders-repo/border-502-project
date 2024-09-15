@@ -1,7 +1,7 @@
 class CreateMembers < ActiveRecord::Migration[7.2]
   def change
-    create_table :members, id: false do |t| # id: false disables default primary key
-      t.integer :uin, null: false, unique: true, primary_key: true
+    create_table :members, id: false do |t| 
+      t.integer :uin, null: false, primary_key: true
       t.string :name
       t.string :role
       t.string :major

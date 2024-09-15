@@ -143,6 +143,63 @@
         "branches": {
         }
       },
+      "/csce431/Desktop/csce431/border-502-project/backend/app/controllers/projects_controller.rb": {
+        "lines": [
+          0,
+          0,
+          null,
+          null,
+          0,
+          0,
+          null,
+          0,
+          0,
+          null,
+          null,
+          0,
+          0,
+          0,
+          null,
+          null,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          null,
+          0,
+          0,
+          0,
+          null,
+          0,
+          null,
+          0,
+          0,
+          0,
+          null,
+          null,
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {
+        }
+      },
       "/csce431/Desktop/csce431/border-502-project/backend/app/jobs/application_job.rb": {
         "lines": [
           0,
@@ -178,6 +235,30 @@
       "/csce431/Desktop/csce431/border-502-project/backend/app/models/member.rb": {
         "lines": [
           0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {
+        }
+      },
+      "/csce431/Desktop/csce431/border-502-project/backend/app/models/project.rb": {
+        "lines": [
+          0,
           0
         ],
         "branches": {
@@ -192,6 +273,6 @@
         }
       }
     },
-    "timestamp": 1726365632
+    "timestamp": 1726366608
   }
 }
