@@ -28,7 +28,7 @@ class MembersController < ApplicationController
   def update
     case current_user_role
     when 'president'
-      permitted_params = president_member_paramsadmin_member_params
+      permitted_params = president_member_params
     when 'treasurer'
       permitted_params = treasurer_member_params
     when 'vice_president'
