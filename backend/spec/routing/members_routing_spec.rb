@@ -7,7 +7,7 @@ RSpec.describe MembersController, type: :routing do
     end
 
     it "routes to #show" do
-      expect(get: "/members/1").to route_to("members#show", id: "1")
+      expect(get: "/members/1").to route_to("members#show", uin: "1")
     end
 
 
@@ -16,15 +16,15 @@ RSpec.describe MembersController, type: :routing do
     end
 
     it "routes to #update via PUT" do
-      expect(put: "/members/1").to route_to("members#update", id: "1")
+      expect(put: "/members/1").to route_to("members#update", uin: "1")
     end
 
     it "routes to #update via PATCH" do
-      expect(patch: "/members/1").to route_to("members#update", id: "1")
+      expect(patch: "/members/1").to route_to("members#update", uin: "1")
     end
 
     it "routes to #destroy" do
-      expect(delete: "/members/1").to route_to("members#destroy", id: "1")
+      expect(delete: "/members/1").to route_to("members#destroy", uin: "1")
     end
   end
 end
