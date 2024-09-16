@@ -7,6 +7,7 @@ export function Home() {
       <nav>
         <Link to="/about">About</Link>
       </nav>
+
       <HomepageTemplate />
     </>
   )

@@ -22,9 +22,9 @@ services:
     build:
       context: ./frontend
       target: dev
-    volumes:
-      - ./frontend:/usr/src
-      - /usr/src/node_modules
+    # volumes:
+    #   - ./frontend:/usr/src
+    #   - /usr/src/node_modules
     ports:
       - "3000:3000"
     depends_on:
@@ -37,8 +37,8 @@ services:
     restart: always
     build:
       context: ./backend
-    volumes:
-      - ./backend:/app
+    # volumes:
+    #   - ./backend:/app
     ports:
       - "3001:3000"
     env_file:
@@ -47,5 +47,7 @@ services:
       db:
         condition: service_healthy
 
-volumes:
-  pgdata:
+# volumes:
+#   pgdata:
+
+  

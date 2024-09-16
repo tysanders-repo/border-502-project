@@ -5,6 +5,12 @@ class Api::UsersController < ApplicationController
   def index
     @users = User.all
 
+    # fake data
+    @users = [
+      { id: 1, uin: 123456789, name: 'John Done' },
+      { id: 2, uin: 987654321, name: 'Jane Doe' }
+    ]
+
     render json: @users
   end
 
