@@ -1,21 +1,18 @@
 #long term support base image
 FROM node:lts as base
-RUN npm install -g pnpm
 
 #set working directory
 WORKDIR /usr/src
-COPY package.json pnpm-lock.yaml ./
+COPY package.json ./
 
 #install dependencies
-RUN pnpm install --frozen-lockfile
-#copy application code
-
+RUN npm install
 
 ##########################
 FROM base AS dev
 COPY . .
 EXPOSE 3000
-CMD ["pnpm", "start"]
+CMD ["npm", "start"]
 
 
 ##########################
