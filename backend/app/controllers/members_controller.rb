@@ -61,15 +61,19 @@ class MembersController < ApplicationController
     end
 
     def vice_president_member_params
-      params.require(:member).permit(:uin, :name, :role, :major, :year, :email, :phone, :tshirt_size, :paid_dues, :join_date, :aggie_ring_day, :birthday, :graduation_day, :accepted, :accomplishments)
+      params.require(:member).permit(:role, :accepted, :accomplishments)
     end
 
     def president_member_params
-      params.require(:member).permit(:uin, :name, :role, :major, :year, :email, :phone, :tshirt_size, :paid_dues, :join_date, :aggie_ring_day, :birthday, :graduation_day, :archived, :accepted, :accomplishments)
+      params.require(:member).permit(:role, :archived, :accepted, :accomplishments)
     end
 
     def treasurer_member_params
       params.require(:member).permit(:paid_dues)
+    end
+
+    def internal_relations_member_params
+      params.require(:member).permit(:archived, :accepted)
     end
 
     def current_user_role
