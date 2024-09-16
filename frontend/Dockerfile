@@ -7,6 +7,7 @@ COPY package.json ./
 
 #install dependencies
 RUN npm install
+RUN npm i react-scripts
 
 ##########################
 FROM base AS dev
