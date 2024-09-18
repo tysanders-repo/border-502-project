@@ -7,10 +7,16 @@ export function Home() {
     <>
       <Navbar />
       <nav>
-        <Link to="/about">About</Link>
-        <Link to="/userinfo">Add New User</Link>
+        <ul>
+          <li>
+            <Link to="/users">View Users</Link>
+          </li>
+          <li>
+            <Link to="/newuser">New User Form</Link>
+          </li>
+        </ul>
       </nav>
-      <HomepageTemplate />
+      {/* <HomepageTemplate /> */}
     </>
   )
 }
