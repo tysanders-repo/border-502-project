@@ -4138,3 +4138,45 @@ Processing by Api::UsersController#index as */*
 Completed 200 OK in 2ms (Views: 1.3ms | ActiveRecord: 0.3ms (1 query, 0 cached) | GC: 0.0ms)
 
 
+Started GET "/api/users" for ::1 at 2024-09-18 15:10:33 -0500
+Processing by Api::UsersController#index as */*
+  [1m[36mUser Load (94.5ms)[0m  [1m[34mSELECT "users".* FROM "users"[0m
+  ↳ app/controllers/api/users_controller.rb:8:in `index'
+Completed 200 OK in 99ms (Views: -7.5ms | ActiveRecord: 105.8ms (1 query, 0 cached) | GC: 0.1ms)
+
+
+Started GET "/api/users" for ::1 at 2024-09-18 15:10:33 -0500
+Processing by Api::UsersController#index as */*
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users"[0m
+  ↳ app/controllers/api/users_controller.rb:8:in `index'
+Completed 200 OK in 3ms (Views: 2.1ms | ActiveRecord: 0.5ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/api/users" for ::1 at 2024-09-18 15:11:23 -0500
+Processing by Api::UsersController#index as */*
+  [1m[36mUser Load (1.2ms)[0m  [1m[34mSELECT "users".* FROM "users"[0m
+  ↳ app/controllers/api/users_controller.rb:8:in `index'
+Completed 200 OK in 6ms (Views: 4.7ms | ActiveRecord: 1.2ms (1 query, 0 cached) | GC: 0.3ms)
+
+
+Started GET "/api/users" for ::1 at 2024-09-18 15:11:23 -0500
+Processing by Api::UsersController#index as */*
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users"[0m
+  ↳ app/controllers/api/users_controller.rb:8:in `index'
+Completed 200 OK in 2ms (Views: 1.2ms | ActiveRecord: 0.3ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/api/users" for ::1 at 2024-09-18 15:11:26 -0500
+Processing by Api::UsersController#index as */*
+  [1m[36mUser Load (1.0ms)[0m  [1m[34mSELECT "users".* FROM "users"[0m
+  ↳ app/controllers/api/users_controller.rb:8:in `index'
+Completed 200 OK in 6ms (Views: 4.6ms | ActiveRecord: 0.9ms (1 query, 0 cached) | GC: 0.1ms)
+
+
+Started GET "/api/users" for ::1 at 2024-09-18 15:11:26 -0500
+Processing by Api::UsersController#index as */*
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users"[0m
+  ↳ app/controllers/api/users_controller.rb:8:in `index'
+Completed 200 OK in 5ms (Views: 2.4ms | ActiveRecord: 0.5ms (1 query, 0 cached) | GC: 0.0ms)
+
+

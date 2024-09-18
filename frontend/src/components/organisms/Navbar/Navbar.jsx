@@ -58,7 +58,7 @@ function Navbar() {
     <>
       <AppBar
         position="static"
-        style={{ marginBottom: '30px', padding: '15px' }}
+        style={{ marginBottom: '30px', padding: '10px' }}
       >
         <Toolbar>
           <Box
@@ -102,15 +102,16 @@ function Navbar() {
                       {item.text}
                     </Button>
                   ))}
+
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    component={Link}
+                    to="/new-member"
+                  >
+                    New Member?
+                  </Button>
                 </Box>
-                <Button
-                  variant="outlined"
-                  color="inherit"
-                  component={Link}
-                  to="/new-member"
-                >
-                  New Member?
-                </Button>
               </>
             )}
           </Box>
