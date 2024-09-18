@@ -10,9 +10,36 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_15_182639) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_18_211530) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "dietary_restrictions", force: :cascade do |t|
+    t.string "item_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "interests", force: :cascade do |t|
+    t.string "interest_type"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "member_diets", force: :cascade do |t|
+    t.integer "uin"
+    t.integer "item_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "member_interests", force: :cascade do |t|
+    t.integer "uin"
+    t.integer "interest_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "members", primary_key: "uin", id: :serial, force: :cascade do |t|
     t.string "name"
@@ -33,6 +60,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_15_182639) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["uin"], name: "index_members_on_uin", unique: true
+  end
+
+  create_table "members_projects", id: false, force: :cascade do |t|
+    t.integer "uin", null: false
+    t.integer "project_id", null: false
+    t.index ["project_id"], name: "index_members_projects_on_project_id"
+    t.index ["uin", "project_id"], name: "index_members_projects_on_uin_and_project_id", unique: true
+    t.index ["uin"], name: "index_members_projects_on_uin"
   end
 
   create_table "project_members", force: :cascade do |t|
@@ -58,4 +93,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_15_182639) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  add_foreign_key "members_projects", "members", column: "uin", primary_key: "uin"
+  add_foreign_key "members_projects", "projects"
 end

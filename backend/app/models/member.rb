@@ -1,8 +1,12 @@
 require 'date'
 
 class Member < ApplicationRecord
-    has_many :project, through: :project_members
+    has_many :projects, through: :project_members
     has_many :project_members
+    has_many :dietary_restrictions, through: :member_diets
+    has_many :member_diets
+    has_many :interests, through: :member_interests
+    has_many :member_interests
 
     before_validation :set_default_values, on: :create
 
