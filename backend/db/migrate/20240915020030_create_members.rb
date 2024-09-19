@@ -2,7 +2,8 @@ class CreateMembers < ActiveRecord::Migration[7.2]
   def change
     create_table :members, id: false do |t| 
       t.integer :uin, null: false, primary_key: true
-      t.string :name
+      t.string :first_name
+      t.string :last_name
       t.string :role
       t.string :major
       t.integer :year

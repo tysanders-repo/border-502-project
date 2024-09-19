@@ -1,6 +1,7 @@
 Member.create!(
   uin: 123456789,
-  name: "John Doe",
+  first_name: "John",
+  last_name: "Smith",
   role: "president",
   major: "Computer Science",
   year: 2024,
@@ -19,7 +20,8 @@ Member.create!(
 
 Member.create!(
   uin: 987654321,
-  name: "Jane Smith",
+  first_name: "Jane",
+  last_name: "Smith",
   role: "vice_president",
   major: "Electrical Engineering",
   year: 2023,
@@ -38,7 +40,8 @@ Member.create!(
 
 Member.create!(
   uin: 210398210,
-  name: "Jane Smith 2",
+  first_name: "Jane",
+  last_name: "Smith Jr",
   role: "member",
   major: "Computer Engineering",
   year: 2023,

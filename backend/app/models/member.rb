@@ -11,7 +11,7 @@ class Member < ApplicationRecord
     before_validation :set_default_values, on: :create
 
     validates :uin, presence: true, uniqueness: true
-    validates :name, :major, :year, :phone, :aggie_ring_day, :birthday, :graduation_day, presence: true
+    validates :first_name, :last_name, :major, :year, :phone, :aggie_ring_day, :birthday, :graduation_day, presence: true
     validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
     validates :tshirt_size, presence: true, inclusion: { in: %w(XS S M L XL XXL), message: "%{value} is not a valid size" }
 

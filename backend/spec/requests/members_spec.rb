@@ -18,7 +18,8 @@ RSpec.describe "/members", type: :request do
   # adjust the attributes here as well.
   let(:valid_attributes) {
     {
-      name: "John Doe",
+      first_name: "John",
+      last_name: "Doe",
       uin: 132123555,
       major: "Comp Sci",
       year: 2025,
@@ -33,7 +34,8 @@ RSpec.describe "/members", type: :request do
 
   let(:invalid_attributes) {
     {
-      name: "John Doe",
+      first_name: "John",
+      last_name: "Doe",
       uin: 132123555,
       major: "Comp Sci",
       year: "junior",
