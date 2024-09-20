@@ -83,6 +83,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_18_211530) do
   create_table "users", force: :cascade do |t|
     t.integer "uin"
     t.string "name"
+    t.string "major"
+    t.string "tshirt_size"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
