@@ -22,23 +22,21 @@ services:
     build:
       context: ./frontend
       target: dev
-    # volumes:
-    #   - ./frontend:/usr/src
-    #   - /usr/src/node_modules
+    volumes:
+      - ./frontend:/usr/src
     ports:
       - "3000:3000"
-    depends_on:
-      - backend
     environment:
-      - REACT_APP_API_URL=http://backend:3000
+      - REACT_APP_API_URL=http://localhost:3001
+      - CHOKIDAR_USEPOLLING=true
 
   # Backend Rails API
   backend:
     restart: always
     build:
       context: ./backend
-    # volumes:
-    #   - ./backend:/app
+    volumes:
+      - ./backend:/app
     ports:
       - "3001:3000"
     env_file:
@@ -46,8 +44,3 @@ services:
     depends_on:
       db:
         condition: service_healthy
-
-# volumes:
-#   pgdata:
-
-  

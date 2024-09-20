@@ -23,6 +23,7 @@ import {
   DialogTitle,
   Button,
 } from '@mui/material'
+import { DataGrid } from '@mui/x-data-grid'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 
 function UserListTemplate() {
@@ -32,6 +33,40 @@ function UserListTemplate() {
   const [anchorEl, setAnchorEl] = useState(null)
   const [selectedUser, setSelectedUser] = useState(null)
   const [openDialog, setOpenDialog] = useState(false)
+
+  const columns = [
+    {field: 'id', headerName: 'ID', flex: 1},
+    {field: 'uin', headerName: 'UIN', flex: 1},
+    {field: 'name', headerName: 'Name', flex: 2},
+    {field: 'major', headerName: 'Major', flex: 1},
+    {
+      field: 'actions',
+      headerName: '',
+      renderCell: (params) => (
+        <div>
+          <IconButton
+            onClick={(event) => handleMenuClick(event, params.row)}
+          >
+            <MoreVertIcon />
+          </IconButton>
+
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleCloseMenu}
+            sx={{
+              boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+            }}
+          >
+              <MenuItem component={Link} to={`/users/${selectedUser?.id}/edit`} onClick={handleCloseMenu}>
+                Edit
+              </MenuItem>
+              <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
+            </Menu>
+        </div>
+      )
+    }
+  ]
 
   useEffect(() => {
     async function loadUsers() {
@@ -101,9 +136,16 @@ function UserListTemplate() {
         <Typography variant="h4" gutterBottom>
           EWB Members
         </Typography>
-
-        <TableContainer component={Paper}>
+        {/* insert data grid instead to allow sorting */}
+        <DataGrid
+          rows={users}
+          columns={columns}
+          pageSize={5}
+          disableRowSelectionOnClick //specifically here to allow pressing action buttons without blue highlighting
+        />
+        {/* <TableContainer component={Paper}>
           <Table>
+
             <TableHead>
               <TableRow>
                 <TableCell>Name</TableCell>
@@ -113,7 +155,9 @@ function UserListTemplate() {
                 <TableCell align="right">Actions</TableCell>
               </TableRow>
             </TableHead>
+
             <TableBody>
+
               {users.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell>
@@ -159,7 +203,7 @@ function UserListTemplate() {
               ))}
             </TableBody>
           </Table>
-        </TableContainer>
+        </TableContainer> */}
       </Box>
 
       {/* Confirmation Dialog */}
