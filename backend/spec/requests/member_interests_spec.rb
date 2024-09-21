@@ -16,12 +16,43 @@ RSpec.describe "/member_interests", type: :request do
   # This should return the minimal set of attributes required to create a valid
   # MemberInterest. As you add validations to MemberInterest, be sure to
   # adjust the attributes here as well.
+  let(:valid_member_attributes){
+    {
+      first_name: "John",
+      last_name: "Doe",
+      uin: 132123555,
+      major: "Comp Sci",
+      year: 2025,
+      email: "ajzhou2003@tamu.edu",
+      phone: 1234567890,
+      tshirt_size: "S",
+      aggie_ring_day: Date.today,
+      birthday: Date.today,
+      graduation_day: Date.today
+    }
+  }
+
+  let(:valid_diet_attributes){
+    {
+      interest_type: "career",
+      name: "software developer"
+    }
+  }
+
+  let!(:member) { Member.create!(valid_member_attributes) }
+  let!(:interest) { Interest.create!(valid_diet_attributes) }
+  let!(:interest2) { Interest.create!(valid_diet_attributes) }
   let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
+    {
+      uin: member.uin,
+      interest_id: interest.id
+    }
   }
 
   let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
+    {
+      uin: 1234
+    }
   }
 
   # This should return the minimal set of values that should be in the headers
@@ -85,7 +116,9 @@ RSpec.describe "/member_interests", type: :request do
   describe "PATCH /update" do
     context "with valid parameters" do
       let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
+        {
+          interest_id: interest2.id
+        }
       }
 
       it "updates the requested member_interest" do
@@ -93,7 +126,7 @@ RSpec.describe "/member_interests", type: :request do
         patch member_interest_url(member_interest),
               params: { member_interest: new_attributes }, headers: valid_headers, as: :json
         member_interest.reload
-        skip("Add assertions for updated state")
+        expect(member_interest.interest_id).to eq(interest2.id)
       end
 
       it "renders a JSON response with the member_interest" do

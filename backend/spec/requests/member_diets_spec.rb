@@ -13,15 +13,45 @@ require 'rails_helper'
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
 RSpec.describe "/member_diets", type: :request do
+  let(:valid_member_attributes){
+    {
+      first_name: "John",
+      last_name: "Doe",
+      uin: 132123555,
+      major: "Comp Sci",
+      year: 2025,
+      email: "ajzhou2003@tamu.edu",
+      phone: 1234567890,
+      tshirt_size: "S",
+      aggie_ring_day: Date.today,
+      birthday: Date.today,
+      graduation_day: Date.today
+    }
+  }
+
+  let(:valid_diet_attributes){
+    {
+      item_name: "cheese"
+    }
+  }
+
+  let!(:member) { Member.create!(valid_member_attributes) }
+  let!(:dietary_restriction) { DietaryRestriction.create!(valid_diet_attributes) }
+  let!(:dietary_restriction2) { DietaryRestriction.create!(valid_diet_attributes) }
   # This should return the minimal set of attributes required to create a valid
   # MemberDiet. As you add validations to MemberDiet, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
+    {
+      uin: member.uin,
+      item_id: dietary_restriction.id
+    }
   }
 
   let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
+    {
+      uin: 1234
+    }
   }
 
   # This should return the minimal set of values that should be in the headers
@@ -85,7 +115,9 @@ RSpec.describe "/member_diets", type: :request do
   describe "PATCH /update" do
     context "with valid parameters" do
       let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
+        {
+          item_id: dietary_restriction2.id
+        }
       }
 
       it "updates the requested member_diet" do
@@ -93,7 +125,7 @@ RSpec.describe "/member_diets", type: :request do
         patch member_diet_url(member_diet),
               params: { member_diet: new_attributes }, headers: valid_headers, as: :json
         member_diet.reload
-        skip("Add assertions for updated state")
+        expect(member_diet.item_id).to eq(dietary_restriction2.id)
       end
 
       it "renders a JSON response with the member_diet" do

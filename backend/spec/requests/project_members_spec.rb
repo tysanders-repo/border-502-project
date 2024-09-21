@@ -16,12 +16,43 @@ RSpec.describe "/project_members", type: :request do
   # This should return the minimal set of attributes required to create a valid
   # ProjectMember. As you add validations to ProjectMember, be sure to
   # adjust the attributes here as well.
+  let(:valid_member_attributes){
+    {
+      first_name: "John",
+      last_name: "Doe",
+      uin: 132123555,
+      major: "Comp Sci",
+      year: 2025,
+      email: "ajzhou2003@tamu.edu",
+      phone: 1234567890,
+      tshirt_size: "S",
+      aggie_ring_day: Date.today,
+      birthday: Date.today,
+      graduation_day: Date.today
+    }
+  }
+
+  let(:valid_project_attributes){
+    {
+      title: "Sample Project",
+      description: "This is a sample project"
+    }
+  }
+
+  let!(:member) { Member.create!(valid_member_attributes) }
+  let!(:project) { Project.create!(valid_project_attributes) }
+  let!(:project2) { Project.create!(valid_project_attributes) }
   let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
+    {
+      uin: member.uin,
+      project_id: project.id
+    }
   }
 
   let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
+    {
+      uin: 1234
+    }
   }
 
   # This should return the minimal set of values that should be in the headers
@@ -85,7 +116,9 @@ RSpec.describe "/project_members", type: :request do
   describe "PATCH /update" do
     context "with valid parameters" do
       let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
+        {
+          project_id: project2.id
+        }
       }
 
       it "updates the requested project_member" do
@@ -93,7 +126,7 @@ RSpec.describe "/project_members", type: :request do
         patch project_member_url(project_member),
               params: { project_member: new_attributes }, headers: valid_headers, as: :json
         project_member.reload
-        skip("Add assertions for updated state")
+        expect(project_member.project_id).to eq(project2.id)
       end
 
       it "renders a JSON response with the project_member" do
