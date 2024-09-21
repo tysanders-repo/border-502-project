@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
-import { fetchUser, deleteUser } from '../../../services/userService'
+import { useParams, Link } from 'react-router-dom'
+import { fetchUser } from '../../../services/userService'
+import DeleteConfirmationDialog from '../../organisms/DeleteConfirmationDialog'
 import {
   Button,
   Container,
@@ -8,22 +9,27 @@ import {
   CircularProgress,
   Alert,
   Box,
-  Paper,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
 } from '@mui/material'
 
 function UserDetailsTemplate() {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState({
+    first_name: '',
+    last_name: '',
+    uin: null,
+    major: '',
+    year: null,
+    email: '',
+    phone: '',
+    tshirt_size: '',
+    aggie_ring_day: '',
+    birthday: null,
+    graduation_day: null,
+  })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [openDialog, setOpenDialog] = useState(false)
 
   const { id } = useParams()
-  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -41,16 +47,6 @@ function UserDetailsTemplate() {
     fetchCurrentUser()
   }, [id])
 
-  const deleteUserHandler = async () => {
-    try {
-      await deleteUser(id)
-      navigate('/users')
-    } catch (error) {
-      console.error('Error deleting user:', error)
-      setError(error)
-    }
-  }
-
   const handleOpenDialog = () => {
     setOpenDialog(true)
   }
@@ -67,15 +63,33 @@ function UserDetailsTemplate() {
   return (
     <Container maxWidth="sm" sx={{ marginTop: 4 }}>
       {user ? (
-        <Paper elevation={3} sx={{ padding: 3 }}>
+        <Box>
           <Typography variant="h4" gutterBottom>
-            {user.name}'s Profile
+            {user.first_name} {user.last_name}'s Information
           </Typography>
           <Typography variant="h6">UIN: {user.uin}</Typography>
           <Typography variant="h6">Major: {user.major}</Typography>
+          <Typography variant="h6">Year: {user.year}</Typography>
+          <Typography variant="h6">Email: {user.email}</Typography>
+          <Typography variant="h6">Phone: {user.phone}</Typography>
           <Typography variant="h6">Shirt Size: {user.tshirt_size}</Typography>
+          <Typography variant="h6">
+            Aggie Ring Day: {user.aggie_ring_day || 'N/A'}
+          </Typography>
+          <Typography variant="h6">
+            Birthday: {user.birthday || 'N/A'}
+          </Typography>
+          <Typography variant="h6">
+            Graduation Day: {user.graduation_day || 'N/A'}
+          </Typography>
 
-          <Box mt={3} sx={{ display: 'flex', gap: 2 }}>
+          <Box
+            mt={3}
+            sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}
+          >
+            <Button variant="outlined" color="error" onClick={handleOpenDialog}>
+              Delete Account
+            </Button>
             <Button
               variant="contained"
               color="primary"
@@ -84,23 +98,28 @@ function UserDetailsTemplate() {
             >
               Edit Profile
             </Button>
-            <Button variant="outlined" color="error" onClick={handleOpenDialog}>
-              Delete User
-            </Button>
           </Box>
 
-          {/* Confirmation Dialog */}
+          <DeleteConfirmationDialog
+            user={user}
+            openDialog={openDialog}
+            handleCloseDialog={handleCloseDialog}
+            id={id}
+            setError={setError}
+          />
+
+          {/* Confirmation Dialog
           <Dialog
             open={openDialog}
             onClose={handleCloseDialog}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-            <DialogTitle id="alert-dialog-title">Delete User</DialogTitle>
+            <DialogTitle id="alert-dialog-title">Delete Account</DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Are you sure you want to delete {user.name}'s profile? This
-                action cannot be undone.
+                Are you sure you want to delete {user.first_name}{' '}
+                {user.last_name}'s profile? This action cannot be undone.
               </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -115,11 +134,11 @@ function UserDetailsTemplate() {
                 color="error"
                 autoFocus
               >
-                Delete
+                Delete Account
               </Button>
             </DialogActions>
-          </Dialog>
-        </Paper>
+          </Dialog> */}
+        </Box>
       ) : (
         <Typography variant="h6">User not found</Typography>
       )}
