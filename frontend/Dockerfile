@@ -43,7 +43,8 @@ RUN npm install -g pnpm && pnpm install
 FROM base AS dev
 COPY . .
 EXPOSE 3000
-CMD ["pnpm", "start"] # Ensure you're using pnpm here
+CMD ["sh", "-c", "pnpm start"]
+# CMD ["pnpm", "start"] # Ensure you're using pnpm here
 
 ##########################
 FROM base AS build

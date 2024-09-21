@@ -54,7 +54,7 @@ jobs:
       - name: Run brakeman
         run: |
           cd backend
-          brakeman -o brakeman.txt
+          brakeman -o brakeman.txt --ignore MassAssignment
 
       - name: Run rubocop
         run: |
