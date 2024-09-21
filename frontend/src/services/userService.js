@@ -1,7 +1,8 @@
 import { API_URL } from '../constants'
 
 async function fetchAllUsers() {
-  const response = await fetch(`${API_URL}/users`)
+  const response = await fetch(`${API_URL}/api/users`)
+  console.log("test")
   if (!response.ok) {
     throw new Error(response.statusText)
   }
