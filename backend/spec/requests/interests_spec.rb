@@ -91,7 +91,9 @@ RSpec.describe "/interests", type: :request do
   describe "PATCH /update" do
     context "with valid parameters" do
       let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
+        {
+          interest_type: "company"
+        }
       }
 
       it "updates the requested interest" do
@@ -99,7 +101,7 @@ RSpec.describe "/interests", type: :request do
         patch interest_url(interest),
               params: { interest: new_attributes }, headers: valid_headers, as: :json
         interest.reload
-        skip("Add assertions for updated state")
+        expect(interest.interest_type).to eq("company")
       end
 
       it "renders a JSON response with the interest" do

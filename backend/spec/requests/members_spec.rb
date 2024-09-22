@@ -108,24 +108,97 @@ RSpec.describe "/members", type: :request do
 
   describe "PATCH /update" do
     context "with valid parameters" do
-      let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
-      }
-
-      it "updates the requested member" do
-        member = Member.create! valid_attributes
-        patch member_url(member),
-              params: { member: new_attributes }, headers: valid_headers, as: :json
-        member.reload
-        skip("Add assertions for updated state")
+      let(:member) { Member.create!(valid_attributes) }
+  
+      context "as a president" do
+        let(:new_attributes) {
+          {
+            role: "new_role",
+            archived: true,
+            accepted: true,
+            accomplishments: "New accomplishment"
+          }
+        }
+  
+        it "updates the member's role and other permitted attributes" do
+          patch member_url(member), params: { member: new_attributes }, headers: { 'Role' => 'president' }, as: :json
+          member.reload
+  
+          expect(member.role).to eq("new_role")
+          expect(member.archived).to be true
+          expect(member.accepted).to be true
+          expect(member.accomplishments).to eq("New accomplishment")
+        end
       end
-
-      it "renders a JSON response with the member" do
-        member = Member.create! valid_attributes
-        patch member_url(member),
-              params: { member: new_attributes }, headers: valid_headers, as: :json
-        expect(response).to have_http_status(:ok)
-        expect(response.content_type).to match(a_string_including("application/json"))
+  
+      context "as a vice president" do
+        let(:new_attributes) {
+          {
+            role: "another_role",
+            accepted: true,
+            accomplishments: "Another accomplishment"
+          }
+        }
+  
+        it "updates the member's accepted and accomplishments attributes" do
+          patch member_url(member), params: { member: new_attributes }, headers: { 'Role' => 'vice_president' }, as: :json
+          member.reload
+  
+          expect(member.role).to eq("another_role") 
+          expect(member.accepted).to be true
+          expect(member.accomplishments).to eq("Another accomplishment")
+        end
+      end
+  
+      context "as a treasurer" do
+        let(:new_attributes) {
+          {
+            paid_dues: true
+          }
+        }
+  
+        it "updates the paid_dues attribute" do
+          patch member_url(member), params: { member: new_attributes }, headers: { 'Role' => 'treasurer' }, as: :json
+          member.reload
+  
+          expect(member.paid_dues).to be true
+        end
+      end
+  
+      context "as internal relations" do
+        let(:new_attributes) {
+          {
+            archived: true,
+            accepted: false
+          }
+        }
+  
+        it "updates the archived and accepted attributes" do
+          patch member_url(member), params: { member: new_attributes }, headers: { 'Role' => 'internal_relations' }, as: :json
+          member.reload
+  
+          expect(member.archived).to be true
+          expect(member.accepted).to be false
+        end
+      end
+  
+      context "as a regular member" do
+        let(:new_attributes) {
+          {
+            first_name: "John3",
+            last_name: "Doe3",
+            major: "Computer Science"
+          }
+        }
+  
+        it "updates the member's basic attributes" do
+          patch member_url(member), params: { member: new_attributes }, headers: { 'Role' => 'regular' }, as: :json
+          member.reload
+  
+          expect(member.first_name).to eq("John3")
+          expect(member.last_name).to eq("Doe3")
+          expect(member.major).to eq("Computer Science")
+        end
       end
     end
 
@@ -141,11 +214,25 @@ RSpec.describe "/members", type: :request do
   end
 
   describe "DELETE /destroy" do
-    it "destroys the requested member" do
-      member = Member.create! valid_attributes
+    it "archives the member if not already archived" do
+      member = Member.create! valid_attributes.merge(archived: false)
+      
       expect {
         delete member_url(member), headers: valid_headers, as: :json
-      }.to change(Member, :count).by(-1)
+      }.not_to change(Member, :count) # The member should not be destroyed
+  
+      # Reload the member to check if it has been archived
+      member.reload
+      expect(member.archived).to be true
+    end
+  
+    it "destroys the member if already archived" do
+      member = Member.create! valid_attributes.merge(archived: true)
+  
+      expect {
+        delete member_url(member), headers: valid_headers, as: :json
+      }.to change(Member, :count).by(-1) # The member should be destroyed
     end
   end
+  
 end

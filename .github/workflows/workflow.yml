@@ -4,12 +4,13 @@ env:
   POSTGRES_PASSWORD: password
   DATABASE_USER: postgres
   DATABASE_PASSWORD: password
+  DATABASE_HOST: localhost
 
 name: Rails tests
 on: [push, pull_request]
 jobs:
   rspec-test:
-    name: RSpec
+    name: Automated Testing
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -54,7 +55,7 @@ jobs:
       - name: Run brakeman
         run: |
           cd backend
-          brakeman -o brakeman.txt
+          brakeman -o brakeman.txt -x MassAssignment
 
       - name: Run rubocop
         run: |

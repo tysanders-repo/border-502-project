@@ -23,7 +23,9 @@ RSpec.describe "/dietary_restrictions", type: :request do
   }
 
   let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
+    {
+      item_name: "cheese2"
+    }
   }
 
   # This should return the minimal set of values that should be in the headers
@@ -87,7 +89,9 @@ RSpec.describe "/dietary_restrictions", type: :request do
   describe "PATCH /update" do
     context "with valid parameters" do
       let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
+        {
+          item_name: "rocks"
+        }
       }
 
       it "updates the requested dietary_restriction" do
@@ -95,7 +99,7 @@ RSpec.describe "/dietary_restrictions", type: :request do
         patch dietary_restriction_url(dietary_restriction),
               params: { dietary_restriction: new_attributes }, headers: valid_headers, as: :json
         dietary_restriction.reload
-        skip("Add assertions for updated state")
+        expect(dietary_restriction.item_name).to eq("rocks")
       end
 
       it "renders a JSON response with the dietary_restriction" do

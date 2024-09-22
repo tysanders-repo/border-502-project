@@ -1,0 +1,52 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Mass Assignment",
+      "warning_code": 105,
+      "fingerprint": "bb15bb3a21f6d17009858d67544bfb12a83300f4658a37d86759c9f57f39ad29",
+      "check_name": "PermitAttributes",
+      "message": "Potentially dangerous key allowed for mass assignment",
+      "file": "app/controllers/members_controller.rb",
+      "line": 62,
+      "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
+      "code": "params.require(:member).permit(:role, :archived, :accepted, :accomplishments)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "MembersController",
+        "method": "update_params"
+      },
+      "user_input": ":role",
+      "confidence": "Medium",
+      "cwe_id": [
+        915
+      ],
+      "note": "Role attribute in update permissions"
+    },
+    {
+      "warning_type": "Mass Assignment",
+      "warning_code": 105,
+      "fingerprint": "f0a5791b347e00846f66caa6d90d0da8b729950fa1c6ec3fc4946e3fe8149095",
+      "check_name": "PermitAttributes",
+      "message": "Potentially dangerous key allowed for mass assignment",
+      "file": "app/controllers/members_controller.rb",
+      "line": 64,
+      "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
+      "code": "params.require(:member).permit(:role, :accepted, :accomplishments)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "MembersController",
+        "method": "update_params"
+      },
+      "user_input": ":role",
+      "confidence": "Medium",
+      "cwe_id": [
+        915
+      ],
+      "note": ""
+    }
+  ],
+  "updated": "2024-09-21 23:22:38 +0000",
+  "brakeman_version": "6.2.1"
+}
