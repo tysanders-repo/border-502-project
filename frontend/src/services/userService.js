@@ -1,8 +1,7 @@
 import { API_URL } from '../constants'
 
 async function fetchAllUsers() {
-  const response = await fetch(`${API_URL}/api/users`)
-  console.log("test")
+  const response = await fetch(`${API_URL}/members`)
   if (!response.ok) {
     throw new Error(response.statusText)
   }
@@ -10,7 +9,7 @@ async function fetchAllUsers() {
 }
 
 async function fetchUser(id) {
-  const response = await fetch(`${API_URL}/users/${id}`)
+  const response = await fetch(`${API_URL}/members/${id}`)
   if (!response.ok) {
     throw new Error(response.statusText)
   }
@@ -18,7 +17,7 @@ async function fetchUser(id) {
 }
 
 async function createUser(userData) {
-  const response = await fetch(`${API_URL}/users`, {
+  const response = await fetch(`${API_URL}/members`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -32,7 +31,7 @@ async function createUser(userData) {
 }
 
 async function updateUser(id, postData) {
-  const response = await fetch(`${API_URL}/users/${id}`, {
+  const response = await fetch(`${API_URL}/members/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -46,7 +45,7 @@ async function updateUser(id, postData) {
 }
 
 async function deleteUser(id) {
-  const response = await fetch(`${API_URL}/users/${id}`, {
+  const response = await fetch(`${API_URL}/members/${id}`, {
     method: 'DELETE',
   })
 
