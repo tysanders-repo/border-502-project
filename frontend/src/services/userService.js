@@ -44,6 +44,22 @@ async function updateUser(id, postData) {
   return response.json()
 }
 
+//UNSAFE MAYBE???
+async function updateUserPresident(id, postData) {
+  const response = await fetch(`${API_URL}/members/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Role': 'president',
+    },
+    body: JSON.stringify(postData),
+  })
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+
 async function deleteUser(id) {
   const response = await fetch(`${API_URL}/members/${id}`, {
     method: 'DELETE',
@@ -59,4 +75,4 @@ async function deleteUser(id) {
   return response.json()
 }
 
-export { createUser, deleteUser, fetchAllUsers, fetchUser, updateUser }
+export { createUser, deleteUser, fetchAllUsers, fetchUser, updateUser, updateUserPresident }
