@@ -5,43 +5,43 @@ import AppRoutes from './AppRoutes'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
-jest.mock('components/templates/HomePageTemplate', () => {
+jest.mock('../../templates/HomePageTemplate', () => {
   return () => <div>Your Matcher for HomePage component here</div>
 })
 
-jest.mock('components/templates/UserListTemplate', () => {
+jest.mock('../../templates/UserListTemplate', () => {
   return () => <div>Your Matcher for UserListTemplate component here</div>
 })
 
-jest.mock('components/templates/UserDetailsTemplate', () => {
+jest.mock('../../templates/UserDetailsTemplate', () => {
   return () => <div>Your Matcher for UserDetailsTemplate component here</div>
 })
 
-jest.mock('components/templates/UserEditTemplate', () => {
+jest.mock('../../templates/UserEditTemplate', () => {
   return () => <div>Your Matcher for UserEditTemplate component here</div>
 })
 
-jest.mock('components/templates/NewMemberFormTemplate', () => {
+jest.mock('../../templates/NewMemberFormTemplate', () => {
   return () => <div>Your Matcher for NewMemberFormTemplate component here</div>
 })
 
-jest.mock('components/templates/ProjectListTemplate', () => {
+jest.mock('../../templates/ProjectListTemplate', () => {
   return () => <div>Your Matcher for ProjectListTemplate component here</div>
 })
 
-jest.mock('components/templates/ProjectDetailsTemplate', () => {
+jest.mock('../../templates/ProjectDetailsTemplate', () => {
   return () => <div>Your Matcher for ProjectDetailsTemplate component here</div>
 })
 
-jest.mock('components/templates/ProjectEditTemplate', () => {
+jest.mock('../../templates/ProjectEditTemplate', () => {
   return () => <div>Your Matcher for ProjectEditTemplate component here</div>
 })
 
-jest.mock('components/templates/NewProjectFormTemplate', () => {
+jest.mock('../../templates/NewProjectFormTemplate', () => {
   return () => <div>Your Matcher for NewProjectFormTemplate component here</div>
 })
 
-jest.mock('components/../constants', () => ({
+jest.mock('../../../constants', () => ({
   API_URL: 'http://localhost:3000',
 }))
 
