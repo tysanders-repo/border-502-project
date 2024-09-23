@@ -58,5 +58,47 @@ Member.create!(
   accomplishments: { "projects" => "Led robotics project", "awards" => "Vice President Excellence Award" }
 )
 
+Member.create!(
+  uin: 210398211,
+  first_name: "John",
+  last_name: "Doe",
+  role: "member",
+  major: "Electrical Engineering",
+  year: 2024,
+  email: "john.doe@example.com",
+  phone: "555-1234",
+  tshirt_size: "M",
+  paid_dues: false,
+  join_date: DateTime.now - 1.year,
+  aggie_ring_day: DateTime.now + 1.year,
+  birthday: DateTime.new(2002, 2, 14),
+  graduation_day: DateTime.new(2024, 5, 10),
+  archived: false,
+  accepted: false,  # This member is unaccepted
+  accomplishments: { "projects" => "Built smart home system", "awards" => "Innovation Award" }
+)
+
+Member.create!(
+  uin: 210398212,
+  first_name: "John2",
+  last_name: "Doe2",
+  role: "member",
+  major: "Electrical Engineering",
+  year: 2024,
+  email: "john.doe@example.com",
+  phone: "555-1234",
+  tshirt_size: "M",
+  paid_dues: false,
+  join_date: DateTime.now - 1.year,
+  aggie_ring_day: DateTime.now + 1.year,
+  birthday: DateTime.new(2002, 2, 14),
+  graduation_day: DateTime.new(2024, 5, 10),
+  archived: true,
+  accepted: true,  # This member is unaccepted
+  accomplishments: { "projects" => "Built smart home system", "awards" => "Innovation Award" }
+)
+
+
+
 
 # Add more members as needed

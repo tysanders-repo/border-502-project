@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { fetchAllUsers } from '../../../services/userService'
+import { fetchAllUsers, updateUserPresident } from '../../../services/userService'
 import DeleteConfirmationDialog from '../../organisms/DeleteConfirmationDialog'
 import {
   CircularProgress,
@@ -10,10 +10,13 @@ import {
   Menu,
   MenuItem,
   Box,
+  Button,
 } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { useMediaQuery } from '@mui/material'
+import CheckIcon from '@mui/icons-material/Check'
+import CloseIcon from '@mui/icons-material/Close'
 
 function UserListTemplate() {
   const [users, setUsers] = useState([])
@@ -22,6 +25,7 @@ function UserListTemplate() {
   const [anchorEl, setAnchorEl] = useState(null)
   const [selectedUser, setSelectedUser] = useState(null)
   const [openDialog, setOpenDialog] = useState(false)
+  const [filter, setFilter] = useState('active') // Default filter to show active members
   const isMobile = useMediaQuery('(max-width:800px)') // Adjust the breakpoint as needed
 
   const capitalizeAndReplace = (str) => {
@@ -125,9 +129,20 @@ function UserListTemplate() {
       headerName: '',
       renderCell: (params) => (
         <div>
-          <IconButton onClick={(event) => handleMenuClick(event, params.row)}>
-            <MoreVertIcon />
-          </IconButton>
+          {filter === 'new_applications' ? (
+            <div>
+              <IconButton onClick={() => handleAccept(params.row.uin)}>
+                <CheckIcon color="success" />
+              </IconButton>
+              <IconButton onClick={() => handleArchive(params.row.uin)}>
+                <CloseIcon color="error" />
+              </IconButton>
+            </div>
+          ) : (
+            <IconButton onClick={(event) => handleMenuClick(event, params.row)}>
+              <MoreVertIcon />
+            </IconButton>
+          )}
 
           <Menu
             anchorEl={anchorEl}
@@ -182,6 +197,42 @@ function UserListTemplate() {
     handleCloseMenu()
   }
 
+  //WIll have to change when authentication and roles are implemented !!!!
+
+  const handleAccept = async (uin) => {
+    try {
+      await updateUserPresident(uin, { accepted: true }) 
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.uin === uin ? { ...user, accepted: true } : user
+        )
+      )
+    } catch (err) {
+      setError(err)
+    }
+  }
+
+  const handleArchive = async (uin) => {
+    try {
+      await updateUserPresident(uin, { archived: true }) 
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.uin === uin ? { ...user, archived: true } : user
+        )
+      )
+    } catch (err) {
+      setError(err)
+    }
+  }
+  
+  // Filter users based on the selected filter
+  const filteredUsers = users.filter((user) => {
+    if (filter === 'archived') return user.archived === true
+    if (filter === 'new_applications') return !user.accepted && !user.archived
+    if (filter === 'active') return user.accepted && !user.archived
+    return true // Default case
+  })
+
   if (loading) {
     return <CircularProgress />
   }
@@ -204,8 +255,31 @@ function UserListTemplate() {
         <Typography variant="h4" gutterBottom>
           EWB Members
         </Typography>
+
+        {/* Filter buttons */}
+        <Box sx={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+          <Button
+              variant={filter === 'active' ? 'contained' : 'outlined'}
+              onClick={() => setFilter('active')}
+            >
+            Show Active Members
+          </Button>
+          <Button
+            variant={filter === 'new_applications' ? 'contained' : 'outlined'}
+            onClick={() => setFilter('new_applications')}
+          >
+            Show New Applications
+          </Button>
+          <Button
+            variant={filter === 'archived' ? 'contained' : 'outlined'}
+            onClick={() => setFilter('archived')}
+          >
+            Show Archived Members
+          </Button>
+        </Box>
+
         <DataGrid
-          rows={users}
+          rows={filteredUsers}
           columns={columns}
           pageSize={5}
           getRowId={(row) => row.uin}
