@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { fetchProject } from '../../../services/projectService'
-import DeleteProjectDialog from '../../organisms/DeleteProjectDialog'
+import { fetchProject } from 'services/projectService'
+import DeleteProjectDialog from 'components/organisms/DeleteProjectDialog'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { format } from 'date-fns'
 
@@ -37,7 +37,7 @@ function ProjectDetailsTemplate() {
         setProject(json)
         setLoading(false)
       } catch (error) {
-        console.error('Failed to fetch project:', error)
+        // console.error('Failed to fetch project:', error)
         setError(error)
         setLoading(false)
       }

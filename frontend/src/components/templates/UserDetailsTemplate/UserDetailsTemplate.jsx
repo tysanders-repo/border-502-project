@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { fetchUser } from '../../../services/userService'
-import DeleteConfirmationDialog from '../../organisms/DeleteConfirmationDialog'
+import { fetchUser } from 'services/userService'
+import DeleteConfirmationDialog from 'components/organisms/DeleteConfirmationDialog'
 import { format } from 'date-fns'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import {
@@ -43,7 +43,7 @@ function UserDetailsTemplate() {
         setUser(json)
         setLoading(false)
       } catch (error) {
-        console.error('Failed to fetch user:', error)
+        // console.error('Failed to fetch user:', error)
         setError(error)
         setLoading(false)
       }

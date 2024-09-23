@@ -1,4 +1,4 @@
-import ProjectDetailsTemplate from '../components/templates/ProjectDetailsTemplate'
+import ProjectDetailsTemplate from 'components/templates/ProjectDetailsTemplate'
 
 export function ProjectDetails() {
   return (

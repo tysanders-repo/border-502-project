@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { createUser } from '../../../services/userService'
-import UserForm from '../../organisms/UserForm'
+import { createUser } from 'services/userService'
+import UserForm from 'components/organisms/UserForm'
 import { Container, Typography } from '@mui/material'
 
 function NewMemberFormTemplate() {
@@ -47,7 +47,6 @@ function NewMemberFormTemplate() {
     setError(null)
     if (validateForm()) {
       try {
-        console.log(userData)
         const response = await createUser(userData)
         navigate(`/users/${response.uin}`)
       } catch (e) {

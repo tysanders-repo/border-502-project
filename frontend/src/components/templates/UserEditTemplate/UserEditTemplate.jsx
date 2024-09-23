@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import UserForm from '../../organisms/UserForm'
+import UserForm from 'components/organisms/UserForm'
 import { Container, Typography } from '@mui/material'
-import { fetchUser, updateUser } from '../../../services/userService'
+import { fetchUser, updateUser } from 'services/userService'
 
 function UserEditTemplate() {
   const [user, setUser] = useState({

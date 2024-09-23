@@ -6,7 +6,7 @@ import {
   Container,
   Box,
 } from '@mui/material'
-import { fetchAllProjects } from '../../../services/projectService'
+import { fetchAllProjects } from 'services/projectService'
 import { format } from 'date-fns'
 
 const HomepageTemplate = () => {
@@ -15,13 +15,13 @@ const HomepageTemplate = () => {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    async function loadProjects() {
+    const loadProjects = async () => {
       try {
         const data = await fetchAllProjects()
         setProjects(data)
-        setLoading(false)
       } catch (e) {
         setError(e)
+      } finally {
         setLoading(false)
       }
     }
@@ -29,7 +29,7 @@ const HomepageTemplate = () => {
   }, [])
 
   if (loading) {
-    return <CircularProgress />
+    return <CircularProgress role="progressbar" />
   }
 
   if (error) {
@@ -75,15 +75,16 @@ const HomepageTemplate = () => {
         Projects
       </Typography>
 
-      {projects.map((project) => (
-        <Box key={project.id}>
-          <Typography variant="h5">
-            {project.title} - {format(new Date(project.date), 'MMMM d, yyyy')}
-          </Typography>
-          <Typography variant="body1">{project.description}</Typography>
-          <br />
-        </Box>
-      ))}
+      {projects &&
+        projects.map((project) => (
+          <Box key={project.id}>
+            <Typography variant="h5">
+              {project.title} - {format(new Date(project.date), 'MMMM d, yyyy')}
+            </Typography>
+            <Typography variant="body1">{project.description}</Typography>
+            <br />
+          </Box>
+        ))}
     </Container>
   )
 }
