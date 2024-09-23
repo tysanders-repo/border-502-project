@@ -1,0 +1,24 @@
+setup:
+  addons:
+    - plan: heroku-postgresql
+      as: DATABASE
+  config:
+    REACT_APP_API_URL: http://localhost:3001
+
+build:
+  docker:
+    db: Dockerfile.db   # Optional if you have a specific Dockerfile for db
+    frontend: ./frontend/Dockerfile
+    backend: ./backend/Dockerfile
+  config:
+    DATABASE_USER: ${DATABASE_USER}
+    DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+    DATABASE_DB: ${DATABASE_DB}
+
+release:
+  command:
+    - ./backend/bin/release_tasks.sh  # Custom release tasks (like migrations)
+
+run:
+  backend: bundle exec puma -C config/puma.rb
+  frontend: npm start --prefix frontend
