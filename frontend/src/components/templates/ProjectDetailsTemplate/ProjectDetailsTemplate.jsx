@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { fetchProject } from '../../../services/projectService'
 import DeleteProjectDialog from '../../organisms/DeleteProjectDialog'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { format } from 'date-fns'
 
 import {
@@ -11,6 +12,7 @@ import {
   CircularProgress,
   Alert,
   Box,
+  IconButton,
 } from '@mui/material'
 
 function ProjectDetailsTemplate() {
@@ -24,6 +26,7 @@ function ProjectDetailsTemplate() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [openDialog, setOpenDialog] = useState(false)
+  const navigate = useNavigate()
 
   const { id } = useParams()
 
@@ -59,41 +62,51 @@ function ProjectDetailsTemplate() {
   return (
     <Container maxWidth="sm" sx={{ marginTop: 4 }}>
       {project ? (
-        <Box>
-          <Typography variant="h4" gutterBottom>
-            {project.title}
-          </Typography>
-          <Typography variant="h6">
-            Start Date: {format(new Date(project.date), 'MMMM d, yyyy')}
-          </Typography>
-          <Typography variant="h6">
-            Description: {project.description}
-          </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+          <IconButton onClick={() => navigate('/projects')}>
+            <ArrowBackIcon />
+          </IconButton>
 
-          <Box
-            mt={3}
-            sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}
-          >
-            <Button variant="outlined" color="error" onClick={handleOpenDialog}>
-              Delete
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              component={Link}
-              to={`/projects/${id}/edit`}
+          <Box>
+            <Typography variant="h4" gutterBottom>
+              {project.title}
+            </Typography>
+            <Typography variant="h6">
+              Start Date: {format(new Date(project.date), 'MMMM d, yyyy')}
+            </Typography>
+            <Typography variant="h6">
+              Description: {project.description}
+            </Typography>
+
+            <Box
+              mt={3}
+              sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}
             >
-              Edit Project
-            </Button>
-          </Box>
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={handleOpenDialog}
+              >
+                Delete
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                component={Link}
+                to={`/projects/${id}/edit`}
+              >
+                Edit Project
+              </Button>
+            </Box>
 
-          <DeleteProjectDialog
-            project={project}
-            openDialog={openDialog}
-            handleCloseDialog={handleCloseDialog}
-            id={id}
-            setError={setError}
-          />
+            <DeleteProjectDialog
+              project={project}
+              openDialog={openDialog}
+              handleCloseDialog={handleCloseDialog}
+              id={id}
+              setError={setError}
+            />
+          </Box>
         </Box>
       ) : (
         <Typography variant="h6">Project not found</Typography>

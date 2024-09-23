@@ -273,7 +273,7 @@ function UserListTemplate() {
         }}
       >
         <Typography variant="h4" gutterBottom>
-          EWB Members
+          Members
         </Typography>
 
         {/* Filter buttons */}

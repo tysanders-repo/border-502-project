@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { fetchAllProjects } from '../../../services/projectService'
 import DeleteProjectDialog from '../../organisms/DeleteProjectDialog'
 import { useNavigate } from 'react-router-dom'
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts'
+
 import {
   CircularProgress,
   Alert,
@@ -132,14 +134,23 @@ function ProjectListTemplate() {
             marginBottom: '15px',
           }}
         >
-          <Typography variant="h4">EWB Projects</Typography>
-          <Button
-            variant="outlined"
-            startIcon={<AddCircleOutlineIcon />}
-            onClick={() => navigate('/new-project')}
-          >
-            {isMobile ? 'Proejct' : 'Add Project'}
-          </Button>
+          <Typography variant="h4">Projects</Typography>
+          <Box sx={{ display: 'flex', gap: '10px' }}>
+            <Button
+              variant="outlined"
+              onClick={() => navigate('/projects')}
+              startIcon={<ManageAccountsIcon />}
+            >
+              {isMobile ? 'Members' : 'Manage Members'}
+            </Button>
+            <Button
+              variant="outlined"
+              startIcon={<AddCircleOutlineIcon />}
+              onClick={() => navigate('/new-project')}
+            >
+              {isMobile ? 'Proejct' : 'Add Project'}
+            </Button>
+          </Box>
         </Box>
 
         <DataGrid
