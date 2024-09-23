@@ -43,7 +43,7 @@ function UserDetailsTemplate() {
         setUser(json)
         setLoading(false)
       } catch (error) {
-        console.error('Failed to fetch user:', error)
+        // console.error('Failed to fetch user:', error)
         setError(error)
         setLoading(false)
       }

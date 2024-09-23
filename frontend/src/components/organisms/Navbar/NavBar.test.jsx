@@ -8,9 +8,7 @@ describe('NavBar component', () => {
     render(<NavBar />, { wrapper: MemoryRouter })
   }
   test('renders both links', () => {
-    // render the navbar
     renderNavBar()
-    // expect the links to be there or something
     expect(screen.getByText('Home')).toBeInTheDocument()
     expect(screen.getByText('View Members')).toBeInTheDocument()
   })

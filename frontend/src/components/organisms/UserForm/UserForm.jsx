@@ -110,22 +110,20 @@ const UserForm = ({
           />
         </SideBySideBox>
 
-        <TextField
-          id="outlined-select-currency"
-          select
-          required
-          label="Shirt Size"
+        <Autocomplete
+          freeSolo
+          options={ShirtSizes}
+          getOptionLabel={(option) =>
+            typeof option === 'string' ? option : option.value
+          }
           value={user.tshirt_size || ''}
-          onChange={(e) => onChange('tshirt_size', e.target.value)}
-          placeholder="Select a size"
-          sx={{ width: '100%', textAlign: 'left' }}
-        >
-          {ShirtSizes.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.value}
-            </MenuItem>
-          ))}
-        </TextField>
+          onChange={(e, newValue) =>
+            onChange('tshirt_size', newValue?.value || '')
+          }
+          renderInput={(params) => (
+            <TextField required {...params} label="Shirt Size" />
+          )}
+        />
 
         <DatePicker
           label="Birthday"
@@ -170,7 +168,12 @@ const UserForm = ({
           >
             Cancel
           </Button>
-          <Button variant="contained" type="submit" sx={{ width: '200px' }}>
+          <Button
+            variant="contained"
+            type="submit"
+            role="button"
+            sx={{ width: '200px' }}
+          >
             {loading ? <CircularProgress size={24} /> : 'Submit'}
           </Button>
         </Box>

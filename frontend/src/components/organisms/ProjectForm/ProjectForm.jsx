@@ -35,6 +35,7 @@ const ProjectForm = ({
           />
 
           <DatePicker
+            required
             label="Start Date"
             value={project.date ? dayjs(project.date) : null}
             onChange={(date) => onChange('date', date)}

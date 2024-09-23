@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Container, Typography } from '@mui/material'
+import { Container, Typography, CircularProgress, Alert } from '@mui/material'
 import { fetchProject, updateProject } from 'services/projectService'
 import ProjectForm from 'components/organisms/ProjectForm/ProjectForm'
 
@@ -42,7 +42,6 @@ function ProjectEditTemplate() {
     if (validateForm()) {
       try {
         const response = await updateProject(id, project)
-        console.log(response)
         navigate(`/projects/${response.id}`)
       } catch (e) {
         setError(e)
@@ -68,6 +67,14 @@ function ProjectEditTemplate() {
     // }
     // setFormError(errors)
     // return !errors.name && !errors.uin
+  }
+
+  if (loading) {
+    return <CircularProgress role="progressbar" />
+  }
+
+  if (error) {
+    return <Alert severity="error">{error.message}</Alert>
   }
 
   return (

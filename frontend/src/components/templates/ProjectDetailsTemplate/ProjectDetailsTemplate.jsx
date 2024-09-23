@@ -37,7 +37,7 @@ function ProjectDetailsTemplate() {
         setProject(json)
         setLoading(false)
       } catch (error) {
-        console.error('Failed to fetch project:', error)
+        // console.error('Failed to fetch project:', error)
         setError(error)
         setLoading(false)
       }

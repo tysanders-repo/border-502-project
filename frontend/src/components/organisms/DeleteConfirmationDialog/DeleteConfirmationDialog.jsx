@@ -25,7 +25,6 @@ const DeleteConfirmationDialog = ({
       await deleteUser(id)
       navigate('/users')
     } catch (error) {
-      console.error('Error deleting user:', error)
       setError(error)
     }
   }
@@ -37,7 +36,7 @@ const DeleteConfirmationDialog = ({
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <DialogTitle id="alert-dialog-title">Delete Account</DialogTitle>
+      <DialogTitle id="alert-dialog-title">Confirm Delete Account</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
           Are you sure you want to delete {user?.first_name} {user?.last_name}'s

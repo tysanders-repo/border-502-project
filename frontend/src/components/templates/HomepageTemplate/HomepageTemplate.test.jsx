@@ -1,8 +1,8 @@
-// HomepageTemplate.test.js
 import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 import HomepageTemplate from './HomepageTemplate'
 import { fetchAllProjects } from 'services/projectService'
+import { act } from '@testing-library/react'
 
 jest.mock('services/projectService')
 
@@ -11,7 +11,8 @@ describe('HomepageTemplate', () => {
     jest.clearAllMocks()
   })
 
-  test('renders loading state', () => {
+  test('renders loading state', async () => {
+    fetchAllProjects.mockImplementationOnce(() => new Promise(() => {}))
     render(<HomepageTemplate />)
     expect(screen.getByRole('progressbar')).toBeInTheDocument()
   })
@@ -20,7 +21,9 @@ describe('HomepageTemplate', () => {
     const errorMessage = 'Failed to fetch projects'
     fetchAllProjects.mockRejectedValueOnce(new Error(errorMessage))
 
-    render(<HomepageTemplate />)
+    await act(async () => {
+      render(<HomepageTemplate />)
+    })
 
     await waitFor(() => {
       expect(screen.getByText(errorMessage)).toBeInTheDocument()
@@ -44,14 +47,16 @@ describe('HomepageTemplate', () => {
     ]
     fetchAllProjects.mockResolvedValueOnce(mockProjects)
 
-    render(<HomepageTemplate />)
+    await act(async () => {
+      render(<HomepageTemplate />)
+    })
 
     await waitFor(() => {
       expect(
-        screen.getByText((content, element) => content.startsWith('Project A'))
+        screen.getByText((content) => content.startsWith('Project A'))
       ).toBeInTheDocument()
       expect(
-        screen.getByText((content, element) => content.startsWith('Project B'))
+        screen.getByText((content) => content.startsWith('Project B'))
       ).toBeInTheDocument()
       expect(screen.getByText('Description for Project A')).toBeInTheDocument()
       expect(screen.getByText('Description for Project B')).toBeInTheDocument()

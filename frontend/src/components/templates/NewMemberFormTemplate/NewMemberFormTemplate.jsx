@@ -47,7 +47,6 @@ function NewMemberFormTemplate() {
     setError(null)
     if (validateForm()) {
       try {
-        console.log(userData)
         const response = await createUser(userData)
         navigate(`/users/${response.uin}`)
       } catch (e) {
