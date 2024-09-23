@@ -4,6 +4,7 @@ import { fetchAllProjects } from '../../../services/projectService'
 import DeleteProjectDialog from '../../organisms/DeleteProjectDialog'
 import { useNavigate } from 'react-router-dom'
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts'
+import { format } from 'date-fns'
 
 import {
   CircularProgress,
@@ -36,7 +37,12 @@ function ProjectListTemplate() {
   const columns = [
     { field: 'title', headerName: 'Title', flex: 1 },
     { field: 'description', headerName: 'Description', flex: 1 },
-    { field: 'date', headerName: 'Start Date', flex: 1 },
+    {
+      field: 'date',
+      headerName: 'Start Date',
+      flex: 1,
+      renderCell: (params) => format(new Date(params.value), 'MMMM d, yyyy'),
+    },
     {
       field: 'actions',
       sortable: false,
@@ -138,7 +144,7 @@ function ProjectListTemplate() {
           <Box sx={{ display: 'flex', gap: '10px' }}>
             <Button
               variant="outlined"
-              onClick={() => navigate('/projects')}
+              onClick={() => navigate('/users')}
               startIcon={<ManageAccountsIcon />}
             >
               {isMobile ? 'Members' : 'Manage Members'}

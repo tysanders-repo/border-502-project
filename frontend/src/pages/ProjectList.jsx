@@ -1,4 +1,4 @@
-import ProjectListTemplate from '../components/templates/ProjectListTemplate/ProjectListTemplate'
+import ProjectListTemplate from '../components/templates/ProjectListTemplate'
 export function ProjectList() {
   return (
     <>
