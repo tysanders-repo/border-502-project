@@ -30,13 +30,13 @@ async function createUser(userData) {
   return response.json()
 }
 
-async function updateUser(id, postData) {
+async function updateUser(id, userData) {
   const response = await fetch(`${API_URL}/members/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(postData),
+    body: JSON.stringify(userData),
   })
   if (!response.ok) {
     throw new Error(response.statusText)
@@ -50,7 +50,7 @@ async function updateUserPresident(id, postData) {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      'Role': 'president',
+      Role: 'president',
     },
     body: JSON.stringify(postData),
   })
@@ -75,4 +75,11 @@ async function deleteUser(id) {
   return response.json()
 }
 
-export { createUser, deleteUser, fetchAllUsers, fetchUser, updateUser, updateUserPresident }
+export {
+  createUser,
+  deleteUser,
+  fetchAllUsers,
+  fetchUser,
+  updateUser,
+  updateUserPresident,
+}

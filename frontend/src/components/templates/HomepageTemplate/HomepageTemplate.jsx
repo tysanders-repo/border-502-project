@@ -1,7 +1,40 @@
-import React from 'react'
-import { Container, Typography } from '@mui/material'
+import React, { useState, useEffect } from 'react'
+import {
+  CircularProgress,
+  Alert,
+  Typography,
+  Container,
+  Box,
+} from '@mui/material'
+import { fetchAllProjects } from '../../../services/projectService'
+import { format } from 'date-fns'
 
 const HomepageTemplate = () => {
+  const [projects, setProjects] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    async function loadProjects() {
+      try {
+        const data = await fetchAllProjects()
+        setProjects(data)
+        setLoading(false)
+      } catch (e) {
+        setError(e)
+        setLoading(false)
+      }
+    }
+    loadProjects()
+  }, [])
+
+  if (loading) {
+    return <CircularProgress />
+  }
+
+  if (error) {
+    return <Alert severity="error">{error.message}</Alert>
+  }
   return (
     <Container maxWidth="md">
       <Typography variant="h1" gutterBottom>
@@ -37,6 +70,20 @@ const HomepageTemplate = () => {
         real-world problems in order to empower international communities by
         offering opportunities for the students of Texas A&M University to:
       </Typography>
+      <br />
+      <Typography variant="h4" gutterBottom>
+        Projects
+      </Typography>
+
+      {projects.map((project) => (
+        <Box key={project.id}>
+          <Typography variant="h5">
+            {project.title} - {format(new Date(project.date), 'MMMM d, yyyy')}
+          </Typography>
+          <Typography variant="body1">{project.description}</Typography>
+          <br />
+        </Box>
+      ))}
     </Container>
   )
 }

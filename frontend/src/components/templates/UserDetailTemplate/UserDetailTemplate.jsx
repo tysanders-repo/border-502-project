@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { fetchUser } from '../../../services/userService'
 import DeleteConfirmationDialog from '../../organisms/DeleteConfirmationDialog'
+import { format } from 'date-fns'
 import {
   Button,
   Container,
@@ -74,13 +75,22 @@ function UserDetailsTemplate() {
           <Typography variant="h6">Phone: {user.phone}</Typography>
           <Typography variant="h6">Shirt Size: {user.tshirt_size}</Typography>
           <Typography variant="h6">
-            Aggie Ring Day: {user.aggie_ring_day || 'N/A'}
+            Aggie Ring Day:{' '}
+            {user.aggie_ring_day === null
+              ? 'N/A'
+              : format(new Date(user.aggie_ring_day), 'MMMM d, yyyy')}
           </Typography>
           <Typography variant="h6">
-            Birthday: {user.birthday || 'N/A'}
+            Birthday:{' '}
+            {user.birthday === null
+              ? 'N/A'
+              : format(new Date(user.birthday), 'MMMM d, yyyy')}
           </Typography>
           <Typography variant="h6">
-            Graduation Day: {user.graduation_day || 'N/A'}
+            Graduation Day:{' '}
+            {user.graduation_day === null
+              ? 'N/A'
+              : format(new Date(user.graduation_day), 'MMMM d, yyyy')}
           </Typography>
 
           <Box
@@ -107,37 +117,6 @@ function UserDetailsTemplate() {
             id={id}
             setError={setError}
           />
-
-          {/* Confirmation Dialog
-          <Dialog
-            open={openDialog}
-            onClose={handleCloseDialog}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">Delete Account</DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                Are you sure you want to delete {user.first_name}{' '}
-                {user.last_name}'s profile? This action cannot be undone.
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleCloseDialog} color="primary">
-                Cancel
-              </Button>
-              <Button
-                onClick={() => {
-                  deleteUserHandler()
-                  handleCloseDialog()
-                }}
-                color="error"
-                autoFocus
-              >
-                Delete Account
-              </Button>
-            </DialogActions>
-          </Dialog> */}
         </Box>
       ) : (
         <Typography variant="h6">User not found</Typography>

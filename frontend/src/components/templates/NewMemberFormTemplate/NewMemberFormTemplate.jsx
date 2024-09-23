@@ -14,7 +14,7 @@ function NewMemberFormTemplate() {
     email: '',
     phone: '',
     tshirt_size: '',
-    aggie_ring_day: '',
+    aggie_ring_day: null,
     birthday: null,
     graduation_day: null,
   })
