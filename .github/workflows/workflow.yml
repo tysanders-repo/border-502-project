@@ -60,7 +60,7 @@ jobs:
       - name: Run Jest tests
         run: |
           cd frontend
-          npm run test -- --ci
+          npm run test
 
       - name: Run Rspec tests
         run: |
