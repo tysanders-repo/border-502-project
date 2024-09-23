@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Container, Typography } from '@mui/material'
-import { fetchProject, updateProject } from '../../../services/projectService'
-import ProjectForm from '../../organisms/ProjectForm/ProjectForm'
+import { fetchProject, updateProject } from 'services/projectService'
+import ProjectForm from 'components/organisms/ProjectForm/ProjectForm'
 
 function ProjectEditTemplate() {
   const [project, setProject] = useState({

@@ -9,7 +9,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material'
-import { deleteUser } from '../../../services/userService'
+import { deleteUser } from 'services/userService'
 
 const DeleteConfirmationDialog = ({
   user,

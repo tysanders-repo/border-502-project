@@ -1,14 +1,14 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
-import { Home } from '../../../pages/Home'
-import { NewMemberForm } from '../../../pages/NewMemberForm'
-import { NewProjectForm } from '../../../pages/NewProjectForm'
-import { UserDetails } from '../../../pages/UserDetails'
-import { UsersList } from '../../../pages/UsersList'
-import { UserEdit } from '../../../pages/UserEdit'
-import { ProjectList } from '../../../pages/ProjectList'
-import { ProjectDetails } from '../../../pages/ProjectDetails'
-import { ProjectEdit } from '../../../pages/ProjectEdit'
+import { Home } from 'pages/Home';
+import { NewMemberForm } from 'pages/NewMemberForm'
+import { NewProjectForm } from 'pages/NewProjectForm'
+import { UserDetails } from 'pages/UserDetails'
+import { UsersList } from 'pages/UsersList'
+import { UserEdit } from 'pages/UserEdit'
+import { ProjectList } from 'pages/ProjectList'
+import { ProjectDetails } from 'pages/ProjectDetails'
+import { ProjectEdit } from 'pages/ProjectEdit'
 
 const AppRoutes = () => {
   return (

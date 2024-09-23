@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { createProject } from '../../../services/projectService'
+import { createProject } from 'services/projectService'
 import { Container, Typography } from '@mui/material'
-import ProjectForm from '../../organisms/ProjectForm/ProjectForm'
+import ProjectForm from 'components/organisms/ProjectForm/ProjectForm'
 
 function NewProjectFormTemplate() {
   const [project, setProject] = useState({

@@ -6,7 +6,7 @@ import {
   Container,
   Box,
 } from '@mui/material'
-import { fetchAllProjects } from '../../../services/projectService'
+import { fetchAllProjects } from 'services/projectService'
 import { format } from 'date-fns'
 
 const HomepageTemplate = () => {

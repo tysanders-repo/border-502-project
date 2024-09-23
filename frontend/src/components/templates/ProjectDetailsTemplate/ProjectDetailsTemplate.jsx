@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { fetchProject } from '../../../services/projectService'
-import DeleteProjectDialog from '../../organisms/DeleteProjectDialog'
+import { fetchProject } from 'services/projectService'
+import DeleteProjectDialog from 'components/organisms/DeleteProjectDialog'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { format } from 'date-fns'
 

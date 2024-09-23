@@ -5,43 +5,43 @@ import AppRoutes from './AppRoutes'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
-jest.mock('../../templates/HomePageTemplate', () => {
+jest.mock('components/templates/HomePageTemplate', () => {
   return () => <div>Your Matcher for HomePage component here</div>
 })
 
-jest.mock('../../templates/UserListTemplate', () => {
+jest.mock('components/templates/UserListTemplate', () => {
   return () => <div>Your Matcher for UserListTemplate component here</div>
 })
 
-jest.mock('../../templates/UserDetailsTemplate', () => {
+jest.mock('components/templates/UserDetailsTemplate', () => {
   return () => <div>Your Matcher for UserDetailsTemplate component here</div>
 })
 
-jest.mock('../../templates/UserEditTemplate', () => {
+jest.mock('components/templates/UserEditTemplate', () => {
   return () => <div>Your Matcher for UserEditTemplate component here</div>
 })
 
-jest.mock('../../templates/NewMemberFormTemplate', () => {
+jest.mock('components/templates/NewMemberFormTemplate', () => {
   return () => <div>Your Matcher for NewMemberFormTemplate component here</div>
 })
 
-jest.mock('../../templates/ProjectListTemplate', () => {
+jest.mock('components/templates/ProjectListTemplate', () => {
   return () => <div>Your Matcher for ProjectListTemplate component here</div>
 })
 
-jest.mock('../../templates/ProjectDetailsTemplate', () => {
+jest.mock('components/templates/ProjectDetailsTemplate', () => {
   return () => <div>Your Matcher for ProjectDetailsTemplate component here</div>
 })
 
-jest.mock('../../templates/ProjectEditTemplate', () => {
+jest.mock('components/templates/ProjectEditTemplate', () => {
   return () => <div>Your Matcher for ProjectEditTemplate component here</div>
 })
 
-jest.mock('../../templates/NewProjectFormTemplate', () => {
-    return () => <div>Your Matcher for NewProjectFormTemplate component here</div>
-  })
+jest.mock('components/templates/NewProjectFormTemplate', () => {
+  return () => <div>Your Matcher for NewProjectFormTemplate component here</div>
+})
 
-jest.mock('../../../constants', () => ({
+jest.mock('components/../constants', () => ({
   API_URL: 'http://localhost:3000',
 }))
 
@@ -100,7 +100,8 @@ describe('AppRoutes component', () => {
   })
   test('new project path renders new project form', async () => {
     renderWithRouter(<AppRoutes />, { initialEntries: ['/new-project'] })
-    const expectedText = 'Your Matcher for NewProjectFormTemplate component here'
+    const expectedText =
+      'Your Matcher for NewProjectFormTemplate component here'
     expect(screen.getByText(expectedText)).toBeInTheDocument()
   })
 })

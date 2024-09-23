@@ -1,4 +1,4 @@
-import ProjectEditTemplate from '../components/templates/ProjectEditTemplate'
+import ProjectEditTemplate from 'components/templates/ProjectEditTemplate'
 
 export function ProjectEdit() {
   return (

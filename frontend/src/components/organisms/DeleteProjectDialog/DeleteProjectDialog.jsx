@@ -9,7 +9,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material'
-import { deleteProject } from '../../../services/projectService'
+import { deleteProject } from 'services/projectService'
 
 const DeleteProjectDialog = ({
   project,
