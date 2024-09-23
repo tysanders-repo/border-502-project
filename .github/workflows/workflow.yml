@@ -55,13 +55,12 @@ jobs:
       - name: Install frontend dependencies
         run: |
           cd frontend
-          yarn install
+          npm install
 
-      # Run Jest tests
       - name: Run Jest tests
         run: |
-          cd frontend 
-          yarn test --ci 
+          cd frontend
+          npm test -- --ci
 
       - name: Run tests
         run: |
