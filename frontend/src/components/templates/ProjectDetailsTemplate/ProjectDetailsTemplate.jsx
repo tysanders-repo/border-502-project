@@ -1,55 +1,49 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { fetchUser } from '../../../services/userService'
-import DeleteConfirmationDialog from '../../organisms/DeleteConfirmationDialog'
-import { format } from 'date-fns'
+import { fetchProject } from '../../../services/projectService'
+import DeleteProjectDialog from '../../organisms/DeleteProjectDialog'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import { format } from 'date-fns'
+
 import {
   Button,
   Container,
   Typography,
   CircularProgress,
-  IconButton,
   Alert,
   Box,
+  IconButton,
 } from '@mui/material'
 
-function UserDetailsTemplate() {
-  const [user, setUser] = useState({
-    first_name: '',
-    last_name: '',
-    uin: null,
-    major: '',
-    year: null,
-    email: '',
-    phone: '',
-    tshirt_size: '',
-    aggie_ring_day: '',
-    birthday: null,
-    graduation_day: null,
+function ProjectDetailsTemplate() {
+  const [project, setProject] = useState({
+    title: '',
+    description: '',
+    date: null,
+    pictures: null,
+    timeline: null,
   })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [openDialog, setOpenDialog] = useState(false)
-
   const navigate = useNavigate()
 
   const { id } = useParams()
 
   useEffect(() => {
-    const fetchCurrentUser = async () => {
+    const fetchCurrentProject = async () => {
       try {
-        const json = await fetchUser(id)
-        setUser(json)
+        const json = await fetchProject(id)
+        setProject(json)
         setLoading(false)
       } catch (error) {
-        console.error('Failed to fetch user:', error)
+        console.error('Failed to fetch project:', error)
         setError(error)
         setLoading(false)
       }
     }
 
-    fetchCurrentUser()
+    fetchCurrentProject()
   }, [id])
 
   const handleOpenDialog = () => {
@@ -67,38 +61,21 @@ function UserDetailsTemplate() {
 
   return (
     <Container maxWidth="sm" sx={{ marginTop: 4 }}>
-      {user ? (
+      {project ? (
         <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-          <IconButton onClick={() => navigate('/users')}>
+          <IconButton onClick={() => navigate('/projects')}>
             <ArrowBackIcon />
           </IconButton>
+
           <Box>
             <Typography variant="h4" gutterBottom>
-              {user.first_name} {user.last_name}'s Information
-            </Typography>
-            <Typography variant="h6">UIN: {user.uin}</Typography>
-            <Typography variant="h6">Major: {user.major}</Typography>
-            <Typography variant="h6">Year: {user.year}</Typography>
-            <Typography variant="h6">Email: {user.email}</Typography>
-            <Typography variant="h6">Phone: {user.phone}</Typography>
-            <Typography variant="h6">Shirt Size: {user.tshirt_size}</Typography>
-            <Typography variant="h6">
-              Aggie Ring Day:{' '}
-              {user.aggie_ring_day === null
-                ? 'N/A'
-                : format(new Date(user.aggie_ring_day), 'MMMM d, yyyy')}
+              {project.title}
             </Typography>
             <Typography variant="h6">
-              Birthday:{' '}
-              {user.birthday === null
-                ? 'N/A'
-                : format(new Date(user.birthday), 'MMMM d, yyyy')}
+              Start Date: {format(new Date(project.date), 'MMMM d, yyyy')}
             </Typography>
             <Typography variant="h6">
-              Graduation Day:{' '}
-              {user.graduation_day === null
-                ? 'N/A'
-                : format(new Date(user.graduation_day), 'MMMM d, yyyy')}
+              Description: {project.description}
             </Typography>
 
             <Box
@@ -110,20 +87,20 @@ function UserDetailsTemplate() {
                 color="error"
                 onClick={handleOpenDialog}
               >
-                Delete Account
+                Delete
               </Button>
               <Button
                 variant="contained"
                 color="primary"
                 component={Link}
-                to={`/users/${id}/edit`}
+                to={`/projects/${id}/edit`}
               >
-                Edit Profile
+                Edit Project
               </Button>
             </Box>
 
-            <DeleteConfirmationDialog
-              user={user}
+            <DeleteProjectDialog
+              project={project}
               openDialog={openDialog}
               handleCloseDialog={handleCloseDialog}
               id={id}
@@ -132,10 +109,10 @@ function UserDetailsTemplate() {
           </Box>
         </Box>
       ) : (
-        <Typography variant="h6">User not found</Typography>
+        <Typography variant="h6">Project not found</Typography>
       )}
     </Container>
   )
 }
 
-export default UserDetailsTemplate
+export default ProjectDetailsTemplate

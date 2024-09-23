@@ -40,7 +40,7 @@ function Navbar() {
       <List>
         {menuItems.map((item, index) => (
           <ListItem
-            button
+            button // This should be included if you want the item to have button-like behavior
             key={index}
             component={Link}
             to={item.link}

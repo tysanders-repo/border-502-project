@@ -3,9 +3,10 @@ import { TextField, Button, CircularProgress, Alert, Box } from '@mui/material'
 import Autocomplete from '@mui/material/Autocomplete'
 import MenuItem from '@mui/material/MenuItem'
 import { SideBySideBox } from './UserForm.styles'
-
 import { Majors } from '../../../utils/arrays/majors'
 import { ShirtSizes } from '../../../utils/arrays/shirts'
+import dayjs from 'dayjs'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 
 const UserForm = ({
   user,
@@ -31,7 +32,7 @@ const UserForm = ({
             label="First Name"
             variant="outlined"
             fullWidth
-            value={user.first_name}
+            value={user.first_name || ''}
             onChange={(e) => onChange('first_name', e.target.value)}
             error={formError.first_name}
             helperText={formError.first_name ? 'First Name is required' : ''}
@@ -41,7 +42,7 @@ const UserForm = ({
             label="Last Name"
             variant="outlined"
             fullWidth
-            value={user.last_name}
+            value={user.last_name || ''}
             onChange={(e) => onChange('last_name', e.target.value)}
             error={formError.last_name}
             helperText={formError.last_name ? 'Last Name is required' : ''}
@@ -54,7 +55,7 @@ const UserForm = ({
             label="Phone Number"
             variant="outlined"
             fullWidth
-            value={user.phone}
+            value={user.phone || ''}
             onChange={(e) => onChange('phone', e.target.value)}
             error={formError.phone}
             helperText={formError.phone ? 'Phone Number is required' : ''}
@@ -64,7 +65,7 @@ const UserForm = ({
             label="Email"
             variant="outlined"
             fullWidth
-            value={user.email}
+            value={user.email || ''}
             onChange={(e) => onChange('email', e.target.value)}
             error={formError.email}
             helperText={formError.email ? 'Valid Email is required' : ''}
@@ -77,7 +78,7 @@ const UserForm = ({
           getOptionLabel={(option) =>
             typeof option === 'string' ? option : option.value
           }
-          value={user.major}
+          value={user.major || ''}
           onChange={(e, newValue) => onChange('major', newValue?.value || '')}
           renderInput={(params) => (
             <TextField required {...params} label="Major" />
@@ -91,7 +92,7 @@ const UserForm = ({
             variant="outlined"
             fullWidth
             type="number"
-            value={user.uin}
+            value={user.uin || ''}
             onChange={(e) => onChange('uin', e.target.value)}
             error={formError.uin}
             helperText={formError.uin ? 'Valid UIN is required' : ''}
@@ -102,7 +103,7 @@ const UserForm = ({
             label="Graduation Year"
             variant="outlined"
             fullWidth
-            value={user.year}
+            value={user.year || ''}
             onChange={(e) => onChange('year', e.target.value)}
             error={formError.year}
             helperText={formError.year ? 'Year is required' : ''}
@@ -114,7 +115,7 @@ const UserForm = ({
           select
           required
           label="Shirt Size"
-          value={user.tshirt_size}
+          value={user.tshirt_size || ''}
           onChange={(e) => onChange('tshirt_size', e.target.value)}
           placeholder="Select a size"
           sx={{ width: '100%', textAlign: 'left' }}
@@ -126,38 +127,28 @@ const UserForm = ({
           ))}
         </TextField>
 
-        <TextField
+        <DatePicker
           label="Birthday"
-          variant="outlined"
-          fullWidth
-          type="date"
-          value={user.birthday}
-          onChange={(e) => onChange('birthday', e.target.value)}
+          value={user.birthday ? dayjs(user.birthday) : null}
+          onChange={(date) => onChange('birthday', date)}
           error={formError.birthday}
           helperText={formError.birthday ? 'Birthday is required' : ''}
         />
 
-        <TextField
+        <DatePicker
           label="Aggie Ring Day"
-          variant="outlined"
-          s
-          fullWidth
-          type="date"
-          value={user.aggie_ring_day}
-          onChange={(e) => onChange('aggie_ring_day', e.target.value)}
+          value={user.aggie_ring_day ? dayjs(user.aggie_ring_day) : null}
+          onChange={(date) => onChange('aggie_ring_day', date)}
           error={formError.aggie_ring_day}
           helperText={
             formError.aggie_ring_day ? 'Aggie Ring Day is required' : ''
           }
         />
 
-        <TextField
+        <DatePicker
           label="Graduation Day"
-          variant="outlined"
-          fullWidth
-          type="date"
-          value={user.graduation_day}
-          onChange={(e) => onChange('graduation_day', e.target.value)}
+          value={user.graduation_day ? dayjs(user.graduation_day) : null}
+          onChange={(date) => onChange('graduation_day', date)}
           error={formError.graduation_day}
           helperText={
             formError.graduation_day ? 'Graduation Day is required' : ''

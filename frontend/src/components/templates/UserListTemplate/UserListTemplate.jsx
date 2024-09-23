@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { fetchAllUsers, updateUserPresident } from '../../../services/userService'
+import {
+  fetchAllUsers,
+  updateUserPresident,
+} from '../../../services/userService'
 import DeleteConfirmationDialog from '../../organisms/DeleteConfirmationDialog'
+import { useNavigate } from 'react-router-dom'
 import {
   CircularProgress,
   Alert,
@@ -17,6 +21,12 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { useMediaQuery } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
+import { useTheme } from '@mui/material/styles'
+
+import TaskAltIcon from '@mui/icons-material/TaskAlt'
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
+import ArchiveIcon from '@mui/icons-material/Archive'
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts'
 
 function UserListTemplate() {
   const [users, setUsers] = useState([])
@@ -25,8 +35,11 @@ function UserListTemplate() {
   const [anchorEl, setAnchorEl] = useState(null)
   const [selectedUser, setSelectedUser] = useState(null)
   const [openDialog, setOpenDialog] = useState(false)
-  const [filter, setFilter] = useState('active') // Default filter to show active members
-  const isMobile = useMediaQuery('(max-width:800px)') // Adjust the breakpoint as needed
+  const [filter, setFilter] = useState('active') // Default filter to active members
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+
+  const navigate = useNavigate()
 
   const capitalizeAndReplace = (str) => {
     if (!str) return 'hello'
@@ -151,6 +164,13 @@ function UserListTemplate() {
           >
             <MenuItem
               component={Link}
+              to={`/users/${selectedUser?.uin}`}
+              onClick={handleCloseMenu}
+            >
+              View
+            </MenuItem>
+            <MenuItem
+              component={Link}
               to={`/users/${selectedUser?.uin}/edit`}
               onClick={handleCloseMenu}
             >
@@ -201,7 +221,7 @@ function UserListTemplate() {
 
   const handleAccept = async (uin) => {
     try {
-      await updateUserPresident(uin, { accepted: true }) 
+      await updateUserPresident(uin, { accepted: true })
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
           user.uin === uin ? { ...user, accepted: true } : user
@@ -214,7 +234,7 @@ function UserListTemplate() {
 
   const handleArchive = async (uin) => {
     try {
-      await updateUserPresident(uin, { archived: true }) 
+      await updateUserPresident(uin, { archived: true })
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
           user.uin === uin ? { ...user, archived: true } : user
@@ -224,7 +244,7 @@ function UserListTemplate() {
       setError(err)
     }
   }
-  
+
   // Filter users based on the selected filter
   const filteredUsers = users.filter((user) => {
     if (filter === 'archived') return user.archived === true
@@ -253,28 +273,102 @@ function UserListTemplate() {
         }}
       >
         <Typography variant="h4" gutterBottom>
-          EWB Members
+          Members
         </Typography>
 
         {/* Filter buttons */}
-        <Box sx={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginBottom: '10px',
+          }}
+        >
+          <Box sx={{ display: 'flex', gap: isMobile ? '0px' : '10px' }}>
+            {isMobile ? (
+              filter === 'active' ? (
+                <Button
+                  variant="outlined"
+                  onClick={() => setFilter('active')}
+                  startIcon={<TaskAltIcon />}
+                >
+                  Active
+                </Button>
+              ) : (
+                <IconButton onClick={() => setFilter('active')}>
+                  <TaskAltIcon sx={{ color: theme.palette.primary.main }} />
+                </IconButton>
+              )
+            ) : (
+              <Button
+                startIcon={<TaskAltIcon />}
+                variant={filter === 'active' ? 'contained' : 'outlined'}
+                onClick={() => setFilter('active')}
+              >
+                Active Members
+              </Button>
+            )}
+            {isMobile ? (
+              filter === 'new_applications' ? (
+                <Button
+                  variant="outlined"
+                  onClick={() => setFilter('new_applications')}
+                  startIcon={<NotificationsNoneIcon />}
+                >
+                  Applications
+                </Button>
+              ) : (
+                <IconButton onClick={() => setFilter('new_applications')}>
+                  <NotificationsNoneIcon
+                    sx={{ color: theme.palette.primary.main }}
+                  />
+                </IconButton>
+              )
+            ) : (
+              <Button
+                startIcon={<NotificationsNoneIcon />}
+                variant={
+                  filter === 'new_applications' ? 'contained' : 'outlined'
+                }
+                onClick={() => setFilter('new_applications')}
+              >
+                New Applications
+              </Button>
+            )}
+
+            {isMobile ? (
+              filter === 'archived' ? (
+                <Button
+                  variant="outlined"
+                  onClick={() => setFilter('archived')}
+                  startIcon={<ArchiveIcon />}
+                >
+                  Archived
+                </Button>
+              ) : (
+                <IconButton
+                  variant="outlined"
+                  onClick={() => setFilter('archived')}
+                >
+                  <ArchiveIcon sx={{ color: theme.palette.primary.main }} />
+                </IconButton>
+              )
+            ) : (
+              <Button
+                startIcon={<ArchiveIcon />}
+                variant={filter === 'archived' ? 'contained' : 'outlined'}
+                onClick={() => setFilter('archived')}
+              >
+                Archived Members
+              </Button>
+            )}
+          </Box>
           <Button
-              variant={filter === 'active' ? 'contained' : 'outlined'}
-              onClick={() => setFilter('active')}
-            >
-            Show Active Members
-          </Button>
-          <Button
-            variant={filter === 'new_applications' ? 'contained' : 'outlined'}
-            onClick={() => setFilter('new_applications')}
+            variant="outlined"
+            onClick={() => navigate('/projects')}
+            startIcon={<ManageAccountsIcon />}
           >
-            Show New Applications
-          </Button>
-          <Button
-            variant={filter === 'archived' ? 'contained' : 'outlined'}
-            onClick={() => setFilter('archived')}
-          >
-            Show Archived Members
+            {isMobile ? 'Projects' : 'Manage Projects'}
           </Button>
         </Box>
 
