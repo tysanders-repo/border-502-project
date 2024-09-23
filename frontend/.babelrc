@@ -1,0 +1,26 @@
+{
+  "presets": [
+    "@babel/preset-env",
+    [
+      "@babel/preset-react",
+      {
+        "runtime": "automatic"
+      }
+    ]
+  ],
+  "plugins": [
+    ["babel-plugin-transform-import-meta", { "module": "ES6" }],
+    [
+      "module-resolver",
+      {
+        "alias": {
+          "components": "./src/components",
+          "pages": "./src/pages",
+          "services": "./src/services",
+          "utils": "./src/utils"
+        },
+        "extensions": [".js", ".jsx"]
+      }
+    ]
+  ]
+}

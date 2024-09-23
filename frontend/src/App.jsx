@@ -1,17 +1,19 @@
 import React from 'react'
+import Navbar from './components/organisms/Navbar'
+import { BrowserRouter as Router } from 'react-router-dom'
+import AppRoutes from './components/atoms/AppRoutes'
 
-import { HashRouter as Router, Routes, Route } from 'react-router-dom'
-import { Home } from './pages/home'
-import { About } from './pages/about'
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-      </Routes>
-    </Router>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Router>
+        <Navbar />
+        <AppRoutes />
+      </Router>
+    </LocalizationProvider>
   )
 }
 
