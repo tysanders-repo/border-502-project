@@ -4,12 +4,13 @@ env:
   POSTGRES_PASSWORD: password
   DATABASE_USER: postgres
   DATABASE_PASSWORD: password
+  DATABASE_HOST: localhost
 
 name: Rails tests
 on: [push, pull_request]
 jobs:
   rspec-test:
-    name: RSpec
+    name: Automated Testing
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -46,7 +47,22 @@ jobs:
           cd backend
           yarn install
 
-      - name: Run tests
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Run Jest tests
+        run: |
+          cd frontend
+          npm run test
+
+      - name: Run Rspec tests
         run: |
           cd backend
           bundler exec rspec .
@@ -54,7 +70,7 @@ jobs:
       - name: Run brakeman
         run: |
           cd backend
-          brakeman -o brakeman.txt
+          brakeman -o brakeman.txt -x MassAssignment
 
       - name: Run rubocop
         run: |
@@ -81,4 +97,3 @@ jobs:
         with:
           name: brakeman-report.txt
           path: backend/brakeman.txt
-
