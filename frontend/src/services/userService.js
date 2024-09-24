@@ -1,13 +1,7 @@
 import { API_URL } from 'constants'
 
 async function fetchAllUsers() {
-  const response = await fetch(`${API_URL}/members` {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }
-  )
+  const response = await fetch(`${API_URL}/members`)
   if (!response.ok) {
     throw new Error(response.statusText)
   }
