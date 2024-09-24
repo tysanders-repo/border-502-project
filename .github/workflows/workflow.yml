@@ -5,6 +5,7 @@ env:
   DATABASE_USER: postgres
   DATABASE_PASSWORD: password
   DATABASE_HOST: localhost
+  FRONTEND_ORIGIN: localhost:3000
 
 name: Rails tests
 on: [push, pull_request]
