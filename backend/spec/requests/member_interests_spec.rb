@@ -16,7 +16,7 @@ RSpec.describe "/member_interests", type: :request do
   # This should return the minimal set of attributes required to create a valid
   # MemberInterest. As you add validations to MemberInterest, be sure to
   # adjust the attributes here as well.
-  let(:valid_member_attributes){
+  let(:valid_member_attributes) {
     {
       first_name: "John",
       last_name: "Doe",
@@ -32,7 +32,7 @@ RSpec.describe "/member_interests", type: :request do
     }
   }
 
-  let(:valid_diet_attributes){
+  let(:valid_diet_attributes) {
     {
       interest_type: "career",
       name: "software developer"

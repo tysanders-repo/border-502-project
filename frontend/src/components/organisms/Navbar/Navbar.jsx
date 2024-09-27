@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+"use client";
+import React, { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -10,40 +11,40 @@ import {
   Button,
   useMediaQuery,
   Box,
-} from '@mui/material'
-import MenuIcon from '@mui/icons-material/Menu'
-import { Link } from 'react-router-dom'
-import { useTheme } from '@mui/material/styles'
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import Link from "next/link";
+import { useTheme } from "@mui/material/styles";
 
-function Navbar() {
-  const [drawerOpen, setDrawerOpen] = useState(false)
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+export default function Navbar() {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const toggleDrawer = (open) => (event) => {
     if (
-      event.type === 'keydown' &&
-      (event.key === 'Tab' || event.key === 'Shift')
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
     ) {
-      return
+      return;
     }
-    setDrawerOpen(open)
-  }
+    setDrawerOpen(open);
+  };
 
   const menuItems = [
-    { text: 'Home', link: '/' },
-    { text: 'View Members', link: '/users' },
-  ]
+    { text: "Home", link: "/" },
+    { text: "View Members", link: "/Users" },
+  ];
 
   const drawer = (
     <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
       <List>
         {menuItems.map((item, index) => (
           <ListItem
-            button // This should be included if you want the item to have button-like behavior
+            button
             key={index}
             component={Link}
-            to={item.link}
+            href={item.link}
             onClick={toggleDrawer(false)}
           >
             <ListItemText primary={item.text} />
@@ -51,73 +52,63 @@ function Navbar() {
         ))}
       </List>
     </Drawer>
-  )
+  );
 
   return (
-    <>
-      <AppBar
-        position="static"
-        style={{ marginBottom: '30px', padding: '10px' }}
-      >
-        <Toolbar>
-          <Box
-            sx={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Link to="/">
-              <img src="/logo.png" alt="Logo" style={{ height: '70px' }} />
-            </Link>
-            {isMobile ? (
-              <>
-                <IconButton
+    <AppBar position="static" style={{ marginBottom: "30px", padding: "10px" }}>
+      <Toolbar>
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Link href="/" passHref>
+            <img src="/logo.png" alt="Logo" style={{ height: "70px" }} />
+          </Link>
+          {isMobile ? (
+            <>
+              <IconButton
+                color="inherit"
+                aria-label="menu"
+                onClick={toggleDrawer(true)}
+              >
+                <MenuIcon />
+              </IconButton>
+              {drawer}
+            </>
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "20px",
+              }}
+            >
+              {menuItems.map((item, index) => (
+                <Button
+                  key={index}
                   color="inherit"
-                  aria-label="menu"
-                  onClick={toggleDrawer(true)}
+                  component={Link}
+                  href={item.link}
                 >
-                  <MenuIcon />
-                </IconButton>
-                {drawer}
-              </>
-            ) : (
-              <>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    gap: '20px',
-                  }}
-                >
-                  {menuItems.map((item, index) => (
-                    <Button
-                      key={index}
-                      color="inherit"
-                      component={Link}
-                      to={item.link}
-                    >
-                      {item.text}
-                    </Button>
-                  ))}
-
-                  <Button
-                    variant="outlined"
-                    color="inherit"
-                    component={Link}
-                    to="/new-member"
-                  >
-                    New Member?
-                  </Button>
-                </Box>
-              </>
-            )}
-          </Box>
-        </Toolbar>
-      </AppBar>
-    </>
-  )
+                  {item.text}
+                </Button>
+              ))}
+              <Button
+                variant="outlined"
+                color="inherit"
+                component={Link}
+                href="/NewMember"
+              >
+                New Member?
+              </Button>
+            </Box>
+          )}
+        </Box>
+      </Toolbar>
+    </AppBar>
+  );
 }
-
-export default Navbar

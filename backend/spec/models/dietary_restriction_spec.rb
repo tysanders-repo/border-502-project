@@ -44,4 +44,3 @@ RSpec.describe DietaryRestriction, type: :model do
     }
   end
 end
-

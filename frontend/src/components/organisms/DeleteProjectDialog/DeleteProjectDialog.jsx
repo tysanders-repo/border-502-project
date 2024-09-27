@@ -1,5 +1,5 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import React from "react";
+import { useRouter } from "next/navigation";
 
 import {
   Button,
@@ -8,8 +8,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-} from '@mui/material'
-import { deleteProject } from 'services/projectService'
+} from "@mui/material";
+import { deleteProject } from "@services/projectService";
 
 const DeleteProjectDialog = ({
   project,
@@ -18,16 +18,16 @@ const DeleteProjectDialog = ({
   id,
   setError,
 }) => {
-  const navigate = useNavigate()
+  const router = useRouter();
 
   const deleteProjectHandler = async () => {
     try {
-      await deleteProject(id)
-      navigate('/projects')
+      await deleteProject(id);
+      router.push("/Projects");
     } catch (error) {
-      setError(error)
+      setError(error);
     }
-  }
+  };
 
   return (
     <Dialog
@@ -49,8 +49,8 @@ const DeleteProjectDialog = ({
         </Button>
         <Button
           onClick={() => {
-            deleteProjectHandler()
-            handleCloseDialog()
+            deleteProjectHandler();
+            handleCloseDialog();
           }}
           color="error"
           autoFocus
@@ -59,7 +59,7 @@ const DeleteProjectDialog = ({
         </Button>
       </DialogActions>
     </Dialog>
-  )
-}
+  );
+};
 
-export default DeleteProjectDialog
+export default DeleteProjectDialog;

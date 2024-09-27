@@ -13,7 +13,7 @@ require 'rails_helper'
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
 RSpec.describe "/member_diets", type: :request do
-  let(:valid_member_attributes){
+  let(:valid_member_attributes) {
     {
       first_name: "John",
       last_name: "Doe",
@@ -29,7 +29,7 @@ RSpec.describe "/member_diets", type: :request do
     }
   }
 
-  let(:valid_diet_attributes){
+  let(:valid_diet_attributes) {
     {
       item_name: "cheese"
     }

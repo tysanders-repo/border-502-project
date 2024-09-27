@@ -1,5 +1,5 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import React from "react";
+import { useRouter } from "next/router";
 
 import {
   Button,
@@ -8,8 +8,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-} from '@mui/material'
-import { deleteUser } from 'services/userService'
+} from "@mui/material";
+import { deleteUser } from "@services/userService";
 
 const DeleteConfirmationDialog = ({
   user,
@@ -18,16 +18,17 @@ const DeleteConfirmationDialog = ({
   id,
   setError,
 }) => {
-  const navigate = useNavigate()
+  // const router = useRouter()
 
   const deleteUserHandler = async () => {
     try {
-      await deleteUser(id)
-      navigate('/users')
+      await deleteUser(id);
+      // Use Next.js router for navigation
+      router.push("/Users");
     } catch (error) {
-      setError(error)
+      setError(error);
     }
-  }
+  };
 
   return (
     <Dialog
@@ -49,8 +50,8 @@ const DeleteConfirmationDialog = ({
         </Button>
         <Button
           onClick={() => {
-            deleteUserHandler()
-            handleCloseDialog()
+            deleteUserHandler();
+            handleCloseDialog();
           }}
           color="error"
           autoFocus
@@ -59,7 +60,7 @@ const DeleteConfirmationDialog = ({
         </Button>
       </DialogActions>
     </Dialog>
-  )
-}
+  );
+};
 
-export default DeleteConfirmationDialog
+export default DeleteConfirmationDialog;

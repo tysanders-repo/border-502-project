@@ -1,65 +1,64 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { createProject } from 'services/projectService'
-import { Container, Typography } from '@mui/material'
-import ProjectForm from 'components/organisms/ProjectForm/ProjectForm'
+"use client"; // Marks this component as client-side in Next.js
+
+import React, { useState } from "react";
+import { useRouter } from "next/navigation"; // Next.js router for navigation
+import { createProject } from "@services/projectService"; // Adjust the import path based on your structure
+import { Container, Typography } from "@mui/material";
+import ProjectForm from "@components/organisms/ProjectForm/ProjectForm"; // Adjust the import path based on your structure
 
 function NewProjectFormTemplate() {
   const [project, setProject] = useState({
-    title: '',
-    description: '',
+    title: "",
+    description: "",
     date: null,
     pictures: null,
     timeline: null,
-  })
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [formError, setFormError] = useState({ name: false, uin: false })
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [formError, setFormError] = useState({ name: false, uin: false });
 
-  const navigate = useNavigate()
+  const router = useRouter(); // Next.js hook for navigation
 
-  const handleCancel = async (e) => {
-    navigate(`/projects`)
-  }
+  const handleCancel = async () => {
+    router.push(`/Projects`); // Navigate to the projects page
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
     if (validateForm()) {
       try {
-        const response = await createProject(project)
-        navigate(`/projects/${response.id}`)
+        const response = await createProject(project);
+        router.push(`/Projects/${response.id}`); // Navigate to the new project page
       } catch (e) {
-        setError('Failed to create project.')
+        setError("Failed to create project.");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
-  }
+  };
 
   const handleChange = (field, value) => {
     setProject((prevProject) => ({
       ...prevProject,
       [field]: value,
-    }))
-  }
+    }));
+  };
 
   const validateForm = () => {
-    return true
-    // const errors = { name: false, uin: false }
+    return true;
+    // const errors = { name: false };
     // if (project.title.trim() === '') {
-    //   errors.name = true
+    //   errors.name = true;
     // }
-    // if (isNaN(user.uin)) {
-    //   errors.uin = true
-    // }
-    // setFormError(errors)
-    // return !errors.name && !errors.uin
-  }
+    // setFormError(errors);
+    // return !errors.name;
+  };
 
   return (
-    <Container maxWidth="sm" sx={{ textAlign: 'center' }}>
+    <Container maxWidth="sm" sx={{ textAlign: "center" }}>
       <Typography variant="h4" component="h1" gutterBottom>
         Add New Project
       </Typography>
@@ -73,7 +72,7 @@ function NewProjectFormTemplate() {
         handleCancel={handleCancel}
       />
     </Container>
-  )
+  );
 }
 
-export default NewProjectFormTemplate
+export default NewProjectFormTemplate;

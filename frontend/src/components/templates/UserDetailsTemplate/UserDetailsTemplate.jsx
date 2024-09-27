@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
-import { fetchUser } from 'services/userService'
-import DeleteConfirmationDialog from 'components/organisms/DeleteConfirmationDialog'
-import { format } from 'date-fns'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { fetchUser } from "@services/userService";
+import DeleteConfirmationDialog from "@components/organisms/DeleteConfirmationDialog";
+import { format } from "date-fns";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
   Button,
   Container,
@@ -12,64 +13,66 @@ import {
   IconButton,
   Alert,
   Box,
-} from '@mui/material'
+} from "@mui/material";
+import Link from "next/link";
+import { useRouter } from "next/navigation"; // Import useRouter for navigation
 
-function UserDetailsTemplate() {
+function UserDetailsTemplate({ params }) {
+  const router = useRouter();
+  const { id } = params;
+
   const [user, setUser] = useState({
-    first_name: '',
-    last_name: '',
+    first_name: "",
+    last_name: "",
     uin: null,
-    major: '',
+    major: "",
     year: null,
-    email: '',
-    phone: '',
-    tshirt_size: '',
-    aggie_ring_day: '',
+    email: "",
+    phone: "",
+    tshirt_size: "",
+    aggie_ring_day: "",
     birthday: null,
     graduation_day: null,
-  })
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [openDialog, setOpenDialog] = useState(false)
-
-  const navigate = useNavigate()
-
-  const { id } = useParams()
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const json = await fetchUser(id)
-        setUser(json)
-        setLoading(false)
+        const json = await fetchUser(id);
+        setUser(json);
+        setLoading(false);
       } catch (error) {
-        // console.error('Failed to fetch user:', error)
-        setError(error)
-        setLoading(false)
+        setError(error);
+        setLoading(false);
       }
-    }
+    };
 
-    fetchCurrentUser()
-  }, [id])
+    if (id) {
+      fetchCurrentUser();
+    }
+  }, [id]);
 
   const handleOpenDialog = () => {
-    setOpenDialog(true)
-  }
+    setOpenDialog(true);
+  };
 
   const handleCloseDialog = () => {
-    setOpenDialog(false)
-  }
+    setOpenDialog(false);
+  };
 
-  if (loading) return <CircularProgress />
+  if (loading) return <CircularProgress />;
 
   if (error)
-    return <Alert severity="error">Error fetching user: {error.message}</Alert>
+    return <Alert severity="error">Error fetching user: {error.message}</Alert>;
 
   return (
     <Container maxWidth="sm" sx={{ marginTop: 4 }}>
       {user ? (
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-          <IconButton onClick={() => navigate('/users')}>
+        <Box sx={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+          <IconButton onClick={() => router.push("/Users")}>
             <ArrowBackIcon />
           </IconButton>
           <Box>
@@ -83,27 +86,27 @@ function UserDetailsTemplate() {
             <Typography variant="h6">Phone: {user.phone}</Typography>
             <Typography variant="h6">Shirt Size: {user.tshirt_size}</Typography>
             <Typography variant="h6">
-              Aggie Ring Day:{' '}
+              Aggie Ring Day:{" "}
               {user.aggie_ring_day === null
-                ? 'N/A'
-                : format(new Date(user.aggie_ring_day), 'MMMM d, yyyy')}
+                ? "N/A"
+                : format(new Date(user.aggie_ring_day), "MMMM d, yyyy")}
             </Typography>
             <Typography variant="h6">
-              Birthday:{' '}
+              Birthday:{" "}
               {user.birthday === null
-                ? 'N/A'
-                : format(new Date(user.birthday), 'MMMM d, yyyy')}
+                ? "N/A"
+                : format(new Date(user.birthday), "MMMM d, yyyy")}
             </Typography>
             <Typography variant="h6">
-              Graduation Day:{' '}
+              Graduation Day:{" "}
               {user.graduation_day === null
-                ? 'N/A'
-                : format(new Date(user.graduation_day), 'MMMM d, yyyy')}
+                ? "N/A"
+                : format(new Date(user.graduation_day), "MMMM d, yyyy")}
             </Typography>
 
             <Box
               mt={3}
-              sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}
+              sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}
             >
               <Button
                 variant="outlined"
@@ -115,8 +118,7 @@ function UserDetailsTemplate() {
               <Button
                 variant="contained"
                 color="primary"
-                component={Link}
-                to={`/users/${id}/edit`}
+                onClick={() => router.push(`/Users/${id}/Edit`)}
               >
                 Edit Profile
               </Button>
@@ -135,7 +137,7 @@ function UserDetailsTemplate() {
         <Typography variant="h6">User not found</Typography>
       )}
     </Container>
-  )
+  );
 }
 
-export default UserDetailsTemplate
+export default UserDetailsTemplate;

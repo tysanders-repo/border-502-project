@@ -1,50 +1,53 @@
-import React, { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import UserForm from 'components/organisms/UserForm'
-import { Container, Typography } from '@mui/material'
-import { fetchUser, updateUser } from 'services/userService'
+"use client";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import UserForm from "@components/organisms/UserForm";
+import { Container, Typography } from "@mui/material";
+import { fetchUser, updateUser } from "@services/userService";
 
-function UserEditTemplate() {
+function UserEditTemplate({ params }) {
   const [user, setUser] = useState({
-    first_name: '',
-    last_name: '',
+    first_name: "",
+    last_name: "",
     uin: null,
-    major: '',
+    major: "",
     year: null,
-    email: '',
-    phone: '',
-    tshirt_size: '',
+    email: "",
+    phone: "",
+    tshirt_size: "",
     aggie_ring_day: null,
     birthday: null,
     graduation_day: null,
-  })
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [formError, setFormError] = useState({ name: false, uin: false })
-  const { id } = useParams()
-  const navigate = useNavigate()
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [formError, setFormError] = useState({ name: false, uin: false });
+
+  const router = useRouter();
+  const { id } = params;
 
   useEffect(() => {
+    if (!id) return; // Don't run the effect if id is not available
     const fetchCurrentUser = async () => {
       try {
-        const json = await fetchUser(id)
-        setUser(json)
+        const json = await fetchUser(id);
+        setUser(json);
       } catch (e) {
-        setError(e)
+        setError(e);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchCurrentUser()
-  }, [id])
+    fetchCurrentUser();
+  }, [id]);
 
-  const handleCancel = async (e) => {
-    navigate(`/users`)
-  }
+  const handleCancel = () => {
+    router.push(`/Users`);
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (validateForm()) {
       const updatedUser = {
         first_name: user.first_name,
@@ -58,39 +61,31 @@ function UserEditTemplate() {
         aggie_ring_day: user.aggie_ring_day,
         birthday: user.birthday,
         graduation_day: user.graduation_day,
-      }
+      };
       try {
-        const response = await updateUser(id, updatedUser)
-        console.log(response)
-        navigate(`/users/${response.uin}`)
+        const response = await updateUser(id, updatedUser);
+        console.log(response);
+        router.push(`/Users/${response.uin}`);
       } catch (e) {
-        setError(e)
+        setError(e);
       }
     }
-  }
+  };
 
   const handleChange = (field, value) => {
     setUser((prevUser) => ({
       ...prevUser,
       [field]: value,
-    }))
-  }
+    }));
+  };
 
   const validateForm = () => {
-    return true
-    // const errors = { name: false, uin: false }
-    // if (user.name.trim() === '') {
-    //   errors.name = true
-    // }
-    // if (isNaN(user.uin)) {
-    //   errors.uin = true
-    // }
-    // setFormError(errors)
-    // return !errors.name && !errors.uin
-  }
+    return true;
+    // Validation logic can go here
+  };
 
   return (
-    <Container maxWidth="sm" sx={{ textAlign: 'center' }}>
+    <Container maxWidth="sm" sx={{ textAlign: "center" }}>
       <Typography variant="h4" component="h1" gutterBottom>
         Edit User - {user.first_name} {user.last_name}
       </Typography>
@@ -104,7 +99,7 @@ function UserEditTemplate() {
         handleCancel={handleCancel}
       />
     </Container>
-  )
+  );
 }
 
-export default UserEditTemplate
+export default UserEditTemplate;
