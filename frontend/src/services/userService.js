@@ -1,78 +1,78 @@
-import { API_URL } from 'constants'
+const API_URL = "http://localhost:3000";
 
 async function fetchAllUsers() {
-  const response = await fetch(`${API_URL}/members`)
+  const response = await fetch(`${API_URL}/members`);
   if (!response.ok) {
-    throw new Error(response.statusText)
+    throw new Error(response.statusText);
   }
-  return response.json()
+  return response.json();
 }
 
 async function fetchUser(id) {
-  const response = await fetch(`${API_URL}/members/${id}`)
+  const response = await fetch(`${API_URL}/members/${id}`);
   if (!response.ok) {
-    throw new Error(response.statusText)
+    throw new Error(response.statusText);
   }
-  return response.json()
+  return response.json();
 }
 
 async function createUser(userData) {
   const response = await fetch(`${API_URL}/members`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(userData),
-  })
+  });
   if (!response.ok) {
-    throw new Error(response.statusText)
+    throw new Error(response.statusText);
   }
-  return response.json()
+  return response.json();
 }
 
 async function updateUser(id, userData) {
   const response = await fetch(`${API_URL}/members/${id}`, {
-    method: 'PUT',
+    method: "PUT",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(userData),
-  })
+  });
   if (!response.ok) {
-    throw new Error(response.statusText)
+    throw new Error(response.statusText);
   }
-  return response.json()
+  return response.json();
 }
 
 //UNSAFE MAYBE???
 async function updateUserPresident(id, postData) {
   const response = await fetch(`${API_URL}/members/${id}`, {
-    method: 'PUT',
+    method: "PUT",
     headers: {
-      'Content-Type': 'application/json',
-      Role: 'president',
+      "Content-Type": "application/json",
+      Role: "president",
     },
     body: JSON.stringify(postData),
-  })
+  });
   if (!response.ok) {
-    throw new Error(response.statusText)
+    throw new Error(response.statusText);
   }
-  return response.json()
+  return response.json();
 }
 
 async function deleteUser(id) {
   const response = await fetch(`${API_URL}/members/${id}`, {
-    method: 'DELETE',
-  })
+    method: "DELETE",
+  });
 
   if (!response.ok) {
-    throw new Error(response.statusText)
+    throw new Error(response.statusText);
   }
 
   if (response.status === 204) {
-    return null
+    return null;
   }
-  return response.json()
+  return response.json();
 }
 
 export {
@@ -82,4 +82,4 @@ export {
   fetchUser,
   updateUser,
   updateUserPresident,
-}
+};

@@ -1,84 +1,79 @@
-import React, { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { Container, Typography, CircularProgress, Alert } from '@mui/material'
-import { fetchProject, updateProject } from 'services/projectService'
-import ProjectForm from 'components/organisms/ProjectForm/ProjectForm'
+"use client";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Container, Typography, CircularProgress, Alert } from "@mui/material";
+import { fetchProject, updateProject } from "@services/projectService";
+import ProjectForm from "@components/organisms/ProjectForm/ProjectForm";
 
-function ProjectEditTemplate() {
+function ProjectEditTemplate({ params }) {
   const [project, setProject] = useState({
-    title: '',
-    description: '',
+    title: "",
+    description: "",
     date: null,
     pictures: null,
     timeline: null,
-  })
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [formError, setFormError] = useState({ name: false, uin: false })
-  const { id } = useParams()
-  const navigate = useNavigate()
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [formError, setFormError] = useState({ name: false, uin: false });
+
+  const router = useRouter();
+  const { id } = params;
 
   useEffect(() => {
+    if (!id) return;
+
     const fetchCurrentProject = async () => {
       try {
-        const json = await fetchProject(id)
-        setProject(json)
+        const json = await fetchProject(id);
+        setProject(json);
       } catch (e) {
-        setError(e)
+        setError(e);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchCurrentProject()
-  }, [id])
+    fetchCurrentProject();
+  }, [id]);
 
-  const handleCancel = async (e) => {
-    navigate(`/projects`)
-  }
+  const handleCancel = () => {
+    router.push("/Projects");
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (validateForm()) {
       try {
-        const response = await updateProject(id, project)
-        navigate(`/projects/${response.id}`)
+        const response = await updateProject(id, project);
+        router.push(`/Projects/${response.id}`);
       } catch (e) {
-        setError(e)
+        setError(e);
       }
     }
-  }
+  };
 
   const handleChange = (field, value) => {
     setProject((prevProject) => ({
       ...prevProject,
       [field]: value,
-    }))
-  }
+    }));
+  };
 
   const validateForm = () => {
-    return true
-    // const errors = { name: false, uin: false }
-    // if (user.name.trim() === '') {
-    //   errors.name = true
-    // }
-    // if (isNaN(user.uin)) {
-    //   errors.uin = true
-    // }
-    // setFormError(errors)
-    // return !errors.name && !errors.uin
-  }
+    return true;
+  };
 
   if (loading) {
-    return <CircularProgress role="progressbar" />
+    return <CircularProgress role="progressbar" />;
   }
 
   if (error) {
-    return <Alert severity="error">{error.message}</Alert>
+    return <Alert severity="error">{error.message}</Alert>;
   }
 
   return (
-    <Container maxWidth="sm" sx={{ textAlign: 'center' }}>
+    <Container maxWidth="sm" sx={{ textAlign: "center" }}>
       <Typography variant="h4" component="h1" gutterBottom>
         Edit Project - {project.title}
       </Typography>
@@ -92,7 +87,7 @@ function ProjectEditTemplate() {
         handleCancel={handleCancel}
       />
     </Container>
-  )
+  );
 }
 
-export default ProjectEditTemplate
+export default ProjectEditTemplate;

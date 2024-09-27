@@ -1,4 +1,4 @@
-require 'date'
+require "date"
 
 class Member < ApplicationRecord
     has_many :projects, through: :project_members
@@ -13,7 +13,7 @@ class Member < ApplicationRecord
     validates :uin, presence: true, uniqueness: true
     validates :first_name, :last_name, :major, :year, :phone, :aggie_ring_day, :birthday, :graduation_day, presence: true
     validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
-    validates :tshirt_size, presence: true, inclusion: { in: %w(XS S M L XL XXL), message: "%{value} is not a valid size" }
+    validates :tshirt_size, presence: true, inclusion: { in: %w[XS S M L XL XXL], message: "%{value} is not a valid size" }
 
     def set_default_values
         self.archived ||= false

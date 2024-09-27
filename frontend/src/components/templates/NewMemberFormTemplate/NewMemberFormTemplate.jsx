@@ -1,26 +1,28 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { createUser } from 'services/userService'
-import UserForm from 'components/organisms/UserForm'
-import { Container, Typography } from '@mui/material'
+"use client"; // Ensures this component runs on the client side
+
+import React, { useState } from "react";
+import { useRouter } from "next/navigation"; // Next.js router for navigation
+import { createUser } from "@services/userService"; // Adjust the path to your services
+import UserForm from "@components/organisms/UserForm"; // Adjust the path to your components
+import { Container, Typography } from "@mui/material";
 
 function NewMemberFormTemplate() {
   const [user, setUser] = useState({
-    first_name: '',
-    last_name: '',
+    first_name: "",
+    last_name: "",
     uin: null,
-    major: '',
+    major: "",
     year: null,
-    email: '',
-    phone: '',
-    tshirt_size: '',
+    email: "",
+    phone: "",
+    tshirt_size: "",
     aggie_ring_day: null,
     birthday: null,
     graduation_day: null,
-  })
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [formError, setFormError] = useState({ name: false, uin: false })
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [formError, setFormError] = useState({ name: false, uin: false });
 
   const userData = {
     first_name: user.first_name,
@@ -34,51 +36,52 @@ function NewMemberFormTemplate() {
     aggie_ring_day: user.aggie_ring_day,
     birthday: user.birthday,
     graduation_day: user.graduation_day,
-  }
-  const navigate = useNavigate()
+  };
+
+  const router = useRouter();
 
   const handleCancel = async (e) => {
-    navigate(`/`)
-  }
+    router.push(`/`);
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
     if (validateForm()) {
       try {
-        const response = await createUser(userData)
-        navigate(`/users/${response.uin}`)
+        const response = await createUser(userData);
+        router.push(`/Users/${response.uin}`);
       } catch (e) {
-        setError('Failed to create user.')
+        setError("Failed to create user.");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
-  }
+  };
 
   const handleChange = (field, value) => {
     setUser((prevUser) => ({
       ...prevUser,
       [field]: value,
-    }))
-  }
+    }));
+  };
 
   const validateForm = () => {
-    return true
-    const errors = { name: false, uin: false }
-    if (user.name.trim() === '') {
-      errors.name = true
+    return true;
+    const errors = { name: false, uin: false };
+    if (user.name.trim() === "") {
+      errors.name = true;
     }
     if (isNaN(user.uin)) {
-      errors.uin = true
+      errors.uin = true;
     }
-    setFormError(errors)
-    return !errors.name && !errors.uin
-  }
+    setFormError(errors);
+    return !errors.name && !errors.uin;
+  };
 
   return (
-    <Container maxWidth="sm" sx={{ textAlign: 'center' }}>
+    <Container maxWidth="sm" sx={{ textAlign: "center" }}>
       <Typography variant="h4" component="h1" gutterBottom>
         New Member Form
       </Typography>
@@ -92,7 +95,7 @@ function NewMemberFormTemplate() {
         handleCancel={handleCancel}
       />
     </Container>
-  )
+  );
 }
 
-export default NewMemberFormTemplate
+export default NewMemberFormTemplate;

@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
-import { fetchProject } from 'services/projectService'
-import DeleteProjectDialog from 'components/organisms/DeleteProjectDialog'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import { format } from 'date-fns'
+"use client"; // Marks this component for client-side rendering in Next.js
 
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation"; // Next.js router for navigation
+import { fetchProject } from "@services/projectService"; // Adjust path as needed
+import DeleteProjectDialog from "@components/organisms/DeleteProjectDialog"; // Adjust path as needed
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { format } from "date-fns";
 import {
   Button,
   Container,
@@ -13,57 +14,58 @@ import {
   Alert,
   Box,
   IconButton,
-} from '@mui/material'
+} from "@mui/material";
 
-function ProjectDetailsTemplate() {
+function ProjectDetailsTemplate({ params }) {
   const [project, setProject] = useState({
-    title: '',
-    description: '',
+    title: "",
+    description: "",
     date: null,
     pictures: null,
     timeline: null,
-  })
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [openDialog, setOpenDialog] = useState(false)
-  const navigate = useNavigate()
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
 
-  const { id } = useParams()
+  const router = useRouter(); // Next.js router for navigation
+  const { id } = params; // Destructure project ID from params
 
   useEffect(() => {
     const fetchCurrentProject = async () => {
       try {
-        const json = await fetchProject(id)
-        setProject(json)
-        setLoading(false)
+        const json = await fetchProject(id);
+        setProject(json);
+        setLoading(false);
       } catch (error) {
-        // console.error('Failed to fetch project:', error)
-        setError(error)
-        setLoading(false)
+        setError(error);
+        setLoading(false);
       }
-    }
+    };
 
-    fetchCurrentProject()
-  }, [id])
+    fetchCurrentProject();
+  }, [id]);
 
   const handleOpenDialog = () => {
-    setOpenDialog(true)
-  }
+    setOpenDialog(true);
+  };
 
   const handleCloseDialog = () => {
-    setOpenDialog(false)
-  }
+    setOpenDialog(false);
+  };
 
-  if (loading) return <CircularProgress />
+  if (loading) return <CircularProgress />;
 
   if (error)
-    return <Alert severity="error">Error fetching user: {error.message}</Alert>
+    return (
+      <Alert severity="error">Error fetching project: {error.message}</Alert>
+    );
 
   return (
     <Container maxWidth="sm" sx={{ marginTop: 4 }}>
       {project ? (
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-          <IconButton onClick={() => navigate('/projects')}>
+        <Box sx={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+          <IconButton onClick={() => router.push("/Projects")}>
             <ArrowBackIcon />
           </IconButton>
 
@@ -72,7 +74,7 @@ function ProjectDetailsTemplate() {
               {project.title}
             </Typography>
             <Typography variant="h6">
-              Start Date: {format(new Date(project.date), 'MMMM d, yyyy')}
+              Start Date: {format(new Date(project.date), "MMMM d, yyyy")}
             </Typography>
             <Typography variant="h6">
               Description: {project.description}
@@ -80,7 +82,7 @@ function ProjectDetailsTemplate() {
 
             <Box
               mt={3}
-              sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}
+              sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}
             >
               <Button
                 variant="outlined"
@@ -92,8 +94,7 @@ function ProjectDetailsTemplate() {
               <Button
                 variant="contained"
                 color="primary"
-                component={Link}
-                to={`/projects/${id}/edit`}
+                onClick={() => router.push(`/Projects/${id}/Edit`)}
               >
                 Edit Project
               </Button>
@@ -112,7 +113,7 @@ function ProjectDetailsTemplate() {
         <Typography variant="h6">Project not found</Typography>
       )}
     </Container>
-  )
+  );
 }
 
-export default ProjectDetailsTemplate
+export default ProjectDetailsTemplate;

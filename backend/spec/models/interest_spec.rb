@@ -44,4 +44,3 @@ RSpec.describe Interest, type: :model do
     }
   end
 end
-
