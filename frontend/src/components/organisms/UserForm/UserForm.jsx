@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { TextField, Button, CircularProgress, Alert, Box } from '@mui/material'
 import Autocomplete from '@mui/material/Autocomplete'
 import MenuItem from '@mui/material/MenuItem'
@@ -16,7 +16,10 @@ const UserForm = ({
   onChange,
   onSubmit,
   handleCancel,
+  dietaryRestrictions,
+  handleDietaryRestrictionChange,
 }) => {
+
   return (
     <form onSubmit={onSubmit}>
       <Box
@@ -151,6 +154,16 @@ const UserForm = ({
           helperText={
             formError.graduation_day ? 'Graduation Day is required' : ''
           }
+        />
+
+        <Autocomplete
+          multiple
+          options={dietaryRestrictions}
+          getOptionLabel={(option) => option.item_name} 
+          onChange={handleDietaryRestrictionChange}
+          renderInput={(params) => (
+            <TextField {...params} label="Dietary Restrictions" variant="outlined" />
+          )}
         />
 
         <Box

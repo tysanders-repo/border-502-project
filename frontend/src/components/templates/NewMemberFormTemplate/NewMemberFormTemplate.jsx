@@ -1,10 +1,12 @@
 "use client"; // Ensures this component runs on the client side
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation"; // Next.js router for navigation
 import { createUser } from "@services/userService"; // Adjust the path to your services
 import UserForm from "@components/organisms/UserForm"; // Adjust the path to your components
 import { Container, Typography } from "@mui/material";
+import { fetchAllDietRestrictions } from '@services/dietService'; 
+import { createMemberDiet } from '@services/memberDietService'; 
 
 function NewMemberFormTemplate() {
   const [user, setUser] = useState({
@@ -23,6 +25,25 @@ function NewMemberFormTemplate() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [formError, setFormError] = useState({ name: false, uin: false });
+  const [dietaryRestrictions, setDietaryRestrictions] = useState([]);
+  const [selectedDietaryRestrictions, setSelectedDietaryRestrictions] = useState([]);
+
+  useEffect(() => {
+    const fetchDietaryRestrictions = async () => {
+      try {
+        const restrictions = await fetchAllDietRestrictions();
+        setDietaryRestrictions(restrictions);
+      } catch (error) {
+        console.error('Error fetching dietary restrictions:', error);
+      }
+    };
+
+    fetchDietaryRestrictions();
+  }, []);
+
+  const handleDietaryRestrictionChange = (event, newValue) => {
+    setSelectedDietaryRestrictions(newValue);
+  };
 
   const userData = {
     first_name: user.first_name,
@@ -93,6 +114,8 @@ function NewMemberFormTemplate() {
         onChange={handleChange}
         onSubmit={handleSubmit}
         handleCancel={handleCancel}
+        dietaryRestrictions={dietaryRestrictions}
+        handleDietaryRestrictionChange={handleDietaryRestrictionChange}
       />
     </Container>
   );
