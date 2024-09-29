@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import UserForm from "@components/organisms/UserForm";
 import { Container, Typography } from "@mui/material";
 import { fetchUser, updateUser } from "@services/userService";
+import { fetchAllDietRestrictions } from '@services/dietService'; 
+import { createMemberDiet, getMemberDiet } from '@services/memberDietService'; 
 
 function UserEditTemplate({ params }) {
   const [user, setUser] = useState({
@@ -22,6 +24,8 @@ function UserEditTemplate({ params }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [formError, setFormError] = useState({ name: false, uin: false });
+  const [dietaryRestrictions, setDietaryRestrictions] = useState([]);
+  const [selectedDietaryRestrictions, setSelectedDietaryRestrictions] = useState([]);
 
   const router = useRouter();
   const { id } = params;
@@ -30,8 +34,16 @@ function UserEditTemplate({ params }) {
     if (!id) return; // Don't run the effect if id is not available
     const fetchCurrentUser = async () => {
       try {
-        const json = await fetchUser(id);
-        setUser(json);
+        const userData = await fetchUser(id);
+        setUser(userData);
+
+        // Fetch all dietary restrictions
+        const restrictions = await fetchAllDietRestrictions();
+        setDietaryRestrictions(restrictions);
+
+        // Fetch current user's dietary restrictions
+        const currentRestrictions = await getMemberDiet(userData.uin);
+        setSelectedDietaryRestrictions(currentRestrictions); 
       } catch (e) {
         setError(e);
       } finally {
@@ -41,6 +53,10 @@ function UserEditTemplate({ params }) {
 
     fetchCurrentUser();
   }, [id]);
+
+  const handleDietaryRestrictionChange = (event, newValue) => {
+    setSelectedDietaryRestrictions(newValue);
+  };
 
   const handleCancel = () => {
     router.push(`/Users`);
@@ -89,6 +105,10 @@ function UserEditTemplate({ params }) {
       <Typography variant="h4" component="h1" gutterBottom>
         Edit User - {user.first_name} {user.last_name}
       </Typography>
+      <div>
+        {console.log(selectedDietaryRestrictions)} {/* This will log the state value in the console */}
+        <h1>{selectedDietaryRestrictions}</h1>
+      </div>
       <UserForm
         user={user}
         loading={loading}
@@ -97,6 +117,8 @@ function UserEditTemplate({ params }) {
         onChange={handleChange}
         onSubmit={handleSubmit}
         handleCancel={handleCancel}
+        dietaryRestrictions={dietaryRestrictions}
+        handleDietaryRestrictionChange={handleDietaryRestrictionChange}
       />
     </Container>
   );

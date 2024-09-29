@@ -13,6 +13,18 @@ class MemberDietsController < ApplicationController
     render json: @member_diet
   end
 
+  def by_uin
+    @member_diets = MemberDiet.joins(:dietary_restriction)
+    .select('member_diets.id, member_diets.uin, member_diets.item_id, dietary_restrictions.item_name')
+    .where(uin: params[:uin])
+    
+    if @member_diets.present?
+      render json: @member_diets
+    else
+      render json: { error: 'No member diets found for the specified UIN' }, status: :not_found
+    end
+  end
+
   # POST /member_diets
   def create
     @member_diet = MemberDiet.new(member_diet_params)
