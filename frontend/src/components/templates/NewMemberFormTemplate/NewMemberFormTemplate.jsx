@@ -72,6 +72,10 @@ function NewMemberFormTemplate() {
     if (validateForm()) {
       try {
         const response = await createUser(userData);
+
+        for (const restriction of selectedDietaryRestrictions) {
+          await createMemberDiet({ uin: response.uin, item_id: restriction.id}); 
+        }
         router.push(`/Users/${response.uin}`);
       } catch (e) {
         setError("Failed to create user.");
