@@ -15,6 +15,8 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
 import { useTheme } from "@mui/material/styles";
+import { signedIn, deleteCookie } from "@services/authService"
+import { signIn, signOut } from "next-auth/react"
 
 export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -53,6 +55,30 @@ export default function Navbar() {
       </List>
     </Drawer>
   );
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false); 
+  const handleGoogleSignInAndOut = async () => {
+    setIsLoading(true);
+    try {
+        const signedin = await signedIn();
+        //if(signedin){console.log("Signed in");}else{console.log("Signed out");}
+        signedin ? 
+        await signOut('google', { redirectTo: "/" }) : 
+        await signIn('google', { redirectTo: "/" });
+    } catch (error) {
+        console.error('Google error:', error);
+    } finally {
+        setIsLoading(false);
+        await deleteCookie();
+    }
+  };
+  //Very janky but works for now...
+  const setSignInStatus = async () => {
+    const signedin = await signedIn();
+    setIsSignedIn(signedin);
+  }
+  setSignInStatus();
 
   return (
     <AppBar position="static" style={{ marginBottom: "30px", padding: "10px" }}>
@@ -105,6 +131,19 @@ export default function Navbar() {
               >
                 New Member?
               </Button>
+              <Button
+                    variant="outline"
+                    onClick={handleGoogleSignInAndOut}
+                    color="inherit"
+                    disabled={isLoading}
+                  >
+                      {isLoading ? 
+                        (isSignedIn ? "Signing out..."
+                          : "Signing in...")
+                        : (isSignedIn ? "Sign out"
+                          : "Sign in")
+                      }
+                  </Button>
             </Box>
           )}
         </Box>
