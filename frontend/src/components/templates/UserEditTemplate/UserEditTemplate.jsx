@@ -105,10 +105,6 @@ function UserEditTemplate({ params }) {
       <Typography variant="h4" component="h1" gutterBottom>
         Edit User - {user.first_name} {user.last_name}
       </Typography>
-      <div>
-        {console.log(selectedDietaryRestrictions)} {/* This will log the state value in the console */}
-        <h1>{selectedDietaryRestrictions}</h1>
-      </div>
       <UserForm
         user={user}
         loading={loading}

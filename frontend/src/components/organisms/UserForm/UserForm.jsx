@@ -157,9 +157,10 @@ const UserForm = ({
         />
 
         <Autocomplete
+          freeSolo
           multiple
           options={dietaryRestrictions}
-          getOptionLabel={(option) => option.item_name} 
+          getOptionLabel={(option) => option.item_name || option} // Allowing for free solo input
           onChange={handleDietaryRestrictionChange}
           renderInput={(params) => (
             <TextField {...params} label="Dietary Restrictions" variant="outlined" />

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"; // Next.js router for navigation
 import { createUser } from "@services/userService"; // Adjust the path to your services
 import UserForm from "@components/organisms/UserForm"; // Adjust the path to your components
 import { Container, Typography } from "@mui/material";
-import { fetchAllDietRestrictions } from '@services/dietService'; 
+import { fetchAllDietRestrictions, createDietaryRestriction } from '@services/dietService'; 
 import { createMemberDiet } from '@services/memberDietService'; 
 
 function NewMemberFormTemplate() {
@@ -41,9 +41,29 @@ function NewMemberFormTemplate() {
     fetchDietaryRestrictions();
   }, []);
 
-  const handleDietaryRestrictionChange = (event, newValue) => {
+  const handleDietaryRestrictionChange = async (event, newValue) => { // Marked as async
+    const lastValue = newValue[newValue.length - 1]; 
+  
+    if (typeof lastValue === 'string') {
+      const existingRestriction = dietaryRestrictions.find((restriction) => 
+        restriction.item_name.toLowerCase() === lastValue.toLowerCase()
+      );
+  
+      if (!existingRestriction) {
+        const newRestriction = await createDietaryRestriction({ item_name: lastValue });
+        setSelectedDietaryRestrictions((prev) => [...prev, newRestriction]); 
+        try {
+          const restrictions = await fetchAllDietRestrictions();
+          setDietaryRestrictions(restrictions);
+        } catch (error) {
+          console.error('Error fetching dietary restrictions:', error);
+        }
+        return;
+      }
+    }
+    
     setSelectedDietaryRestrictions(newValue);
-  };
+  };  
 
   const userData = {
     first_name: user.first_name,
@@ -121,6 +141,12 @@ function NewMemberFormTemplate() {
         dietaryRestrictions={dietaryRestrictions}
         handleDietaryRestrictionChange={handleDietaryRestrictionChange}
       />
+        <Typography variant="h6">Selected Dietary Restrictions:</Typography>
+        <ul>
+          {selectedDietaryRestrictions.map((restriction, index) => (
+            <li key={index}>{restriction.item_name}</li>
+          ))}
+        </ul>
     </Container>
   );
 }
