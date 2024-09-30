@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation"; // Next.js router for navigation
-import { createUser } from "@services/userService"; // Adjust the path to your services
+import { createUser, deleteUser } from "@services/userService"; // Adjust the path to your services
 import UserForm from "@components/organisms/UserForm"; // Adjust the path to your components
 import { Container, Typography } from "@mui/material";
 import { fetchAllDietRestrictions, createDietaryRestriction } from '@services/dietService'; 
@@ -41,27 +41,7 @@ function NewMemberFormTemplate() {
     fetchDietaryRestrictions();
   }, []);
 
-  const handleDietaryRestrictionChange = async (event, newValue) => { // Marked as async
-    const lastValue = newValue[newValue.length - 1]; 
-  
-    if (typeof lastValue === 'string') {
-      const existingRestriction = dietaryRestrictions.find((restriction) => 
-        restriction.item_name.toLowerCase() === lastValue.toLowerCase()
-      );
-  
-      if (!existingRestriction) {
-        const newRestriction = await createDietaryRestriction({ item_name: lastValue });
-        setSelectedDietaryRestrictions((prev) => [...prev, newRestriction]); 
-        try {
-          const restrictions = await fetchAllDietRestrictions();
-          setDietaryRestrictions(restrictions);
-        } catch (error) {
-          console.error('Error fetching dietary restrictions:', error);
-        }
-        return;
-      }
-    }
-    
+  const handleDietaryRestrictionChange = async (event, newValue) => { 
     setSelectedDietaryRestrictions(newValue);
   };  
 
@@ -91,14 +71,25 @@ function NewMemberFormTemplate() {
     setError(null);
     if (validateForm()) {
       try {
-        const response = await createUser(userData);
+        const newUser = await createUser(userData);
 
-        for (const restriction of selectedDietaryRestrictions) {
-          await createMemberDiet({ uin: response.uin, item_id: restriction.id}); 
+        try{
+          for (const restriction of selectedDietaryRestrictions) {
+            let restrictionObject;
+            if (typeof restriction === 'string') {
+              restrictionObject = await createDietaryRestriction({ item_name: restriction });
+            } else {
+              restrictionObject = restriction;
+            }
+            await createMemberDiet({ uin: newUser.uin, item_id: restrictionObject.id}); 
+          }
         }
-        router.push(`/Users/${response.uin}`);
+        catch (e){
+          setError("failed to add diets")
+        }
+        router.push(`/Users/${newUser.uin}`);
       } catch (e) {
-        setError("Failed to create user.");
+        setError("Failed to submit form")
       } finally {
         setLoading(false);
       }
@@ -123,6 +114,7 @@ function NewMemberFormTemplate() {
     }
     setFormError(errors);
     return !errors.name && !errors.uin;
+    //ensure that dietary restrictions are all alphabetical
   };
 
   return (
@@ -144,9 +136,15 @@ function NewMemberFormTemplate() {
         <Typography variant="h6">Selected Dietary Restrictions:</Typography>
         <ul>
           {selectedDietaryRestrictions.map((restriction, index) => (
-            <li key={index}>{restriction.item_name}</li>
+            <li key={index}>
+              {restriction.item_name || restriction}
+              {restriction.type && ` (${restriction.type})`}
+            </li>
           ))}
         </ul>
+        {error && (
+          <Typography color="error">{error}</Typography>
+      )}
     </Container>
   );
 }
