@@ -77,10 +77,19 @@ function NewMemberFormTemplate() {
           for (const restriction of selectedDietaryRestrictions) {
             let restrictionObject;
             if (typeof restriction === 'string') {
-              restrictionObject = await createDietaryRestriction({ item_name: restriction });
+              const existingRestriction = dietaryRestrictions.find((restrictions) => 
+                restrictions.item_name.toLowerCase() === restriction.toLowerCase()
+              );
+              if(!existingRestriction){
+                restrictionObject = await createDietaryRestriction({ item_name: restriction });
+              }
+              else{
+                restrictionObject = existingRestriction;
+              }
             } else {
               restrictionObject = restriction;
             }
+            //only create member diet if it doesnt already exist
             await createMemberDiet({ uin: newUser.uin, item_id: restrictionObject.id}); 
           }
         }
