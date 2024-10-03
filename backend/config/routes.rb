@@ -12,7 +12,9 @@ Rails.application.routes.draw do
 
   resources :member_diets do
     collection do
+      get 'exists/:uin/:item_id', to: 'member_diets#exists', as: 'exists'
       get 'uin/:uin', to: 'member_diets#by_uin', as: 'by_uin'
+      delete 'uin/:uin', to: 'member_diets#delete_by_uin', as: 'delete_by_uin'
     end
   end
 

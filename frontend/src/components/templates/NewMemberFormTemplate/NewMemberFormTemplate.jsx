@@ -6,7 +6,7 @@ import { createUser, deleteUser } from "@services/userService"; // Adjust the pa
 import UserForm from "@components/organisms/UserForm"; // Adjust the path to your components
 import { Container, Typography } from "@mui/material";
 import { fetchAllDietRestrictions, createDietaryRestriction } from '@services/dietService'; 
-import { createMemberDiet } from '@services/memberDietService'; 
+import { createMemberDiet, checkMemberDietExists } from '@services/memberDietService'; 
 
 function NewMemberFormTemplate() {
   const [user, setUser] = useState({
@@ -90,11 +90,16 @@ function NewMemberFormTemplate() {
               restrictionObject = restriction;
             }
             //only create member diet if it doesnt already exist
-            await createMemberDiet({ uin: newUser.uin, item_id: restrictionObject.id}); 
+            const exist_response = await checkMemberDietExists(newUser.uin, restrictionObject.id);
+            console.log('Existence check response:', exist_response);
+            
+            if (!exist_response){
+              await createMemberDiet({ uin: newUser.uin, item_id: restrictionObject.id}); 
+            }
           }
         }
         catch (e){
-          setError("failed to add diets")
+          setError("failed to add diets");
         }
         router.push(`/Users/${newUser.uin}`);
       } catch (e) {
@@ -141,19 +146,8 @@ function NewMemberFormTemplate() {
         handleCancel={handleCancel}
         dietaryRestrictions={dietaryRestrictions}
         handleDietaryRestrictionChange={handleDietaryRestrictionChange}
+        selectedDietaryRestrictions={selectedDietaryRestrictions}
       />
-        <Typography variant="h6">Selected Dietary Restrictions:</Typography>
-        <ul>
-          {selectedDietaryRestrictions.map((restriction, index) => (
-            <li key={index}>
-              {restriction.item_name || restriction}
-              {restriction.type && ` (${restriction.type})`}
-            </li>
-          ))}
-        </ul>
-        {error && (
-          <Typography color="error">{error}</Typography>
-      )}
     </Container>
   );
 }

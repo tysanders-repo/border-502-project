@@ -25,6 +25,27 @@ class MemberDietsController < ApplicationController
     end
   end
 
+  def delete_by_uin
+    @member_diets = MemberDiet.where(uin: params[:uin])
+  
+    if @member_diets.present?
+      @member_diets.destroy_all
+      render json: { message: 'All member diets for the specified UIN have been deleted' }, status: :ok
+    else
+      render json: { error: 'No member diets found for the specified UIN' }, status: :not_found
+    end
+  end
+
+  def exists
+    @member_diet = MemberDiet.find_by(uin: params[:uin], item_id: params[:item_id])
+  
+    if @member_diet
+      render json: { exists: true }, status: :ok
+    else
+      render json: { exists: false }, status: :ok
+    end
+  end
+
   # POST /member_diets
   def create
     @member_diet = MemberDiet.new(member_diet_params)

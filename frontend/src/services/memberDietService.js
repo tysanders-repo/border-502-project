@@ -18,7 +18,7 @@ async function createMemberDiet(memberDietData) {
 //get diet for a specific member
 async function getMemberDiet(uin) {
   try {
-    const response = await fetch(`/member_diets/uin/${uin}`, {
+    const response = await fetch(`${API_URL}/member_diets/uin/${uin}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -37,9 +37,57 @@ async function getMemberDiet(uin) {
   }
 }
 
+// delete all associations with member
+const deleteMemberDietsByUin = async (uin) => {
+  try {
+    const response = await fetch(`${API_URL}/member_diets/uin/${uin}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Success:', data);
+      // Handle success response (e.g., display a success message)
+    } else {
+      const errorData = await response.json();
+      console.error('Error:', errorData);
+      // Handle error response (e.g., display an error message)
+    }
+  } catch (error) {
+    console.error('Request failed:', error);
+    // Handle network or other errors
+  }
+};
+
+const checkMemberDietExists = async (uin, itemId) => {
+  try {
+    const response = await fetch(`${API_URL}/member_diets/exists/${uin}/${itemId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Exists:', data.exists);
+      return data.exists; // returns true or false
+    } else {
+      const errorData = await response.json();
+      console.error('Error:', errorData);
+    }
+  } catch (error) {
+    console.error('Request failed:', error);
+  }
+};
+
+
 // Delete Association
-async function deleteMemberDiet(id) {
-  const response = await fetch(`${API_URL}/member_diets/${id}`, {
+async function deleteMemberDiet(uin) {
+  const response = await fetch(`${API_URL}/member_diets/${uin}`, {
     method: "DELETE",
   });
 
@@ -57,4 +105,6 @@ export {
     createMemberDiet,
     deleteMemberDiet,
     getMemberDiet,
+    deleteMemberDietsByUin,
+    checkMemberDietExists,
 };

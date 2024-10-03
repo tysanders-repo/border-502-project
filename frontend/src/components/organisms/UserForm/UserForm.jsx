@@ -18,6 +18,7 @@ const UserForm = ({
   handleCancel,
   dietaryRestrictions,
   handleDietaryRestrictionChange,
+  selectedDietaryRestrictions,
 }) => {
 
   return (
@@ -159,6 +160,7 @@ const UserForm = ({
         <Autocomplete
           freeSolo
           multiple
+          value = {selectedDietaryRestrictions}
           options={dietaryRestrictions}
           getOptionLabel={(option) => option.item_name || option} // Allowing for free solo input
           onChange={handleDietaryRestrictionChange}

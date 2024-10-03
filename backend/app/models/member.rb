@@ -12,7 +12,7 @@ class Member < ApplicationRecord
 
     validates :uin, presence: true, uniqueness: true
     validates :first_name, :last_name, :major, :year, :phone, :aggie_ring_day, :birthday, :graduation_day, presence: true
-    validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+    validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
     validates :tshirt_size, presence: true, inclusion: { in: %w[XS S M L XL XXL], message: "%{value} is not a valid size" }
 
     def set_default_values
