@@ -6,9 +6,7 @@ Rails.application.routes.draw do
   resources :project_members
   resources :projects
   resources :members, param: :uin
-  namespace :api do
-    resources :users
-  end
+  resources :users
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
