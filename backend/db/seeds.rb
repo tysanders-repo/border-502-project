@@ -98,6 +98,13 @@ Member.create!(
   accomplishments: { "projects" => "Built smart home system", "awards" => "Innovation Award" }
 )
 
+DietaryRestriction.create!(
+  item_name: "peanuts"
+)
+
+DietaryRestriction.create!(
+  item_name: "dairy"
+)
 
 
 

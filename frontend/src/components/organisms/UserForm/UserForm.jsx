@@ -16,7 +16,11 @@ const UserForm = ({
   onChange,
   onSubmit,
   handleCancel,
+  dietaryRestrictions,
+  handleDietaryRestrictionChange,
+  selectedDietaryRestrictions,
 }) => {
+
   return (
     <form onSubmit={onSubmit}>
       <Box
@@ -151,6 +155,18 @@ const UserForm = ({
           helperText={
             formError.graduation_day ? 'Graduation Day is required' : ''
           }
+        />
+
+        <Autocomplete
+          freeSolo
+          multiple
+          value = {selectedDietaryRestrictions}
+          options={dietaryRestrictions}
+          getOptionLabel={(option) => option.item_name || option} // Allowing for free solo input
+          onChange={handleDietaryRestrictionChange}
+          renderInput={(params) => (
+            <TextField {...params} label="Dietary Restrictions" variant="outlined" />
+          )}
         />
 
         <Box

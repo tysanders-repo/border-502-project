@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import UserForm from "@components/organisms/UserForm";
 import { Container, Typography } from "@mui/material";
 import { fetchUser, updateUser } from "@services/userService";
+import { fetchAllDietRestrictions, createDietaryRestriction } from '@services/dietService'; 
+import { createMemberDiet, getMemberDiet, deleteMemberDietsByUin, checkMemberDietExists } from '@services/memberDietService'; 
 
 function UserEditTemplate({ params }) {
   const [user, setUser] = useState({
@@ -22,6 +24,8 @@ function UserEditTemplate({ params }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [formError, setFormError] = useState({ name: false, uin: false });
+  const [dietaryRestrictions, setDietaryRestrictions] = useState([]);
+  const [selectedDietaryRestrictions, setSelectedDietaryRestrictions] = useState([]);
 
   const router = useRouter();
   const { id } = params;
@@ -30,8 +34,22 @@ function UserEditTemplate({ params }) {
     if (!id) return; // Don't run the effect if id is not available
     const fetchCurrentUser = async () => {
       try {
-        const json = await fetchUser(id);
-        setUser(json);
+        const userData = await fetchUser(id);
+        setUser(userData);
+
+        // Fetch all dietary restrictions
+        const restrictions = await fetchAllDietRestrictions();
+        setDietaryRestrictions(restrictions);
+
+        const currentRestrictions = await getMemberDiet(userData.uin);
+
+        if (currentRestrictions){
+          const mappedRestrictions = currentRestrictions.map(restriction => ({
+            id: restriction.item_id,
+            item_name: restriction.item_name
+          }));
+          setSelectedDietaryRestrictions(mappedRestrictions); 
+        }
       } catch (e) {
         setError(e);
       } finally {
@@ -41,6 +59,10 @@ function UserEditTemplate({ params }) {
 
     fetchCurrentUser();
   }, [id]);
+
+  const handleDietaryRestrictionChange = (event, newValue) => {
+    setSelectedDietaryRestrictions(newValue);
+  };
 
   const handleCancel = () => {
     router.push(`/Users`);
@@ -64,6 +86,36 @@ function UserEditTemplate({ params }) {
       };
       try {
         const response = await updateUser(id, updatedUser);
+
+        const delResponse = await deleteMemberDietsByUin(response.uin);
+        try{
+          for (const restriction of selectedDietaryRestrictions) {
+            let restrictionObject;
+            if (typeof restriction === 'string') {
+              const existingRestriction = dietaryRestrictions.find((restrictions) => 
+                restrictions.item_name.toLowerCase() === restriction.toLowerCase()
+              );
+              if(!existingRestriction){
+                restrictionObject = await createDietaryRestriction({ item_name: restriction });
+              }
+              else{
+                restrictionObject = existingRestriction;
+              }
+            } else {
+              restrictionObject = restriction;
+            }
+            //only create member diet if it doesnt already exist
+            const exist_response = await checkMemberDietExists(response.uin, restrictionObject.id);
+            console.log('Existence check response:', exist_response);
+            
+            if (!exist_response){
+              await createMemberDiet({ uin: response.uin, item_id: restrictionObject.id}); 
+            }
+          }
+        }
+        catch (e){
+          setError("failed to add diets");
+        }
         console.log(response);
         router.push(`/Users/${response.uin}`);
       } catch (e) {
@@ -97,6 +149,9 @@ function UserEditTemplate({ params }) {
         onChange={handleChange}
         onSubmit={handleSubmit}
         handleCancel={handleCancel}
+        dietaryRestrictions={dietaryRestrictions}
+        handleDietaryRestrictionChange={handleDietaryRestrictionChange}
+        selectedDietaryRestrictions={selectedDietaryRestrictions}
       />
     </Container>
   );

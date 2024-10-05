@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000";
+import { API_URL } from '../constants';
 
 async function fetchAllUsers() {
   const response = await fetch(`${API_URL}/members`);

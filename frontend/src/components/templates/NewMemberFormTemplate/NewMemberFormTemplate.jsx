@@ -1,10 +1,12 @@
 "use client"; // Ensures this component runs on the client side
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation"; // Next.js router for navigation
-import { createUser } from "@services/userService"; // Adjust the path to your services
+import { createUser, deleteUser } from "@services/userService"; // Adjust the path to your services
 import UserForm from "@components/organisms/UserForm"; // Adjust the path to your components
 import { Container, Typography } from "@mui/material";
+import { fetchAllDietRestrictions, createDietaryRestriction } from '@services/dietService'; 
+import { createMemberDiet, checkMemberDietExists } from '@services/memberDietService'; 
 
 function NewMemberFormTemplate() {
   const [user, setUser] = useState({
@@ -23,6 +25,25 @@ function NewMemberFormTemplate() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [formError, setFormError] = useState({ name: false, uin: false });
+  const [dietaryRestrictions, setDietaryRestrictions] = useState([]);
+  const [selectedDietaryRestrictions, setSelectedDietaryRestrictions] = useState([]);
+
+  useEffect(() => {
+    const fetchDietaryRestrictions = async () => {
+      try {
+        const restrictions = await fetchAllDietRestrictions();
+        setDietaryRestrictions(restrictions);
+      } catch (error) {
+        console.error('Error fetching dietary restrictions:', error);
+      }
+    };
+
+    fetchDietaryRestrictions();
+  }, []);
+
+  const handleDietaryRestrictionChange = async (event, newValue) => { 
+    setSelectedDietaryRestrictions(newValue);
+  };  
 
   const userData = {
     first_name: user.first_name,
@@ -50,10 +71,39 @@ function NewMemberFormTemplate() {
     setError(null);
     if (validateForm()) {
       try {
-        const response = await createUser(userData);
-        router.push(`/Users/${response.uin}`);
+        const newUser = await createUser(userData);
+
+        try{
+          for (const restriction of selectedDietaryRestrictions) {
+            let restrictionObject;
+            if (typeof restriction === 'string') {
+              const existingRestriction = dietaryRestrictions.find((restrictions) => 
+                restrictions.item_name.toLowerCase() === restriction.toLowerCase()
+              );
+              if(!existingRestriction){
+                restrictionObject = await createDietaryRestriction({ item_name: restriction });
+              }
+              else{
+                restrictionObject = existingRestriction;
+              }
+            } else {
+              restrictionObject = restriction;
+            }
+            //only create member diet if it doesnt already exist
+            const exist_response = await checkMemberDietExists(newUser.uin, restrictionObject.id);
+            console.log('Existence check response:', exist_response);
+            
+            if (!exist_response){
+              await createMemberDiet({ uin: newUser.uin, item_id: restrictionObject.id}); 
+            }
+          }
+        }
+        catch (e){
+          setError("failed to add diets");
+        }
+        router.push(`/Users/${newUser.uin}`);
       } catch (e) {
-        setError("Failed to create user.");
+        setError("Failed to submit form")
       } finally {
         setLoading(false);
       }
@@ -78,6 +128,7 @@ function NewMemberFormTemplate() {
     }
     setFormError(errors);
     return !errors.name && !errors.uin;
+    //ensure that dietary restrictions are all alphabetical
   };
 
   return (
@@ -93,6 +144,9 @@ function NewMemberFormTemplate() {
         onChange={handleChange}
         onSubmit={handleSubmit}
         handleCancel={handleCancel}
+        dietaryRestrictions={dietaryRestrictions}
+        handleDietaryRestrictionChange={handleDietaryRestrictionChange}
+        selectedDietaryRestrictions={selectedDietaryRestrictions}
       />
     </Container>
   );

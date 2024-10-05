@@ -10,6 +10,14 @@ Rails.application.routes.draw do
     resources :users
   end
 
+  resources :member_diets do
+    collection do
+      get 'exists/:uin/:item_id', to: 'member_diets#exists', as: 'exists'
+      get 'uin/:uin', to: 'member_diets#by_uin', as: 'by_uin'
+      delete 'uin/:uin', to: 'member_diets#delete_by_uin', as: 'delete_by_uin'
+    end
+  end
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
