@@ -1,6 +1,6 @@
 class MembersController < ApplicationController
   before_action :set_member, only: %i[ show update destroy ]
-
+  skip_before_action :authenticate_request, only: [:create]
   # GET /members
   def index
     @members = Member.all
@@ -44,6 +44,11 @@ class MembersController < ApplicationController
     end
   end
 
+  # GET /member/role
+  def role
+    # puts @current_member.email
+    render json: @current_member
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

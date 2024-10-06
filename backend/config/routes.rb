@@ -9,6 +9,8 @@ Rails.application.routes.draw do
   namespace :api do
     resources :users
   end
+  # Member role route, just retunrs the user's info with an email instead of uin
+  get '/member/role', to: 'members#role'
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
