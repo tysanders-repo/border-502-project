@@ -17,12 +17,15 @@ async function fetchProject(id) {
 }
 
 async function createProject(projectData) {
+  const token = cookies().get("next-auth.session-token")?.value
   const response = await fetch(`${API_URL}/projects`, {
     method: "POST",
     headers: {
+      'Authentication': `${token}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(projectData),
+    cache: 'no-cache',
   });
   if (!response.ok) {
     throw new Error(response.statusText);
@@ -31,12 +34,15 @@ async function createProject(projectData) {
 }
 
 async function updateProject(id, projectData) {
+  const token = cookies().get("next-auth.session-token")?.value
   const response = await fetch(`${API_URL}/projects/${id}`, {
     method: "PUT",
     headers: {
+      'Authentication': `${token}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(projectData),
+    cache: 'no-cache',
   });
   if (!response.ok) {
     throw new Error(response.statusText);
@@ -47,6 +53,10 @@ async function updateProject(id, projectData) {
 async function deleteProject(id) {
   const response = await fetch(`${API_URL}/projects/${id}`, {
     method: "DELETE",
+    headers: {
+      'Authentication': `${token}`,
+    },
+    cache: 'no-cache',
   });
 
   if (!response.ok) {

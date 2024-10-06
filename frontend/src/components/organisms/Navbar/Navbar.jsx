@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -15,8 +15,8 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
 import { useTheme } from "@mui/material/styles";
-import { signedIn, deleteCookie } from "@services/authService"
-import { signIn, signOut } from "next-auth/react"
+import { signedIn, setUserInfo, getUserRole, deleteUserInfo, getUserUIN } from "@services/authService";
+import { signIn, signOut } from "next-auth/react";
 
 export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -58,27 +58,40 @@ export default function Navbar() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false); 
+  // Determines whether to sign in or out
   const handleGoogleSignInAndOut = async () => {
     setIsLoading(true);
+    const signedin = await signedIn();
     try {
-        const signedin = await signedIn();
-        //if(signedin){console.log("Signed in");}else{console.log("Signed out");}
+        if(signedin)
+          await deleteUserInfo()
         signedin ? 
-        await signOut('google', { redirectTo: "/" }) : 
-        await signIn('google', { redirectTo: "/" });
+        signOut('google') : 
+        signIn('google', { redirectTo: "/" });
     } catch (error) {
         console.error('Google error:', error);
     } finally {
-        setIsLoading(false);
-        await deleteCookie();
+        // setIsLoading(false);
+        // console.log("This should print out");
+        // redirect("/");
     }
   };
-  //Very janky but works for now...
-  const setSignInStatus = async () => {
-    const signedin = await signedIn();
-    setIsSignedIn(signedin);
-  }
-  setSignInStatus();
+  // Sets up user info, if available
+  useEffect(() => {
+    const setup = async () => {
+      const signedin = await signedIn()
+      setIsSignedIn(signedin)
+      if(signedin){
+        await setUserInfo()
+        const role = await getUserRole()
+        const uin = await getUserUIN()
+        console.log(role)
+        console.log(uin)
+      }
+    }
+
+    setup()
+  }, [])
 
   return (
     <AppBar position="static" style={{ marginBottom: "30px", padding: "10px" }}>
@@ -137,11 +150,8 @@ export default function Navbar() {
                     color="inherit"
                     disabled={isLoading}
                   >
-                      {isLoading ? 
-                        (isSignedIn ? "Signing out..."
-                          : "Signing in...")
-                        : (isSignedIn ? "Sign out"
-                          : "Sign in")
+                      {isLoading ? "Loading..." : 
+                      (isSignedIn ? "Sign out" : "Sign in")
                       }
                   </Button>
             </Box>
