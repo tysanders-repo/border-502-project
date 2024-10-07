@@ -4,9 +4,11 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation"; // Next.js router for navigation
 import { createUser, deleteUser } from "@services/userService"; // Adjust the path to your services
 import UserForm from "@components/organisms/UserForm"; // Adjust the path to your components
-import { Container, Typography } from "@mui/material";
+import { CircularProgress, Container, Typography } from "@mui/material";
 import { fetchAllDietRestrictions, createDietaryRestriction } from '@services/dietService'; 
 import { createMemberDiet, checkMemberDietExists } from '@services/memberDietService'; 
+import { fetchAllCareerInterests, fetchAllCompanyInterests, fetchAllPersonalInterests, createInterest } from "@services/interestService";
+import { createMemberInterest, checkMemberInterestExists } from "@services/memberInterestService";
 
 function NewMemberFormTemplate() {
   const [user, setUser] = useState({
@@ -22,11 +24,17 @@ function NewMemberFormTemplate() {
     birthday: null,
     graduation_day: null,
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [formError, setFormError] = useState({ name: false, uin: false });
   const [dietaryRestrictions, setDietaryRestrictions] = useState([]);
   const [selectedDietaryRestrictions, setSelectedDietaryRestrictions] = useState([]);
+  const [personalInterests, setPersonalInterests] = useState([]);
+  const [selectedPersonalInterests, setSelectedPersonalInterests] = useState([]);
+  // const [companyInterests, setCompanyInterests] = useState([]);
+  // const [selectedCompanyInterests, setSelectedCompanyInterests] = useState([]);
+  // const [careerInterests, setCareerInterests] = useState([]);
+  // const [selectedCareerInterests, setSelectedCareerInterests] = useState([]);
 
   useEffect(() => {
     const fetchDietaryRestrictions = async () => {
@@ -38,12 +46,31 @@ function NewMemberFormTemplate() {
       }
     };
 
-    fetchDietaryRestrictions();
+    const fetchPersonalInterests = async () => {
+      try {
+        const restrictions = await fetchAllPersonalInterests();
+        setPersonalInterests(restrictions);
+      } catch (error) {
+        console.error('Error fetching personal interests:', error);
+      }
+    };
+
+    const fetchData = async () => {
+      await Promise.all([fetchDietaryRestrictions(), fetchPersonalInterests()]);
+      setLoading(false); // Set loading to false once all data is fetched
+    };
+
+    fetchData();
   }, []);
+
 
   const handleDietaryRestrictionChange = async (event, newValue) => { 
     setSelectedDietaryRestrictions(newValue);
   };  
+
+  const handlePersonalInterestRestrictionChange = async (event, newValue) => {
+    setSelectedPersonalInterests(newValue);
+  }
 
   const userData = {
     first_name: user.first_name,
@@ -131,6 +158,23 @@ function NewMemberFormTemplate() {
     //ensure that dietary restrictions are all alphabetical
   };
 
+  if (loading) {
+    return (
+      <Box 
+        display="flex" 
+        flexDirection="column" 
+        alignItems="center" 
+        justifyContent="center" 
+        height="100vh"
+      >
+        <CircularProgress />
+        <Typography variant="h6" mt={2}>
+          Loading...
+        </Typography>
+      </Box>
+    );
+  }
+
   return (
     <Container maxWidth="sm" sx={{ textAlign: "center" }}>
       <Typography variant="h4" component="h1" gutterBottom>
@@ -147,6 +191,9 @@ function NewMemberFormTemplate() {
         dietaryRestrictions={dietaryRestrictions}
         handleDietaryRestrictionChange={handleDietaryRestrictionChange}
         selectedDietaryRestrictions={selectedDietaryRestrictions}
+        personalInterests={personalInterests}
+        handlePersonalInterestRestrictionChange={handlePersonalInterestRestrictionChange}
+        selectedPersonalInterests={selectedPersonalInterests}
       />
     </Container>
   );

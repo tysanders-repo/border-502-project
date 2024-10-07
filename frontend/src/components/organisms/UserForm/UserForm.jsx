@@ -19,6 +19,9 @@ const UserForm = ({
   dietaryRestrictions,
   handleDietaryRestrictionChange,
   selectedDietaryRestrictions,
+  personalInterests,
+  handlePersonalInterestRestrictionChange,
+  selectedPersonalInterests,
 }) => {
 
   return (
@@ -166,6 +169,18 @@ const UserForm = ({
           onChange={handleDietaryRestrictionChange}
           renderInput={(params) => (
             <TextField {...params} label="Dietary Restrictions" variant="outlined" />
+          )}
+        />
+
+        <Autocomplete
+          freeSolo
+          multiple
+          value = {selectedPersonalInterests}
+          options={personalInterests}
+          getOptionLabel={(option) => option.name || option} // Allowing for free solo input
+          onChange={handlePersonalInterestRestrictionChange}
+          renderInput={(params) => (
+            <TextField {...params} label="Personal Interests" variant="outlined" />
           )}
         />
 
