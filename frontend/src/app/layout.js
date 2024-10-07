@@ -2,9 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { ThemeProvider } from "@mui/material/styles";
+import Box from "@mui/material/Box";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import Navbar from "../components/organisms/Navbar";
+import Navbar from "@components/organisms/Navbar";
+import Footer from "@components/organisms/Footer";
 import theme from "@utils/theme";
 
 export default function RootLayout({ children }) {
@@ -18,8 +20,9 @@ export default function RootLayout({ children }) {
         <ThemeProvider theme={theme}>
           <Navbar />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            {children}
+            <Box sx={{ minHeight: "65vh" }}>{children}</Box>
           </LocalizationProvider>
+          <Footer />
         </ThemeProvider>
       </body>
     </html>

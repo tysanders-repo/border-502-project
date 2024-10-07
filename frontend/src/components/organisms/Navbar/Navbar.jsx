@@ -33,7 +33,7 @@ export default function Navbar() {
 
   const menuItems = [
     { text: "Home", link: "/" },
-    { text: "View Members", link: "/Users" },
+    { text: "View Members", link: "/Member" },
   ];
 
   const drawer = (
@@ -55,7 +55,13 @@ export default function Navbar() {
   );
 
   return (
-    <AppBar position="static" style={{ marginBottom: "30px", padding: "10px" }}>
+    <AppBar
+      position="static"
+      style={{
+        marginBottom: "30px",
+        padding: "10px",
+      }}
+    >
       <Toolbar>
         <Box
           sx={{
@@ -101,7 +107,7 @@ export default function Navbar() {
                 variant="outlined"
                 color="inherit"
                 component={Link}
-                href="/NewMember"
+                href="/Member/New"
               >
                 New Member?
               </Button>

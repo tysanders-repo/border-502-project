@@ -65,7 +65,7 @@ function UserEditTemplate({ params }) {
       try {
         const response = await updateUser(id, updatedUser);
         console.log(response);
-        router.push(`/Users/${response.uin}`);
+        router.push(`/Member/${response.uin}`);
       } catch (e) {
         setError(e);
       }

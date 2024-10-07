@@ -17,26 +17,47 @@ async function fetchProject(id) {
 }
 
 async function createProject(projectData) {
-  const response = await fetch(`${API_URL}/projects`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(projectData),
+  const formData = new FormData();
+  formData.append("project[title]", projectData.title);
+  formData.append("project[description]", projectData.description);
+  formData.append("project[date]", projectData.date);
+
+  projectData.images.forEach((image) => {
+    formData.append("project[images][]", image);
   });
-  if (!response.ok) {
-    throw new Error(response.statusText);
+
+  try {
+    const response = await fetch(`${API_URL}/projects`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error creating project:", error);
+    throw error;
   }
-  return response.json();
 }
 
 async function updateProject(id, projectData) {
+  console.log(projectData);
+  const formData = new FormData();
+  formData.append("project[title]", projectData.title);
+  formData.append("project[description]", projectData.description);
+  formData.append("project[date]", projectData.date);
+
+  projectData.images.forEach((image) => {
+    formData.append("project[images][]", image);
+  });
+
   const response = await fetch(`${API_URL}/projects/${id}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(projectData),
+    body: formData,
   });
   if (!response.ok) {
     throw new Error(response.statusText);
