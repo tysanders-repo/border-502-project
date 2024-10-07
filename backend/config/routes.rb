@@ -10,6 +10,14 @@ Rails.application.routes.draw do
     resources :users
   end
 
+  resources :interests do
+    collection do
+      get 'type/career', to: 'interests#career_interests', as: 'career_interests'
+      get 'type/company', to: 'interests#company_interests', as: 'company_interests'
+      get 'type/personal', to: 'interests#personal_interests', as: 'personal_interests'
+    end
+  end
+
   resources :member_diets do
     collection do
       get 'exists/:uin/:item_id', to: 'member_diets#exists', as: 'exists'
