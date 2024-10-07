@@ -63,6 +63,54 @@ RSpec.describe "/member_interests", type: :request do
     {}
   }
 
+  let(:uin) { member.uin }
+  let(:interest_id) { interest.id }
+
+  describe 'GET /member_interests/exists/:uin/:interest_id' do
+    it 'returns the existence of a member interest' do
+      MemberInterest.create! valid_attributes
+      get "/member_interests/exists/#{uin}/#{interest_id}"
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'GET /member_interests/uin/career/:uin' do
+    it 'returns career-related member interests by uin' do
+      MemberInterest.create! valid_attributes
+      get "/member_interests/uin/career/#{uin}"
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'GET /member_interests/uin/company/:uin' do
+    it 'returns company-related member interests by uin' do
+      MemberInterest.create! valid_attributes
+      get "/member_interests/uin/company/#{uin}"
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  describe 'GET /member_interests/uin/personal/:uin' do
+    it 'returns personal-related member interests by uin' do
+      MemberInterest.create! valid_attributes
+      get "/member_interests/uin/personal/#{uin}"
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  describe 'DELETE /member_interests/uin/:uin' do
+    it 'deletes member interests by uin' do
+      MemberInterest.create! valid_attributes
+      delete "/member_interests/uin/#{uin}"
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
   describe "GET /index" do
     it "renders a successful response" do
       MemberInterest.create! valid_attributes

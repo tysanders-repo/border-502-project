@@ -18,6 +18,16 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :member_interests do
+    collection do
+      get 'exists/:uin/:interest_id', to: 'member_interests#exists', as: 'exists'
+      get 'uin/career/:uin', to: 'member_interests#by_uin_career', as: 'by_uin_career'
+      get 'uin/company/:uin', to: 'member_interests#by_uin_company', as: 'by_uin_company'
+      get 'uin/personal/:uin', to: 'member_interests#by_uin_personal', as: 'by_uin_personal'
+      delete 'uin/:uin', to: 'member_interests#delete_by_uin', as: 'delete_by_uin'
+    end
+  end
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
