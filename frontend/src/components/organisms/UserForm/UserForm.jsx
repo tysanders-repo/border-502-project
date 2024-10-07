@@ -22,6 +22,12 @@ const UserForm = ({
   personalInterests,
   handlePersonalInterestRestrictionChange,
   selectedPersonalInterests,
+  careerInterests,
+  handleCareerInterestRestrictionChange,
+  selectedCareerInterests,
+  companyInterests,
+  handleCompanyInterestRestrictionChange,
+  selectedCompanyInterests,
 }) => {
 
   return (
@@ -181,6 +187,30 @@ const UserForm = ({
           onChange={handlePersonalInterestRestrictionChange}
           renderInput={(params) => (
             <TextField {...params} label="Personal Interests" variant="outlined" />
+          )}
+        />
+
+        <Autocomplete
+          freeSolo
+          multiple
+          value = {selectedCareerInterests}
+          options={careerInterests}
+          getOptionLabel={(option) => option.name || option} // Allowing for free solo input
+          onChange={handleCareerInterestRestrictionChange}
+          renderInput={(params) => (
+            <TextField {...params} label="Career Interests" variant="outlined" />
+          )}
+        />
+
+        <Autocomplete
+          freeSolo
+          multiple
+          value = {selectedCompanyInterests}
+          options={companyInterests}
+          getOptionLabel={(option) => option.name || option} // Allowing for free solo input
+          onChange={handleCompanyInterestRestrictionChange}
+          renderInput={(params) => (
+            <TextField {...params} label="Company Interests" variant="outlined" />
           )}
         />
 

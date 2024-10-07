@@ -31,10 +31,10 @@ function NewMemberFormTemplate() {
   const [selectedDietaryRestrictions, setSelectedDietaryRestrictions] = useState([]);
   const [personalInterests, setPersonalInterests] = useState([]);
   const [selectedPersonalInterests, setSelectedPersonalInterests] = useState([]);
-  // const [companyInterests, setCompanyInterests] = useState([]);
-  // const [selectedCompanyInterests, setSelectedCompanyInterests] = useState([]);
-  // const [careerInterests, setCareerInterests] = useState([]);
-  // const [selectedCareerInterests, setSelectedCareerInterests] = useState([]);
+  const [companyInterests, setCompanyInterests] = useState([]);
+  const [selectedCompanyInterests, setSelectedCompanyInterests] = useState([]);
+  const [careerInterests, setCareerInterests] = useState([]);
+  const [selectedCareerInterests, setSelectedCareerInterests] = useState([]);
 
   useEffect(() => {
     const fetchDietaryRestrictions = async () => {
@@ -48,16 +48,34 @@ function NewMemberFormTemplate() {
 
     const fetchPersonalInterests = async () => {
       try {
-        const restrictions = await fetchAllPersonalInterests();
-        setPersonalInterests(restrictions);
+        const interests = await fetchAllPersonalInterests();
+        setPersonalInterests(interests);
       } catch (error) {
         console.error('Error fetching personal interests:', error);
       }
     };
 
+    const fetchCareerInterests = async () => {
+      try {
+        const interests = await fetchAllCareerInterests();
+        setCareerInterests(interests);
+      } catch (error) {
+        console.error('Error fetching career interests:', error);
+      }
+    };
+
+    const fetchCompanyInterests = async () => {
+      try {
+        const interests = await fetchAllCompanyInterests();
+        setCompanyInterests(interests);
+      } catch (error) {
+        console.error('Error fetching company interests:', error);
+      }
+    };
+
     const fetchData = async () => {
-      await Promise.all([fetchDietaryRestrictions(), fetchPersonalInterests()]);
-      setLoading(false); // Set loading to false once all data is fetched
+      await Promise.all([fetchDietaryRestrictions(), fetchPersonalInterests(), fetchCareerInterests(), fetchCompanyInterests()]);
+      setLoading(false);
     };
 
     fetchData();
@@ -70,6 +88,14 @@ function NewMemberFormTemplate() {
 
   const handlePersonalInterestRestrictionChange = async (event, newValue) => {
     setSelectedPersonalInterests(newValue);
+  }
+
+  const handleCareerInterestRestrictionChange = async (event, newValue) => {
+    setSelectedCareerInterests(newValue);
+  }
+
+  const handleCompanyInterestRestrictionChange = async (event, newValue) => {
+    setSelectedCompanyInterests(newValue);
   }
 
   const userData = {
@@ -128,6 +154,90 @@ function NewMemberFormTemplate() {
         catch (e){
           setError("failed to add diets");
         }
+        try{
+          for (const personalInterest of selectedPersonalInterests) {
+            let persInterestObj;
+            if (typeof personalInterest === 'string') {
+              const existingPersonalInterest = personalInterests.find((persElem) => 
+                persElem.name.toLowerCase() === personalInterest.toLowerCase()
+              );
+              if(!existingPersonalInterest){
+                console.log('attempting to create new interest')
+                persInterestObj = await createInterest({ interest_type: 'personal', name: personalInterest});
+              }
+              else{
+                persInterestObj = existingPersonalInterest;
+              }
+            } else {
+              persInterestObj = personalInterest;
+            }
+            const exist_response = await checkMemberInterestExists(newUser.uin, persInterestObj.id);
+            console.log('Existence check response:', exist_response);
+            
+            if (!exist_response){
+              await createMemberInterest({ uin: newUser.uin, interest_id: persInterestObj.id}); 
+            }
+          }
+        }
+        catch (e){
+          setError("failed to add personal interests");
+        }
+        try{
+          for (const careerInterest of selectedCareerInterests) {
+            let carInterestObj;
+            if (typeof careerInterest === 'string') {
+              const existingCareerInterest = careerInterests.find((carElem) => 
+                carElem.name.toLowerCase() === careerInterest.toLowerCase()
+              );
+              if(!existingCareerInterest){
+                console.log('attempting to create new interest')
+                carInterestObj = await createInterest({ interest_type: 'career', name: careerInterest});
+              }
+              else{
+                carInterestObj = existingCareerInterest;
+              }
+            } else {
+              carInterestObj = careerInterest;
+            }
+            const exist_response = await checkMemberInterestExists(newUser.uin, carInterestObj.id);
+            console.log('Existence check response:', exist_response);
+            
+            if (!exist_response){
+              await createMemberInterest({ uin: newUser.uin, interest_id: carInterestObj.id}); 
+            }
+          }
+        }
+        catch (e){
+          setError("failed to add career interests");
+        }
+        try{
+          for (const companyInterest of selectedCompanyInterests) {
+            let compInterestObj;
+            if (typeof companyInterest === 'string') {
+              const existingCompanyInterest = companyInterests.find((compElem) => 
+                compElem.name.toLowerCase() === companyInterest.toLowerCase()
+              );
+              if(!existingCompanyInterest){
+                console.log('attempting to create new interest')
+                compInterestObj = await createInterest({ interest_type: 'company', name: companyInterest});
+              }
+              else{
+                compInterestObj = existingCompanyInterest;
+              }
+            } else {
+              compInterestObj = companyInterest;
+            }
+            const exist_response = await checkMemberInterestExists(newUser.uin, compInterestObj.id);
+            console.log('Existence check response:', exist_response);
+            
+            if (!exist_response){
+              await createMemberInterest({ uin: newUser.uin, interest_id: compInterestObj.id}); 
+            }
+          }
+        }
+        catch (e){
+          setError("failed to add company interests");
+        }
         router.push(`/Users/${newUser.uin}`);
       } catch (e) {
         setError("Failed to submit form")
@@ -158,23 +268,6 @@ function NewMemberFormTemplate() {
     //ensure that dietary restrictions are all alphabetical
   };
 
-  if (loading) {
-    return (
-      <Box 
-        display="flex" 
-        flexDirection="column" 
-        alignItems="center" 
-        justifyContent="center" 
-        height="100vh"
-      >
-        <CircularProgress />
-        <Typography variant="h6" mt={2}>
-          Loading...
-        </Typography>
-      </Box>
-    );
-  }
-
   return (
     <Container maxWidth="sm" sx={{ textAlign: "center" }}>
       <Typography variant="h4" component="h1" gutterBottom>
@@ -194,6 +287,12 @@ function NewMemberFormTemplate() {
         personalInterests={personalInterests}
         handlePersonalInterestRestrictionChange={handlePersonalInterestRestrictionChange}
         selectedPersonalInterests={selectedPersonalInterests}
+        careerInterests={careerInterests}
+        handleCareerInterestRestrictionChange={handleCareerInterestRestrictionChange}
+        selectedCareerInterests={selectedCareerInterests}
+        companyInterests={companyInterests}
+        handleCompanyInterestRestrictionChange={handleCompanyInterestRestrictionChange}
+        selectedCompanyInterests={selectedCompanyInterests}
       />
     </Container>
   );
