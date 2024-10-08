@@ -271,6 +271,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  activestorage (~> 7.2.1)
   bootsnap
   brakeman
   debug

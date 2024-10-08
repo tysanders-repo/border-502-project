@@ -39,7 +39,9 @@ describe("DeleteProjectDialog", () => {
 
     expect(screen.getByText(/Confirm Delete Project/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/Are you sure you want to delete the My Project project\? This action cannot be undone\./i)
+      screen.getByText(
+        /Are you sure you want to delete the My Project project\? This action cannot be undone\./i
+      )
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Cancel/i })).toBeInTheDocument();
     expect(
@@ -79,7 +81,7 @@ describe("DeleteProjectDialog", () => {
 
     await waitFor(() => {
       expect(deleteProject).toHaveBeenCalledWith(id); // Check if deleteProject is called with the correct ID
-      expect(mockPush).toHaveBeenCalledWith("/Projects"); // Check if router.push is called with the correct path
+      expect(mockPush).toHaveBeenCalledWith("/Project"); // Check if router.push is called with the correct path
       expect(mockHandleCloseDialog).toHaveBeenCalled(); // Ensure the dialog closes
     });
   });

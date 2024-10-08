@@ -59,17 +59,24 @@ function ProjectListTemplate() {
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
             onClose={handleCloseMenu}
+            slotProps={{
+              paper: {
+                sx: {
+                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.5)",
+                },
+              },
+            }}
           >
             <MenuItem
               component={Link}
-              href={`/Projects/${selectedProject?.id}`}
+              href={`/Project/${selectedProject?.id}`}
               onClick={handleCloseMenu}
             >
               View
             </MenuItem>
             <MenuItem
               component={Link}
-              href={`/Projects/${selectedProject?.id}/Edit`}
+              href={`/Project/${selectedProject?.id}/Edit`}
               onClick={handleCloseMenu}
             >
               Edit
@@ -81,18 +88,18 @@ function ProjectListTemplate() {
     },
   ];
 
-  useEffect(() => {
-    async function loadProjects() {
-      try {
-        const data = await fetchAllProjects();
-        setProjects(data);
-        setLoading(false);
-      } catch (e) {
-        setError(e);
-        setLoading(false);
-      }
+  const loadProjects = async () => {
+    try {
+      const data = await fetchAllProjects();
+      setProjects(data);
+      setLoading(false);
+    } catch (e) {
+      setError(e);
+      setLoading(false);
     }
+  };
 
+  useEffect(() => {
     loadProjects();
   }, []);
 
@@ -103,7 +110,6 @@ function ProjectListTemplate() {
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-    router.reload();
   };
 
   const handleCloseMenu = () => {
@@ -145,7 +151,7 @@ function ProjectListTemplate() {
           <Box sx={{ display: "flex", gap: "10px" }}>
             <Button
               variant="outlined"
-              onClick={() => router.push("/Users")}
+              onClick={() => router.push("/Member")}
               startIcon={<ManageAccountsIcon />}
             >
               {isMobile ? "Members" : "Manage Members"}
@@ -153,7 +159,7 @@ function ProjectListTemplate() {
             <Button
               variant="outlined"
               startIcon={<AddCircleOutlineIcon />}
-              onClick={() => router.push("/NewProject")}
+              onClick={() => router.push("Project/New")}
             >
               {isMobile ? "Project" : "Add Project"}
             </Button>
@@ -175,6 +181,7 @@ function ProjectListTemplate() {
         handleCloseDialog={handleCloseDialog}
         id={selectedProject?.id}
         setError={setError}
+        onDelete={loadProjects}
       />
     </>
   );
