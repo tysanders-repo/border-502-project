@@ -10,11 +10,29 @@ Rails.application.routes.draw do
     resources :users
   end
 
+  resources :interests do
+    collection do
+      get 'type/career', to: 'interests#career_interests', as: 'career_interests'
+      get 'type/company', to: 'interests#company_interests', as: 'company_interests'
+      get 'type/personal', to: 'interests#personal_interests', as: 'personal_interests'
+    end
+  end
+
   resources :member_diets do
     collection do
       get 'exists/:uin/:item_id', to: 'member_diets#exists', as: 'exists'
       get 'uin/:uin', to: 'member_diets#by_uin', as: 'by_uin'
       delete 'uin/:uin', to: 'member_diets#delete_by_uin', as: 'delete_by_uin'
+    end
+  end
+
+  resources :member_interests do
+    collection do
+      get 'exists/:uin/:interest_id', to: 'member_interests#exists', as: 'exists'
+      get 'uin/career/:uin', to: 'member_interests#by_uin_career', as: 'by_uin_career'
+      get 'uin/company/:uin', to: 'member_interests#by_uin_company', as: 'by_uin_company'
+      get 'uin/personal/:uin', to: 'member_interests#by_uin_personal', as: 'by_uin_personal'
+      delete 'uin/:uin', to: 'member_interests#delete_by_uin', as: 'delete_by_uin'
     end
   end
 

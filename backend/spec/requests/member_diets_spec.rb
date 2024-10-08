@@ -62,6 +62,36 @@ RSpec.describe "/member_diets", type: :request do
     {}
   }
 
+  let(:uin) { member.uin }
+  let(:item_id) { dietary_restriction.id }
+
+  describe 'GET /member_diets/exists/:uin/:item_id' do
+    it 'returns the existence of a member diet' do
+      MemberDiet.create! valid_attributes
+      get "/member_diets/exists/#{uin}/#{item_id}"
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'GET /member_diets/uin/:uin' do
+    it 'returns member diets by uin' do
+      MemberDiet.create! valid_attributes
+      get "/member_diets/uin/#{uin}"
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'DELETE /member_diets/uin/:uin' do
+    it 'deletes member diets by uin' do
+      MemberDiet.create! valid_attributes
+      delete "/member_diets/uin/#{uin}"
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
   describe "GET /index" do
     it "renders a successful response" do
       MemberDiet.create! valid_attributes

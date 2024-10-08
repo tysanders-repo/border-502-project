@@ -26,5 +26,46 @@ RSpec.describe MemberInterestsController, type: :routing do
     it "routes to #destroy" do
       expect(delete: "/member_interests/1").to route_to("member_interests#destroy", id: "1")
     end
+
+    it 'routes GET /member_interests/exists/:uin/:interest_id to member_interests#exists' do
+      expect(get: '/member_interests/exists/123/1').to route_to(
+        controller: 'member_interests',
+        action: 'exists',
+        uin: '123',
+        interest_id: '1'
+      )
+    end
+
+    it 'routes GET /member_interests/uin/career/:uin to member_interests#by_uin_career' do
+      expect(get: '/member_interests/uin/career/123').to route_to(
+        controller: 'member_interests',
+        action: 'by_uin_career',
+        uin: '123'
+      )
+    end
+
+    it 'routes GET /member_interests/uin/company/:uin to member_interests#by_uin_company' do
+      expect(get: '/member_interests/uin/company/123').to route_to(
+        controller: 'member_interests',
+        action: 'by_uin_company',
+        uin: '123'
+      )
+    end
+
+    it 'routes GET /member_interests/uin/personal/:uin to member_interests#by_uin_personal' do
+      expect(get: '/member_interests/uin/personal/123').to route_to(
+        controller: 'member_interests',
+        action: 'by_uin_personal',
+        uin: '123'
+      )
+    end
+
+    it 'routes DELETE /member_interests/uin/:uin to member_interests#delete_by_uin' do
+      expect(delete: '/member_interests/uin/123').to route_to(
+        controller: 'member_interests',
+        action: 'delete_by_uin',
+        uin: '123'
+      )
+    end
   end
 end

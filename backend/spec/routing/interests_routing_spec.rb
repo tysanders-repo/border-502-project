@@ -10,6 +10,17 @@ RSpec.describe InterestsController, type: :routing do
       expect(get: "/interests/1").to route_to("interests#show", id: "1")
     end
 
+    it 'routes to #career_interests' do
+      expect(get: '/interests/type/career').to route_to('interests#career_interests') 
+    end
+
+    it 'routes to #company_interests' do
+      expect(get: '/interests/type/company').to route_to('interests#company_interests')
+    end
+
+    it 'routes to #personal_interests' do
+      expect(get: '/interests/type/personal').to route_to('interests#personal_interests')
+    end
 
     it "routes to #create" do
       expect(post: "/interests").to route_to("interests#create")
