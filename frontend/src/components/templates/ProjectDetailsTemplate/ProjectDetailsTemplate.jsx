@@ -157,23 +157,26 @@ function ProjectDetailsTemplate({ params }) {
                 variant="outlined"
                 color="error"
                 onClick={handleOpenDialog}
+                sx={{ minWidth: "100px" }}
               >
                 Delete
               </Button>
               <Box sx={{ display: "flex", gap: "10px" }}>
                 <Button
-                  variant="contained"
+                  variant="outlined"
                   color="primary"
                   onClick={() => router.push(`/Project/${id}/Edit`)}
+                  sx={{ minWidth: "100px" }}
                 >
-                  Edit Project
+                  Edit
                 </Button>
                 <Button
                   variant="contained"
                   color="primary"
                   onClick={() => router.push(`/Project/${id}/View`)}
+                  sx={{ minWidth: "100px" }}
                 >
-                  View Project
+                  View
                 </Button>
               </Box>
             </Box>

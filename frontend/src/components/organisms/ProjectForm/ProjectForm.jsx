@@ -270,7 +270,7 @@ const ProjectForm = ({
             startIcon={<UploadIcon />}
             sx={{ width: "50%" }}
           >
-            Add Pictures
+            Upload Pictures
             <VisuallyHiddenInput
               type="file"
               onChange={(e) => handleImageListChange("images", e.target.files)}
@@ -281,7 +281,7 @@ const ProjectForm = ({
 
         {/* Action buttons for submit and cancel */}
         <Box sx={{ display: "flex", justifyContent: "flex-end", gap: "20px" }}>
-          <Button variant="contained" onClick={handleCancel}>
+          <Button variant="outlined" onClick={handleCancel}>
             Cancel
           </Button>
           <Button type="submit" variant="contained" color="primary">
