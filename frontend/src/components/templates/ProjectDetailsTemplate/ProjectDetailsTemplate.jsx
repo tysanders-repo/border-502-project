@@ -100,7 +100,6 @@ function ProjectDetailsTemplate({ params }) {
     return (
       <Alert severity="error">Error fetching project: {error.message}</Alert>
     );
-
   return (
     <Container maxWidth="md" sx={{ marginTop: 4 }}>
       {project ? (
@@ -127,7 +126,7 @@ function ProjectDetailsTemplate({ params }) {
               {project.image_urls?.map((image, index) => (
                 <ImageListItem key={index}>
                   <img
-                    src={image}
+                    src={image.url}
                     alt={`preview ${index}`}
                     style={{
                       width: "100%",

@@ -7,9 +7,10 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // Next.js router for navigation
-import { Container, Typography, CircularProgress, Alert } from "@mui/material";
+import { Container, Typography, Alert } from "@mui/material";
 import { fetchProject, updateProject } from "@services/projectService"; // Service functions to fetch and update project data
 import ProjectForm from "@components/organisms/ProjectForm/ProjectForm"; // Form component for editing project details
+import ProgressLoading from "@components/organisms/ProgressLoading";
 
 /**
  * ProjectEditTemplate Component
@@ -30,10 +31,12 @@ function ProjectEditTemplate({ params }) {
     pictures: null,
     timeline: null,
     images: [],
+    image_urls: [],
   });
   const [loading, setLoading] = useState(true); // Tracks loading state during data fetch.
   const [error, setError] = useState(null); // Stores error messages if the request fails.
   const [formError, setFormError] = useState({ name: false, uin: false }); // Tracks form validation errors.
+  const [removedImages, setRemovedImages] = useState([]);
 
   const router = useRouter(); // Next.js router for handling navigation.
   const { id } = params; // Destructure `id` from the route parameters.
@@ -71,9 +74,10 @@ function ProjectEditTemplate({ params }) {
    */
   const handleImageChange = (field, files) => {
     const fileArray = Array.from(files);
+
     setProject((prevProject) => ({
       ...prevProject,
-      [field]: fileArray, // Update the field in the project state with the new files.
+      [field]: [...(prevProject[field] || []), ...fileArray], // Merge current files with new files.
     }));
   };
 
@@ -97,7 +101,7 @@ function ProjectEditTemplate({ params }) {
     e.preventDefault();
     if (validateForm()) {
       try {
-        const response = await updateProject(id, project); // Update project data on the server.
+        const response = await updateProject(id, project, removedImages); // Update project data on the server.
         router.push(`/Project/${response.id}`); // Navigate to the manage page of the updated project.
       } catch (e) {
         setError(e); // Set error state if the update fails.
@@ -129,13 +133,30 @@ function ProjectEditTemplate({ params }) {
    * @returns {boolean} True if form is valid; false otherwise.
    */
   const validateForm = () => {
-    // Implement form validation logic here, if necessary.
-    return true;
+    const errors = {
+      title: false,
+      date: false,
+      description: false,
+    };
+
+    if (!project.title) {
+      errors.title = true; // Set error for title if it's empty
+    }
+    if (!project.date) {
+      errors.date = true; // Set error for date if it's not provided
+    }
+    if (!project.description) {
+      errors.description = true; // Set error for description if it's empty
+    }
+
+    setFormError(errors); // Set form errors to the state.
+
+    return !errors.title && !errors.date && !errors.description;
   };
 
   // If the data is still loading, show a loading spinner.
   if (loading) {
-    return <CircularProgress role="progressbar" />;
+    return <ProgressLoading />;
   }
 
   // If an error occurred while fetching or updating data, display an error message.
@@ -153,6 +174,9 @@ function ProjectEditTemplate({ params }) {
       {/* Project form for editing project details */}
       <ProjectForm
         project={project}
+        setProject={setProject}
+        removedImages={removedImages}
+        setRemovedImages={setRemovedImages}
         loading={loading}
         error={error}
         formError={formError}

@@ -32,10 +32,15 @@ function NewProjectFormTemplate() {
     pictures: null,
     timeline: null,
     images: [],
+    image_urls: [],
   });
   const [loading, setLoading] = useState(false); // Tracks the loading state during form submission.
   const [error, setError] = useState(null); // Stores error messages, if any.
-  const [formError, setFormError] = useState({ name: false }); // Tracks form validation errors.
+  const [formError, setFormError] = useState({
+    title: false,
+    date: false,
+    description: false,
+  });
 
   const router = useRouter(); // Next.js router for handling navigation.
 
@@ -47,16 +52,6 @@ function NewProjectFormTemplate() {
   const handleCancel = async () => {
     router.push(`/Project`);
   };
-
-  /**
-   * useEffect Hook
-   *
-   * @description Logs the current state of the project to the console whenever it changes.
-   * This hook can be useful for debugging purposes.
-   */
-  useEffect(() => {
-    console.log(project); // Log project state whenever it changes.
-  }, [project]);
 
   /**
    * handleImageChange Function
@@ -86,7 +81,15 @@ function NewProjectFormTemplate() {
    */
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent the default form submission behavior.
-    setLoading(true); // Set loading state to true.
+    const isValid = validateForm(); // Call the validateForm function to check for errors.
+
+    if (!isValid) {
+      // If form is not valid, prevent submission and show errors.
+      setError("Please fill in all required fields correctly.");
+      return;
+    }
+    setLoading(true);
+    setError(null);
     try {
       const data = await createProject(project); // Call service to create a new project.
       router.push(`/Project/${data.id}`); // Redirect to the project's detail page if successful.
@@ -122,14 +125,25 @@ function NewProjectFormTemplate() {
    * @returns {boolean} - Returns `true` if the form is valid, otherwise `false`.
    */
   const validateForm = () => {
-    return true; // Placeholder return value for demo purposes.
-    // Uncomment below for basic validation example.
-    // const errors = { name: false };
-    // if (project.title.trim() === '') {
-    //   errors.name = true; // Set name error to true if title field is empty.
-    // }
-    // setFormError(errors);
-    // return !errors.name; // Return true if no errors are present.
+    const errors = {
+      title: false,
+      date: false,
+      description: false,
+    };
+
+    if (!project.title) {
+      errors.title = true; // Set error for title if it's empty
+    }
+    if (!project.date) {
+      errors.date = true; // Set error for date if it's not provided
+    }
+    if (!project.description) {
+      errors.description = true; // Set error for description if it's empty
+    }
+
+    setFormError(errors); // Set form errors to the state.
+
+    return !errors.title && !errors.date && !errors.description;
   };
 
   // Render a loading indicator when the form is submitting.
@@ -140,13 +154,16 @@ function NewProjectFormTemplate() {
   return (
     <Container maxWidth="md" sx={{ textAlign: "center" }}>
       {/* Page heading */}
-      <Typography variant="h4" component="h1" gutterBottom>
+      <Typography variant="h4" component="h1" mb="40px">
         Add New Project
       </Typography>
 
       {/* ProjectForm component for capturing project details */}
       <ProjectForm
         project={project}
+        setProject={setProject}
+        removedImages={null}
+        setRemovedImages={null}
         loading={loading}
         error={error}
         formError={formError}

@@ -8,7 +8,6 @@
 
 import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
-import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -68,7 +67,6 @@ const HomepageTemplate = () => {
     return <Alert severity="error">{error.message}</Alert>;
   }
 
-  console.log(projects);
   return (
     <Container maxWidth="lg">
       {/* Title and introduction about the organization */}
@@ -165,11 +163,11 @@ const HomepageTemplate = () => {
                     cols={2}
                     rowHeight={250}
                   >
-                    {project.image_urls?.map((image, index) => (
-                      <ImageListItem key={index}>
+                    {project.image_urls?.map((image) => (
+                      <ImageListItem key={image.id}>
                         <img
-                          src={image}
-                          alt={`preview ${index}`}
+                          src={image.url}
+                          alt={`preview ${image.id}`}
                           style={{
                             width: "100%",
                             height: "100%",

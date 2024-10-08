@@ -86,11 +86,11 @@ function ProjectViewTemplate({ params }) {
               cols={2}
               rowHeight={400}
             >
-              {project.image_urls?.map((image, index) => (
-                <ImageListItem key={index}>
+              {project.image_urls?.map((image) => (
+                <ImageListItem key={image.id}>
                   <img
-                    src={image}
-                    alt={`preview ${index}`}
+                    src={image.url}
+                    alt={`preview ${image.id}`}
                     style={{
                       width: "100%",
                       height: "100%",

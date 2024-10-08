@@ -12,8 +12,6 @@ import theme from "@utils/theme";
 export default function RootLayout({ children }) {
   const router = useRouter();
 
-  console.log("Current Path:", router.pathname);
-
   return (
     <html lang="en">
       <body>

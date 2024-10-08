@@ -44,17 +44,23 @@ async function createProject(projectData) {
   }
 }
 
-async function updateProject(id, projectData) {
-  console.log(projectData);
+async function updateProject(id, projectData, removedImages = []) {
   const formData = new FormData();
   formData.append("project[title]", projectData.title);
   formData.append("project[description]", projectData.description);
   formData.append("project[date]", projectData.date);
 
-  projectData.images.forEach((image) => {
-    formData.append("project[images][]", image);
-  });
+  if (Array.isArray(projectData.images) && projectData.images.length > 0) {
+    projectData.images.forEach((image) => {
+      formData.append("project[images][]", image);
+    });
+  }
 
+  if (Array.isArray(removedImages) && removedImages.length > 0) {
+    removedImages.forEach((image) => {
+      formData.append("project[remove_images][]", image);
+    });
+  }
   const response = await fetch(`${API_URL}/projects/${id}`, {
     method: "PUT",
     body: formData,
