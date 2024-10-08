@@ -21,3 +21,14 @@ export const VisuallyHiddenInput = styled("input")({
   whiteSpace: "nowrap",
   width: 1,
 });
+
+export const DeleteBox = styled("div")(({ theme }) => ({
+  position: "absolute",
+  left: "0px",
+  top: "0px",
+  zIndex: 10,
+  backgroundColor: `${theme.palette.primary.main}`,
+  boxShadow: "0px 0px 10px",
+  padding: "8px 10px 8px 8px",
+  cursor: "pointer",
+}));

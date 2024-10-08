@@ -271,7 +271,7 @@ function NewMemberFormTemplate() {
         catch (e){
           setError("failed to add company interests");
         }
-        router.push(`/Users/${newUser.uin}`);
+        router.push(`/Member/${newUser.uin}`);
       } catch (e) {
         setError("Failed to submit form")
       } finally {

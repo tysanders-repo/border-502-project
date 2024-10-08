@@ -5,16 +5,21 @@ import {
   CircularProgress,
   Alert,
   Box,
-  IconButton,
+  Typography,
 } from "@mui/material";
-import { SideBySideBox, VisuallyHiddenInput } from "./ProjectForm.styles";
+import {
+  SideBySideBox,
+  VisuallyHiddenInput,
+  DeleteBox,
+} from "./ProjectForm.styles";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
-import CancelIcon from "@mui/icons-material/Cancel";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+import DeleteIcon from "@mui/icons-material/Delete";
+import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
 import UploadIcon from "@mui/icons-material/Upload";
+import { useTheme } from "@emotion/react";
 
 /**
  * ProjectForm Component
@@ -53,6 +58,8 @@ const ProjectForm = ({
   // Local state to hold preview images for display before uploading
   const projectCurrent = project.image_urls; // Contains existing image URLs fetched from the database
   const [projectPreview, setProjectPreview] = useState([]); // Local preview state for newly uploaded images
+
+  const theme = useTheme();
 
   /**
    * Handles the addition of existing images to the removal list.
@@ -139,9 +146,15 @@ const ProjectForm = ({
             label="Start Date"
             value={project.date ? dayjs(project.date) : null}
             onChange={(date) => onChange("date", date)}
-            error={formError.date}
             sx={{ minWidth: "250px" }}
-            helperText={formError.date ? "Start Date is required" : ""}
+            slots={{ textField: TextField }}
+            slotProps={{
+              textField: {
+                sx: { width: "100%" },
+                error: formError.date,
+                helperText: formError.date ? "Start Date is required" : "",
+              },
+            }}
           />
         </SideBySideBox>
 
@@ -177,25 +190,28 @@ const ProjectForm = ({
                   }}
                 >
                   {/* Button to add/remove images from removedImages array */}
-                  <div
-                    style={{
-                      position: "absolute",
-                      right: "0px",
-                      top: "0px",
-                      zIndex: 10,
-                    }}
+                  <DeleteBox
+                    onClick={() => handleExistingImageClick(imageUrl.id)}
                   >
-                    <IconButton
-                      variant="contained"
-                      onClick={() => handleExistingImageClick(imageUrl.id)}
+                    <Box
+                      sx={{ display: "flex", alignItems: "center", gap: "5px" }}
                     >
                       {removedImages.includes(imageUrl.id) ? (
-                        <AddCircleIcon sx={{ color: "white" }} />
+                        <RestoreFromTrashIcon
+                          fontSize="16px"
+                          sx={{ color: "white" }}
+                        />
                       ) : (
-                        <CancelIcon sx={{ color: "white" }} />
+                        <DeleteIcon fontSize="16px" sx={{ color: "white" }} />
                       )}
-                    </IconButton>
-                  </div>
+                      <Typography sx={{ color: "white" }} variant="caption">
+                        {removedImages.includes(imageUrl.id)
+                          ? "Restore"
+                          : "Delete"}
+                      </Typography>
+                    </Box>
+                  </DeleteBox>
+
                   <img
                     src={imageUrl.url}
                     alt="Project"
@@ -205,7 +221,7 @@ const ProjectForm = ({
                       objectFit: "cover",
                       overflow: "hidden",
                       display: "block",
-                      opacity: removedImages.includes(imageUrl.id) ? 0.5 : 1,
+                      opacity: removedImages.includes(imageUrl.id) ? 0.3 : 1,
                     }}
                   />
                 </div>
@@ -223,25 +239,16 @@ const ProjectForm = ({
                   }}
                 >
                   {/* Button to remove images from the preview array */}
-                  <div
-                    style={{
-                      position: "absolute",
-                      right: "0px",
-                      top: "0px",
-                      zIndex: 10,
-                    }}
-                  >
-                    <IconButton
-                      variant="contained"
-                      onClick={() => handlePreviewImageClick(image)}
+                  <DeleteBox onClick={() => handlePreviewImageClick(image)}>
+                    <Box
+                      sx={{ display: "flex", alignItems: "center", gap: "5px" }}
                     >
-                      {projectPreview.includes(image) ? (
-                        <CancelIcon sx={{ color: "white" }} />
-                      ) : (
-                        <AddCircleIcon sx={{ color: "white" }} />
-                      )}
-                    </IconButton>
-                  </div>
+                      <DeleteIcon fontSize="16px" sx={{ color: "white" }} />
+                      <Typography sx={{ color: "white" }} variant="caption">
+                        Delete
+                      </Typography>
+                    </Box>
+                  </DeleteBox>
                   <img
                     src={image}
                     alt={`preview ${index}`}
@@ -260,8 +267,16 @@ const ProjectForm = ({
         )}
 
         {/* Image upload input */}
-
-        <Box sx={{ width: "100%", marginTop: "20px" }}>
+        <Box
+          sx={{
+            width: "100%",
+            marginTop: "20px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
           <Button
             component="label"
             role={undefined}
@@ -277,6 +292,9 @@ const ProjectForm = ({
               multiple
             />
           </Button>
+          <Typography variant="caption">
+            Optional, but for best results upload at least 2 photos.
+          </Typography>
         </Box>
 
         {/* Action buttons for submit and cancel */}

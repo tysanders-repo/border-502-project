@@ -127,7 +127,7 @@ function UserEditTemplate({ params }) {
   }
 
   const handleCancel = () => {
-    router.push(`/Users`);
+    router.push(`/Member`);
   };
 
   const handleSubmit = async (e) => {
@@ -269,7 +269,7 @@ function UserEditTemplate({ params }) {
           setError("failed to add company interests");
         }
         console.log(response);
-        router.push(`/Users/${response.uin}`);
+        router.push(`/Member/${response.uin}`);
       } catch (e) {
         setError(e);
       }
