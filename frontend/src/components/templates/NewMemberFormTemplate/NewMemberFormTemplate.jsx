@@ -7,11 +7,15 @@
  * The component utilizes the Next.js router to navigate to different pages based on form submission results.
  */
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation"; // Next.js router for navigation.
-import { createUser } from "@services/userService"; // Service function to handle user creation.
-import UserForm from "@components/organisms/UserForm"; // Form component for user inputs.
-import { Container, Typography } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation"; // Next.js router for navigation
+import { createUser, deleteUser } from "@services/userService"; // Adjust the path to your services
+import UserForm from "@components/organisms/UserForm"; // Adjust the path to your components
+import { CircularProgress, Container, Typography } from "@mui/material";
+import { fetchAllDietRestrictions, createDietaryRestriction } from '@services/dietService'; 
+import { createMemberDiet, checkMemberDietExists } from '@services/memberDietService'; 
+import { fetchAllCareerInterests, fetchAllCompanyInterests, fetchAllPersonalInterests, createInterest } from "@services/interestService";
+import { createMemberInterest, checkMemberInterestExists } from "@services/memberInterestService";
 
 /**
  * NewMemberFormTemplate Component
@@ -37,9 +41,79 @@ function NewMemberFormTemplate() {
     birthday: null, 
     graduation_day: null,
   });
-  const [loading, setLoading] = useState(false); // Tracks the loading state during form submission.
-  const [error, setError] = useState(null); // Stores error messages, if any.
-  const [formError, setFormError] = useState({ name: false, uin: false }); // Tracks form validation errors.
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [formError, setFormError] = useState({ name: false, uin: false });
+  const [dietaryRestrictions, setDietaryRestrictions] = useState([]);
+  const [selectedDietaryRestrictions, setSelectedDietaryRestrictions] = useState([]);
+  const [personalInterests, setPersonalInterests] = useState([]);
+  const [selectedPersonalInterests, setSelectedPersonalInterests] = useState([]);
+  const [companyInterests, setCompanyInterests] = useState([]);
+  const [selectedCompanyInterests, setSelectedCompanyInterests] = useState([]);
+  const [careerInterests, setCareerInterests] = useState([]);
+  const [selectedCareerInterests, setSelectedCareerInterests] = useState([]);
+
+  useEffect(() => {
+    const fetchDietaryRestrictions = async () => {
+      try {
+        const restrictions = await fetchAllDietRestrictions();
+        setDietaryRestrictions(restrictions);
+      } catch (error) {
+        console.error('Error fetching dietary restrictions:', error);
+      }
+    };
+
+    const fetchPersonalInterests = async () => {
+      try {
+        const interests = await fetchAllPersonalInterests();
+        setPersonalInterests(interests);
+      } catch (error) {
+        console.error('Error fetching personal interests:', error);
+      }
+    };
+
+    const fetchCareerInterests = async () => {
+      try {
+        const interests = await fetchAllCareerInterests();
+        setCareerInterests(interests);
+      } catch (error) {
+        console.error('Error fetching career interests:', error);
+      }
+    };
+
+    const fetchCompanyInterests = async () => {
+      try {
+        const interests = await fetchAllCompanyInterests();
+        setCompanyInterests(interests);
+      } catch (error) {
+        console.error('Error fetching company interests:', error);
+      }
+    };
+
+    const fetchData = async () => {
+      await Promise.all([fetchDietaryRestrictions(), fetchPersonalInterests(), fetchCareerInterests(), fetchCompanyInterests()]);
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
+
+  const handleDietaryRestrictionChange = async (event, newValue) => { 
+    setSelectedDietaryRestrictions(newValue);
+  };  
+
+  const handlePersonalInterestRestrictionChange = async (event, newValue) => {
+    setSelectedPersonalInterests(newValue);
+  }
+
+  const handleCareerInterestRestrictionChange = async (event, newValue) => {
+    setSelectedCareerInterests(newValue);
+  }
+
+  const handleCompanyInterestRestrictionChange = async (event, newValue) => {
+    setSelectedCompanyInterests(newValue);
+  }
 
   // Data structure to hold user information for API submission.
   const userData = {
@@ -83,12 +157,123 @@ function NewMemberFormTemplate() {
 
     if (validateForm()) {
       try {
-        // Call the createUser service with user data and navigate to the member's page if successful.
-        const response = await createUser(userData);
-        router.push(`/Member/${response.uin}`);
+        const newUser = await createUser(userData);
+
+        try{
+          for (const restriction of selectedDietaryRestrictions) {
+            let restrictionObject;
+            if (typeof restriction === 'string') {
+              const existingRestriction = dietaryRestrictions.find((restrictions) => 
+                restrictions.item_name.toLowerCase() === restriction.toLowerCase()
+              );
+              if(!existingRestriction){
+                restrictionObject = await createDietaryRestriction({ item_name: restriction });
+              }
+              else{
+                restrictionObject = existingRestriction;
+              }
+            } else {
+              restrictionObject = restriction;
+            }
+            //only create member diet if it doesnt already exist
+            const exist_response = await checkMemberDietExists(newUser.uin, restrictionObject.id);
+            console.log('Existence check response:', exist_response);
+            
+            if (!exist_response){
+              await createMemberDiet({ uin: newUser.uin, item_id: restrictionObject.id}); 
+            }
+          }
+        }
+        catch (e){
+          setError("failed to add diets");
+        }
+        try{
+          for (const personalInterest of selectedPersonalInterests) {
+            let persInterestObj;
+            if (typeof personalInterest === 'string') {
+              const existingPersonalInterest = personalInterests.find((persElem) => 
+                persElem.name.toLowerCase() === personalInterest.toLowerCase()
+              );
+              if(!existingPersonalInterest){
+                console.log('attempting to create new interest')
+                persInterestObj = await createInterest({ interest_type: 'personal', name: personalInterest});
+              }
+              else{
+                persInterestObj = existingPersonalInterest;
+              }
+            } else {
+              persInterestObj = personalInterest;
+            }
+            const exist_response = await checkMemberInterestExists(newUser.uin, persInterestObj.id);
+            console.log('Existence check response:', exist_response);
+            
+            if (!exist_response){
+              await createMemberInterest({ uin: newUser.uin, interest_id: persInterestObj.id}); 
+            }
+          }
+        }
+        catch (e){
+          setError("failed to add personal interests");
+        }
+        try{
+          for (const careerInterest of selectedCareerInterests) {
+            let carInterestObj;
+            if (typeof careerInterest === 'string') {
+              const existingCareerInterest = careerInterests.find((carElem) => 
+                carElem.name.toLowerCase() === careerInterest.toLowerCase()
+              );
+              if(!existingCareerInterest){
+                console.log('attempting to create new interest')
+                carInterestObj = await createInterest({ interest_type: 'career', name: careerInterest});
+              }
+              else{
+                carInterestObj = existingCareerInterest;
+              }
+            } else {
+              carInterestObj = careerInterest;
+            }
+            const exist_response = await checkMemberInterestExists(newUser.uin, carInterestObj.id);
+            console.log('Existence check response:', exist_response);
+            
+            if (!exist_response){
+              await createMemberInterest({ uin: newUser.uin, interest_id: carInterestObj.id}); 
+            }
+          }
+        }
+        catch (e){
+          setError("failed to add career interests");
+        }
+        try{
+          for (const companyInterest of selectedCompanyInterests) {
+            let compInterestObj;
+            if (typeof companyInterest === 'string') {
+              const existingCompanyInterest = companyInterests.find((compElem) => 
+                compElem.name.toLowerCase() === companyInterest.toLowerCase()
+              );
+              if(!existingCompanyInterest){
+                console.log('attempting to create new interest')
+                compInterestObj = await createInterest({ interest_type: 'company', name: companyInterest});
+              }
+              else{
+                compInterestObj = existingCompanyInterest;
+              }
+            } else {
+              compInterestObj = companyInterest;
+            }
+            const exist_response = await checkMemberInterestExists(newUser.uin, compInterestObj.id);
+            console.log('Existence check response:', exist_response);
+            
+            if (!exist_response){
+              await createMemberInterest({ uin: newUser.uin, interest_id: compInterestObj.id}); 
+            }
+          }
+        }
+        catch (e){
+          setError("failed to add company interests");
+        }
+        router.push(`/Users/${newUser.uin}`);
       } catch (e) {
-        // Set error message in case of a request failure.
-        setError("Failed to create user.");
+        setError("Failed to submit form")
       } finally {
         setLoading(false); // Reset loading state after request completes.
       }
@@ -128,7 +313,8 @@ function NewMemberFormTemplate() {
       errors.uin = true; // Set UIN error to true if UIN is not a number.
     }
     setFormError(errors);
-    return !errors.name && !errors.uin; // Return true if no errors are present.
+    return !errors.name && !errors.uin;
+    //ensure that dietary restrictions are all alphabetical
   };
 
   return (
@@ -147,6 +333,18 @@ function NewMemberFormTemplate() {
         onChange={handleChange}
         onSubmit={handleSubmit}
         handleCancel={handleCancel}
+        dietaryRestrictions={dietaryRestrictions}
+        handleDietaryRestrictionChange={handleDietaryRestrictionChange}
+        selectedDietaryRestrictions={selectedDietaryRestrictions}
+        personalInterests={personalInterests}
+        handlePersonalInterestRestrictionChange={handlePersonalInterestRestrictionChange}
+        selectedPersonalInterests={selectedPersonalInterests}
+        careerInterests={careerInterests}
+        handleCareerInterestRestrictionChange={handleCareerInterestRestrictionChange}
+        selectedCareerInterests={selectedCareerInterests}
+        companyInterests={companyInterests}
+        handleCompanyInterestRestrictionChange={handleCompanyInterestRestrictionChange}
+        selectedCompanyInterests={selectedCompanyInterests}
       />
     </Container>
   );
