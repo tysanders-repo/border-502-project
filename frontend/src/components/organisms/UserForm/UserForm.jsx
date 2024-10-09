@@ -16,6 +16,7 @@ const UserForm = ({
   onChange,
   onSubmit,
   handleCancel,
+  Typography
 }) => {
   return (
     <form onSubmit={onSubmit}>

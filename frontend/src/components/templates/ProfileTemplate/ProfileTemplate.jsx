@@ -2,15 +2,18 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import UserForm from "@components/organisms/UserForm";
 import { fetchUser, updateUser } from "@services/userService";
+import UserForm from "@components/organisms/UserForm";
+import MimicTextBox from "@components/atoms/MimicTextBox";
 import {
   CircularProgress,
   Container,
   Grid,
   Box,
   Tabs,
-  Tab
+  Tab,
+  Avatar,
+  Typography,
 } from "@mui/material";
 
 function ProfileTemplate({params}) {
@@ -34,6 +37,7 @@ function ProfileTemplate({params}) {
 
   //hardcoded until we can implement authentication
   const id = 331005076;
+  const thisIsMe = true;
 
   //data fetch
   useEffect(() => {
@@ -73,7 +77,7 @@ function ProfileTemplate({params}) {
     setTabValue(newValue);
   }
 
-  const profileTab = (
+  const profileTab_LoggedIn = (
     <UserForm
       user={user}
       loading={loading}
@@ -85,23 +89,48 @@ function ProfileTemplate({params}) {
     />
   );
 
+  const profileTab_LoggedOut = (
+    <>
+      <div style={{display: 'flex', gap: '15px', flexDirection: 'row'}}>
+        <MimicTextBox text={user.first_name}/>
+        <MimicTextBox text={user.last_name}/>
+      </div>
+    </>
+  );
+
   const projectsTab = (
     <Container>
       Projects
     </Container>
   );
 
+  const profileTab = (
+    <>
+      <Avatar sx={{ bgcolor: '#085eb3' }}>{user.first_name[0].toUpperCase()}</Avatar>
+    </>
+  );
+
 
   return (
     loading ? <CircularProgress /> : (
     <Box sx={{ flexGrow: 1, padding: '10px'}}>
-      <Grid container spacing={4}>
-        <Grid item xs={4}>
-          <Container style={{ background: '#eef' }}>
-            Profile + Badges
+      <Grid container spacing={5}>
+        <Grid item sm={4} xl={2}>
+          <Container style={{
+            background: '#eef',
+            minHeight: "800px",
+            padding: '16px'
+          }}>
+            {/* profile image */}
+            
+            {/* badges */}
+
+            {/* join date */}
+            Joined: {user.join_date.split('T')[0].replace(/-/g, '/')}
           </Container>
         </Grid>
-        <Grid item xs={8}>
+
+        <Grid item sm={8} xl={7}>
           <Container>
             <Tabs
               value={tabValue}
@@ -114,7 +143,7 @@ function ProfileTemplate({params}) {
             </Tabs>
 
             <Container px={{p: '16px'}}>
-              {tabValue === 0 && profileTab}
+              {tabValue === 0 ? (thisIsMe ? profileTab_LoggedIn : profileTab_LoggedOut) : null}
               {tabValue === 1 && projectsTab}
             </Container>
           </Container>
