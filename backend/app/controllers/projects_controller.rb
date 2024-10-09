@@ -1,4 +1,5 @@
 class ProjectsController < ApplicationController
+  skip_before_action :authenticate_request, only: [:show, :index]
   before_action :set_project, only: %i[show update destroy]
 
   # GET /projects

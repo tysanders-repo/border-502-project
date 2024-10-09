@@ -1,6 +1,6 @@
 class MemberDietsController < ApplicationController
   before_action :set_member_diet, only: %i[ show update destroy ]
-
+  skip_before_action :authenticate_request, only: [:create]
   # GET /member_diets
   def index
     @member_diets = MemberDiet.all

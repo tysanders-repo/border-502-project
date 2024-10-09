@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -15,6 +15,8 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
 import { useTheme } from "@mui/material/styles";
+import { signedIn, setUserInfo, getUserRole, deleteUserInfo, getUserUIN } from "@services/authService";
+import { signIn, signOut } from "next-auth/react";
 
 export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -53,6 +55,43 @@ export default function Navbar() {
       </List>
     </Drawer>
   );
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false); 
+  // Determines whether to sign in or out
+  const handleGoogleSignInAndOut = async () => {
+    setIsLoading(true);
+    const signedin = await signedIn();
+    try {
+        if(signedin)
+          await deleteUserInfo()
+        signedin ? 
+        signOut('google') : 
+        signIn('google', { redirectTo: "/" });
+    } catch (error) {
+        console.error('Google error:', error);
+    } finally {
+        // setIsLoading(false);
+        // console.log("This should print out");
+        // redirect("/");
+    }
+  };
+  // Sets up user info, if available
+  useEffect(() => {
+    const setup = async () => {
+      const signedin = await signedIn()
+      setIsSignedIn(signedin)
+      if(signedin){
+        await setUserInfo()
+        const role = await getUserRole()
+        const uin = await getUserUIN()
+        console.log(role)
+        console.log(uin)
+      }
+    }
+
+    setup()
+  }, [])
 
   return (
     <AppBar
@@ -111,6 +150,16 @@ export default function Navbar() {
               >
                 New Member?
               </Button>
+              <Button
+                    variant="outline"
+                    onClick={handleGoogleSignInAndOut}
+                    color="inherit"
+                    disabled={isLoading}
+                  >
+                      {isLoading ? "Loading..." : 
+                      (isSignedIn ? "Sign out" : "Sign in")
+                      }
+                  </Button>
             </Box>
           )}
         </Box>
