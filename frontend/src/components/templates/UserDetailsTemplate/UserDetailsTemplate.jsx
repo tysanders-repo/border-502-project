@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation"; // Import useRouter for navigation
+import ProgressLoading from "@components/organisms/ProgressLoading";
 
 function UserDetailsTemplate({ params }) {
   const router = useRouter();
@@ -63,7 +64,7 @@ function UserDetailsTemplate({ params }) {
     setOpenDialog(false);
   };
 
-  if (loading) return <CircularProgress />;
+  if (loading) return <ProgressLoading />;
 
   if (error)
     return <Alert severity="error">Error fetching user: {error.message}</Alert>;
@@ -72,7 +73,7 @@ function UserDetailsTemplate({ params }) {
     <Container maxWidth="sm" sx={{ marginTop: 4 }}>
       {user ? (
         <Box sx={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-          <IconButton onClick={() => router.push("/Users")}>
+          <IconButton onClick={() => router.push("/Member")}>
             <ArrowBackIcon />
           </IconButton>
           <Box>
@@ -118,7 +119,7 @@ function UserDetailsTemplate({ params }) {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => router.push(`/Users/${id}/Edit`)}
+                onClick={() => router.push(`/Member/${id}/Edit`)}
               >
                 Edit Profile
               </Button>

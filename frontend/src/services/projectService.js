@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000";
+import { API_URL } from '../constants';
 
 async function fetchAllProjects() {
   const response = await fetch(`${API_URL}/projects`);
@@ -18,30 +18,63 @@ async function fetchProject(id) {
 
 async function createProject(projectData) {
   const token = cookies().get("next-auth.session-token")?.value
-  const response = await fetch(`${API_URL}/projects`, {
-    method: "POST",
-    headers: {
-      'Authentication': `${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(projectData),
-    cache: 'no-cache',
+  const formData = new FormData();
+  formData.append("project[title]", projectData.title);
+  formData.append("project[description]", projectData.description);
+  formData.append("project[date]", projectData.date);
+
+  projectData.images.forEach((image) => {
+    formData.append("project[images][]", image);
   });
-  if (!response.ok) {
-    throw new Error(response.statusText);
+
+  try {
+    const response = await fetch(`${API_URL}/projects`, {
+      method: "POST",
+      headers: {
+        'Authentication': `${token}`,
+        "Content-Type": "application/json",
+      },
+      body: formData,
+      cache: 'no-cache',
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error creating project:", error);
+    throw error;
   }
-  return response.json();
 }
 
-async function updateProject(id, projectData) {
+async function updateProject(id, projectData, removedImages = []) {
   const token = cookies().get("next-auth.session-token")?.value
+  const formData = new FormData();
+  formData.append("project[title]", projectData.title);
+  formData.append("project[description]", projectData.description);
+  formData.append("project[date]", projectData.date);
+
+  if (Array.isArray(projectData.images) && projectData.images.length > 0) {
+    projectData.images.forEach((image) => {
+      formData.append("project[images][]", image);
+    });
+  }
+
+  if (Array.isArray(removedImages) && removedImages.length > 0) {
+    removedImages.forEach((image) => {
+      formData.append("project[remove_images][]", image);
+    });
+  }
   const response = await fetch(`${API_URL}/projects/${id}`, {
     method: "PUT",
     headers: {
       'Authentication': `${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(projectData),
+    body: formData,
     cache: 'no-cache',
   });
   if (!response.ok) {

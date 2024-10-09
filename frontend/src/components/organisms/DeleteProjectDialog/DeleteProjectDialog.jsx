@@ -1,6 +1,4 @@
 import React from "react";
-import { useRouter } from "next/navigation";
-
 import {
   Button,
   Dialog,
@@ -17,13 +15,12 @@ const DeleteProjectDialog = ({
   handleCloseDialog,
   id,
   setError,
+  onDelete, // New prop to handle deletion
 }) => {
-  const router = useRouter();
-
   const deleteProjectHandler = async () => {
     try {
       await deleteProject(id);
-      router.push("/Projects");
+      onDelete(); // Call the onDelete prop to notify parent
     } catch (error) {
       setError(error);
     }
@@ -49,8 +46,8 @@ const DeleteProjectDialog = ({
         </Button>
         <Button
           onClick={() => {
-            deleteProjectHandler();
-            handleCloseDialog();
+            deleteProjectHandler(); // Call delete handler
+            handleCloseDialog(); // Close the dialog after confirming
           }}
           color="error"
           autoFocus

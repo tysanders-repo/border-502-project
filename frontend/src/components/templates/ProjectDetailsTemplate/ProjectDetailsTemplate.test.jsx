@@ -92,6 +92,8 @@ describe("ProjectDetailsTemplate", () => {
     });
 
     // Check if the "Edit Project" button is rendered
-    expect(screen.getByRole("button", { name: /Edit Project/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Edit Project/i })
+    ).toBeInTheDocument();
   });
 });

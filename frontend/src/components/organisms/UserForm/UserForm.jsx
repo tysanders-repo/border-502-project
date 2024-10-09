@@ -16,7 +16,20 @@ const UserForm = ({
   onChange,
   onSubmit,
   handleCancel,
+  dietaryRestrictions,
+  handleDietaryRestrictionChange,
+  selectedDietaryRestrictions,
+  personalInterests,
+  handlePersonalInterestRestrictionChange,
+  selectedPersonalInterests,
+  careerInterests,
+  handleCareerInterestRestrictionChange,
+  selectedCareerInterests,
+  companyInterests,
+  handleCompanyInterestRestrictionChange,
+  selectedCompanyInterests,
 }) => {
+
   return (
     <form onSubmit={onSubmit}>
       <Box
@@ -151,6 +164,54 @@ const UserForm = ({
           helperText={
             formError.graduation_day ? 'Graduation Day is required' : ''
           }
+        />
+
+        <Autocomplete
+          freeSolo
+          multiple
+          value = {selectedDietaryRestrictions}
+          options={dietaryRestrictions}
+          getOptionLabel={(option) => option.item_name || option} // Allowing for free solo input
+          onChange={handleDietaryRestrictionChange}
+          renderInput={(params) => (
+            <TextField {...params} label="Dietary Restrictions" variant="outlined" />
+          )}
+        />
+
+        <Autocomplete
+          freeSolo
+          multiple
+          value = {selectedPersonalInterests}
+          options={personalInterests}
+          getOptionLabel={(option) => option.name || option} // Allowing for free solo input
+          onChange={handlePersonalInterestRestrictionChange}
+          renderInput={(params) => (
+            <TextField {...params} label="Personal Interests" variant="outlined" />
+          )}
+        />
+
+        <Autocomplete
+          freeSolo
+          multiple
+          value = {selectedCareerInterests}
+          options={careerInterests}
+          getOptionLabel={(option) => option.name || option} // Allowing for free solo input
+          onChange={handleCareerInterestRestrictionChange}
+          renderInput={(params) => (
+            <TextField {...params} label="Career Interests" variant="outlined" />
+          )}
+        />
+
+        <Autocomplete
+          freeSolo
+          multiple
+          value = {selectedCompanyInterests}
+          options={companyInterests}
+          getOptionLabel={(option) => option.name || option} // Allowing for free solo input
+          onChange={handleCompanyInterestRestrictionChange}
+          renderInput={(params) => (
+            <TextField {...params} label="Company Interests" variant="outlined" />
+          )}
         />
 
         <Box
