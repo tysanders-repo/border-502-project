@@ -288,9 +288,9 @@ DEPENDENCIES
   bootsnap
   brakeman
   debug
+  dotenv-rails
   jose
   jwt
-  dotenv-rails
   pg (~> 1.1)
   puma (>= 5.0)
   rack-cors

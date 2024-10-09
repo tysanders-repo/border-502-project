@@ -1,6 +1,6 @@
 class InterestsController < ApplicationController
   before_action :set_interest, only: %i[ show update destroy ]
-  skip_before_action :authenticate_request, only: [:create]
+  skip_before_action :authenticate_request, only: [:create, :index, :show, :career_interests, :company_interests, :personal_interests]
   # GET /interests
   def index
     @interests = Interest.all
