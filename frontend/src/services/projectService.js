@@ -1,4 +1,6 @@
+'use server';
 const API_URL = "http://localhost:3000";
+import { cookies } from 'next/headers';
 
 async function fetchAllProjects() {
   const response = await fetch(`${API_URL}/projects`);
