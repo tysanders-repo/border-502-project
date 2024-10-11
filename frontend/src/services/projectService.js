@@ -17,7 +17,6 @@ async function fetchProject(id) {
 }
 
 async function createProject(projectData) {
-  const token = cookies().get("next-auth.session-token")?.value
   const formData = new FormData();
   formData.append("project[title]", projectData.title);
   formData.append("project[description]", projectData.description);
@@ -30,12 +29,7 @@ async function createProject(projectData) {
   try {
     const response = await fetch(`${API_URL}/projects`, {
       method: "POST",
-      headers: {
-        'Authentication': `${token}`,
-        "Content-Type": "application/json",
-      },
       body: formData,
-      cache: 'no-cache',
     });
 
     if (!response.ok) {
@@ -51,7 +45,6 @@ async function createProject(projectData) {
 }
 
 async function updateProject(id, projectData, removedImages = []) {
-  const token = cookies().get("next-auth.session-token")?.value
   const formData = new FormData();
   formData.append("project[title]", projectData.title);
   formData.append("project[description]", projectData.description);
@@ -70,12 +63,7 @@ async function updateProject(id, projectData, removedImages = []) {
   }
   const response = await fetch(`${API_URL}/projects/${id}`, {
     method: "PUT",
-    headers: {
-      'Authentication': `${token}`,
-      "Content-Type": "application/json",
-    },
     body: formData,
-    cache: 'no-cache',
   });
   if (!response.ok) {
     throw new Error(response.statusText);
@@ -86,10 +74,6 @@ async function updateProject(id, projectData, removedImages = []) {
 async function deleteProject(id) {
   const response = await fetch(`${API_URL}/projects/${id}`, {
     method: "DELETE",
-    headers: {
-      'Authentication': `${token}`,
-    },
-    cache: 'no-cache',
   });
 
   if (!response.ok) {
