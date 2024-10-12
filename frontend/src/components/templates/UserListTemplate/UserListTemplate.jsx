@@ -13,6 +13,12 @@ import {
   MenuItem,
   Box,
   Button,
+  Dialog, 
+  DialogActions, 
+  DialogContent, 
+  DialogTitle,
+  Autocomplete,
+  TextField,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -24,9 +30,12 @@ import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import { getUserRole } from "@services/authService";
+import { UserRoles } from "@utils/arrays/roles";
 
 const UserListTemplate = () => {
   const [users, setUsers] = useState([]);
+  const [userRole, setUserRole] = useState("none");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -35,8 +44,34 @@ const UserListTemplate = () => {
   const [filter, setFilter] = useState("active");
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [openRoleDialog, setOpenRoleDialog] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(null);
 
   const router = useRouter();
+
+  const handleOpenRoleDialog = () => {
+    setOpenRoleDialog(true);
+  };
+
+  const handleCloseRoleDialog = () => {
+    setOpenRoleDialog(false);
+  };
+
+  const handleRoleChange = async () => {
+    if (!selectedRole) return;
+
+    try {
+      await updateUserPresident(selectedUser.uin, { role: selectedRole });
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.uin === selectedUser.uin ? { ...user, role: selectedRole } : user
+        )
+      );
+      handleCloseRoleDialog();
+    } catch (err) {
+      setError(err);
+    }
+  };
 
   const capitalizeAndReplace = (str) => {
     if (!str) return "hello";
@@ -166,18 +201,30 @@ const UserListTemplate = () => {
               },
             }}
           >
-            <MenuItem
-              onClick={() => router.push(`/Member/${selectedUser?.uin}`)}
-            >
+            <MenuItem onClick={() => router.push(`/Member/${selectedUser?.uin}`)}>
               View
             </MenuItem>
-            <MenuItem
-              onClick={() => router.push(`/Member/${selectedUser?.uin}/Edit`)}
-            >
-              Edit
-            </MenuItem>
-            <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
+
+            {/* Check userRole and conditionally render menu items */}
+            {userRole === "president" || userRole === "vice president" ? 
+              <MenuItem key="updateRole" onClick={handleOpenRoleDialog}>
+                Update Role
+              </MenuItem>
+             : null}
+
+            {userRole === "president" || userRole === "internal relations" ? [
+              <MenuItem
+                key="edit"
+                onClick={() => router.push(`/Member/${selectedUser?.uin}/Edit`)}
+              >
+                Edit
+              </MenuItem>,
+              <MenuItem key="delete" onClick={handleDeleteClick}>
+                Delete
+              </MenuItem>,
+            ] : null}
           </Menu>
+
         </div>
       ),
     },
@@ -188,14 +235,23 @@ const UserListTemplate = () => {
       try {
         const data = await fetchAllUsers();
         setUsers(data);
-        setLoading(false);
       } catch (e) {
         setError(e);
-        setLoading(false);
       }
     }
 
-    loadUsers();
+    async function loadRole() {
+      const role = await getUserRole(); 
+      setUserRole(role);  
+    }
+
+    // Load role and users in parallel
+    const fetchData = async () => {
+      await Promise.all([loadUsers(), loadRole()]);
+      setLoading(false); // Set loading to false after both are completed
+    };
+
+    fetchData();
   }, []);
 
   const handleMenuClick = (event, user) => {
@@ -273,6 +329,12 @@ const UserListTemplate = () => {
           Members
         </Typography>
 
+        {userRole && (
+          <Typography variant="h6" gutterBottom>
+            ROLE: {userRole.toUpperCase()}
+          </Typography>
+        )}
+
         {/* Filter buttons */}
         <Box
           sx={{
@@ -305,59 +367,67 @@ const UserListTemplate = () => {
                 Active Members
               </Button>
             )}
-            {isMobile ? (
-              filter === "new_applications" ? (
-                <Button
-                  variant="outlined"
-                  onClick={() => setFilter("new_applications")}
-                  startIcon={<NotificationsNoneIcon />}
-                >
-                  Applications
-                </Button>
-              ) : (
-                <IconButton onClick={() => setFilter("new_applications")}>
-                  <NotificationsNoneIcon
-                    sx={{ color: theme.palette.primary.main }}
-                  />
-                </IconButton>
-              )
-            ) : (
-              <Button
-                startIcon={<NotificationsNoneIcon />}
-                variant={
-                  filter === "new_applications" ? "contained" : "outlined"
-                }
-                onClick={() => setFilter("new_applications")}
-              >
-                New Applications
-              </Button>
-            )}
+            {userRole && (
+              <>
+                {(userRole === "president" || userRole === "vice president" || userRole === "internal relations") && (
+                <>
+                  {isMobile ? (
+                    filter === "new_applications" ? (
+                      <Button
+                        variant="outlined"
+                        onClick={() => setFilter("new_applications")}
+                        startIcon={<NotificationsNoneIcon />}
+                      >
+                        Applications
+                      </Button>
+                    ) : (
+                      <IconButton onClick={() => setFilter("new_applications")}>
+                        <NotificationsNoneIcon
+                          sx={{ color: theme.palette.primary.main }}
+                        />
+                      </IconButton>
+                    )
+                  ) : (
+                    <Button
+                      startIcon={<NotificationsNoneIcon />}
+                      variant={
+                        filter === "new_applications" ? "contained" : "outlined"
+                      }
+                      onClick={() => setFilter("new_applications")}
+                    >
+                      New Applications
+                    </Button>
+                  )}
 
-            {isMobile ? (
-              filter === "archived" ? (
-                <Button
-                  variant="outlined"
-                  onClick={() => setFilter("archived")}
-                  startIcon={<ArchiveIcon />}
-                >
-                  Archived
-                </Button>
-              ) : (
-                <IconButton
-                  variant="outlined"
-                  onClick={() => setFilter("archived")}
-                >
-                  <ArchiveIcon sx={{ color: theme.palette.primary.main }} />
-                </IconButton>
-              )
-            ) : (
-              <Button
-                startIcon={<ArchiveIcon />}
-                variant={filter === "archived" ? "contained" : "outlined"}
-                onClick={() => setFilter("archived")}
-              >
-                Archived Members
-              </Button>
+                  {isMobile ? (
+                    filter === "archived" ? (
+                      <Button
+                        variant="outlined"
+                        onClick={() => setFilter("archived")}
+                        startIcon={<ArchiveIcon />}
+                      >
+                        Archived
+                      </Button>
+                    ) : (
+                      <IconButton
+                        variant="outlined"
+                        onClick={() => setFilter("archived")}
+                      >
+                        <ArchiveIcon sx={{ color: theme.palette.primary.main }} />
+                      </IconButton>
+                    )
+                  ) : (
+                    <Button
+                      startIcon={<ArchiveIcon />}
+                      variant={filter === "archived" ? "contained" : "outlined"}
+                      onClick={() => setFilter("archived")}
+                    >
+                      Archived Members
+                    </Button>
+                  )}
+                </>
+                )}
+              </>
             )}
           </Box>
           <Button
@@ -387,6 +457,42 @@ const UserListTemplate = () => {
         id={selectedUser?.uin}
         setError={setError}
       />
+
+      {/* updating role */}
+      <Dialog
+        open={openRoleDialog}
+        onClose={handleCloseRoleDialog}
+        maxWidth="xs"
+        fullWidth
+        sx={{
+          '& .MuiDialog-paper': {
+            width: isMobile ? '90%' : '400px', // Wider on desktop, smaller on mobile
+            padding: isMobile ? '10px' : '20px', // Adjust padding for mobile
+          },
+        }}
+      >
+      <DialogTitle>Update Role</DialogTitle>
+      <DialogContent>
+        <Autocomplete
+          value={UserRoles.find(role => role.value === selectedRole) || null}
+          onChange={(event, newValue) => {
+            setSelectedRole(newValue ? newValue.value : null); 
+          }}
+          options={UserRoles}
+          getOptionLabel={(option) => option.label || ''} 
+          renderInput={(params) => <TextField {...params} label="Select Role" />}
+          disableClearable
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCloseRoleDialog} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={handleRoleChange} color="primary">
+          Update
+        </Button>
+      </DialogActions>
+    </Dialog>
     </>
   );
 };
