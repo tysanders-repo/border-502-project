@@ -37,7 +37,7 @@ const mockProjects = [
 
 describe("ProjectListTemplate", () => {
   const mockPush = jest.fn();
-  
+
   beforeEach(() => {
     jest.clearAllMocks();
     useRouter.mockReturnValue({ push: mockPush });
@@ -52,7 +52,9 @@ describe("ProjectListTemplate", () => {
   });
 
   test("renders error state when fetch fails", async () => {
-    fetchAllProjects.mockRejectedValueOnce(new Error("Failed to fetch projects"));
+    fetchAllProjects.mockRejectedValueOnce(
+      new Error("Failed to fetch projects")
+    );
 
     render(<ProjectListTemplate />);
 
@@ -75,7 +77,6 @@ describe("ProjectListTemplate", () => {
     expect(screen.getByText(/Project Artemis/i)).toBeInTheDocument();
   });
 
-
   test("navigates to Users on button click", async () => {
     fetchAllProjects.mockResolvedValueOnce(mockProjects);
 
@@ -87,7 +88,7 @@ describe("ProjectListTemplate", () => {
 
     fireEvent.click(screen.getByText(/Manage Members/i));
 
-    expect(mockPush).toHaveBeenCalledWith("/Users");
+    expect(mockPush).toHaveBeenCalledWith("/Member");
   });
 
   test("navigates to Add Project on button click", async () => {
@@ -101,6 +102,6 @@ describe("ProjectListTemplate", () => {
 
     fireEvent.click(screen.getByText(/Add Project/i));
 
-    expect(mockPush).toHaveBeenCalledWith("/NewProject");
+    expect(mockPush).toHaveBeenCalledWith("Project/New");
   });
 });

@@ -65,7 +65,7 @@ Member.create!(
   role: "member",
   major: "Electrical Engineering",
   year: 2024,
-  email: "john.doe@example.com",
+  email: "john.doe2@example.com",
   phone: "555-1234",
   tshirt_size: "M",
   paid_dues: false,
@@ -85,7 +85,7 @@ Member.create!(
   role: "member",
   major: "Electrical Engineering",
   year: 2024,
-  email: "john.doe@example.com",
+  email: "john.doe3@example.com",
   phone: "555-1234",
   tshirt_size: "M",
   paid_dues: false,
@@ -98,6 +98,28 @@ Member.create!(
   accomplishments: { "projects" => "Built smart home system", "awards" => "Innovation Award" }
 )
 
+DietaryRestriction.create!(
+  item_name: "peanuts"
+)
+
+DietaryRestriction.create!(
+  item_name: "dairy"
+)
+
+Interest.create!(
+  interest_type: "career",
+  name: "software developer"
+)
+
+Interest.create!(
+  interest_type: "company",
+  name: "microsoft"
+)
+
+Interest.create!(
+  interest_type: "personal",
+  name: "swimming"
+)
 
 
 

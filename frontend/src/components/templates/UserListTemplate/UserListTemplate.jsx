@@ -158,14 +158,21 @@ const UserListTemplate = () => {
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
             onClose={handleCloseMenu}
+            slotProps={{
+              paper: {
+                sx: {
+                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.5)",
+                },
+              },
+            }}
           >
             <MenuItem
-              onClick={() => router.push(`/Users/${selectedUser?.uin}`)}
+              onClick={() => router.push(`/Member/${selectedUser?.uin}`)}
             >
               View
             </MenuItem>
             <MenuItem
-              onClick={() => router.push(`/Users/${selectedUser?.uin}/Edit`)}
+              onClick={() => router.push(`/Member/${selectedUser?.uin}/Edit`)}
             >
               Edit
             </MenuItem>
@@ -355,7 +362,7 @@ const UserListTemplate = () => {
           </Box>
           <Button
             variant="outlined"
-            onClick={() => router.push(`/Projects`)}
+            onClick={() => router.push(`/Project`)}
             startIcon={<ManageAccountsIcon />}
           >
             {isMobile ? "Projects" : "Manage Projects"}

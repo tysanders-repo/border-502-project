@@ -24,7 +24,7 @@ const DeleteConfirmationDialog = ({
     try {
       await deleteUser(id);
       // Use Next.js router for navigation
-      router.push("/Users");
+      router.push("/Member");
     } catch (error) {
       setError(error);
     }

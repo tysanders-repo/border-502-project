@@ -60,7 +60,9 @@ describe("ProjectEditTemplate", () => {
       expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
     });
 
-    expect(screen.getByText(/Edit Project - Project Apollo/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Edit Project - Project Apollo/i)
+    ).toBeInTheDocument();
   });
 
   test("handles form submission successfully", async () => {
