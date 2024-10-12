@@ -82,7 +82,7 @@ export default function Navbar() {
       if(signedin){
         const role = await getUserRole()
         const uin = await getUserUIN()
-        if(role !== undefined && uin !== undefined) {
+        if(role === undefined && uin === undefined) {
           setUserInfo()
         }
       }
