@@ -68,7 +68,7 @@ export default function Navbar() {
         if(signedin)
           await deleteUserInfo()
         signedin ? 
-        signOut('google') : 
+        signOut('google', { redirectTo: "/" }) : 
         signIn('google', { redirectTo: "/" });
     } catch (error) {
         console.error('Google error:', error);
@@ -150,14 +150,16 @@ export default function Navbar() {
                   {item.text}
                 </Button>
               ))}
-              <Button
-                variant="outlined"
-                color="inherit"
-                component={Link}
-                href="/Member/New"
-              >
-                New Member?
-              </Button>
+              {!userRole && (
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  component={Link}
+                  href="/Member/New"
+                >
+                  New Member?
+                </Button>
+              )}
               <Button
                     variant="outline"
                     onClick={handleGoogleSignInAndOut}
