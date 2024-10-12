@@ -68,7 +68,7 @@ export default function Navbar() {
         if(signedin)
           await deleteUserInfo()
         signedin ? 
-        signOut('google', { redirectTo: "/" }) : 
+        signOut('google') : 
         signIn('google', { redirectTo: "/" });
     } catch (error) {
         console.error('Google error:', error);
