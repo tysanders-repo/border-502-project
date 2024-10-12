@@ -8,7 +8,6 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import { format } from "date-fns";
 
 import {
-  CircularProgress,
   Alert,
   Typography,
   IconButton,
@@ -22,6 +21,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import ProgressLoading from "@components/organisms/ProgressLoading";
 
 function ProjectListTemplate() {
   const [projects, setProjects] = useState([]);
@@ -122,7 +122,7 @@ function ProjectListTemplate() {
   };
 
   if (loading) {
-    return <CircularProgress />;
+    return <ProgressLoading />;
   }
 
   if (error) {

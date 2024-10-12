@@ -120,7 +120,7 @@ function NewProjectFormTemplate() {
   /**
    * validateForm Function
    *
-   * @description Placeholder function to validate form fields. Can be extended for more complex validations.
+   * @description Function to validate form fields.
    *
    * @returns {boolean} - Returns `true` if the form is valid, otherwise `false`.
    */
