@@ -24,9 +24,11 @@ import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import { getUserRole } from "@services/authService";
 
 const UserListTemplate = () => {
   const [users, setUsers] = useState([]);
+  const [userRole, setUserRole] = useState("none");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -171,12 +173,16 @@ const UserListTemplate = () => {
             >
               View
             </MenuItem>
-            <MenuItem
-              onClick={() => router.push(`/Member/${selectedUser?.uin}/Edit`)}
-            >
-              Edit
-            </MenuItem>
-            <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
+            {userRole === "president" || userRole === "internal relations" ? (
+              <>
+                <MenuItem
+                  onClick={() => router.push(`/Member/${selectedUser?.uin}/Edit`)}
+                >
+                  Edit
+                </MenuItem>
+                <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
+              </>
+              ) : null}
           </Menu>
         </div>
       ),
@@ -188,14 +194,23 @@ const UserListTemplate = () => {
       try {
         const data = await fetchAllUsers();
         setUsers(data);
-        setLoading(false);
       } catch (e) {
         setError(e);
-        setLoading(false);
       }
     }
 
-    loadUsers();
+    async function loadRole() {
+      const role = await getUserRole(); 
+      setUserRole(role);  
+    }
+
+    // Load role and users in parallel
+    const fetchData = async () => {
+      await Promise.all([loadUsers(), loadRole()]);
+      setLoading(false); // Set loading to false after both are completed
+    };
+
+    fetchData();
   }, []);
 
   const handleMenuClick = (event, user) => {
@@ -273,6 +288,12 @@ const UserListTemplate = () => {
           Members
         </Typography>
 
+        {userRole && (
+          <Typography variant="h6" gutterBottom>
+            ROLE: {userRole.toUpperCase()}
+          </Typography>
+        )}
+
         {/* Filter buttons */}
         <Box
           sx={{
@@ -305,59 +326,67 @@ const UserListTemplate = () => {
                 Active Members
               </Button>
             )}
-            {isMobile ? (
-              filter === "new_applications" ? (
-                <Button
-                  variant="outlined"
-                  onClick={() => setFilter("new_applications")}
-                  startIcon={<NotificationsNoneIcon />}
-                >
-                  Applications
-                </Button>
-              ) : (
-                <IconButton onClick={() => setFilter("new_applications")}>
-                  <NotificationsNoneIcon
-                    sx={{ color: theme.palette.primary.main }}
-                  />
-                </IconButton>
-              )
-            ) : (
-              <Button
-                startIcon={<NotificationsNoneIcon />}
-                variant={
-                  filter === "new_applications" ? "contained" : "outlined"
-                }
-                onClick={() => setFilter("new_applications")}
-              >
-                New Applications
-              </Button>
-            )}
+            {userRole && (
+              <>
+                {(userRole === "president" || userRole === "vice president" || userRole === "internal relations") && (
+                <>
+                  {isMobile ? (
+                    filter === "new_applications" ? (
+                      <Button
+                        variant="outlined"
+                        onClick={() => setFilter("new_applications")}
+                        startIcon={<NotificationsNoneIcon />}
+                      >
+                        Applications
+                      </Button>
+                    ) : (
+                      <IconButton onClick={() => setFilter("new_applications")}>
+                        <NotificationsNoneIcon
+                          sx={{ color: theme.palette.primary.main }}
+                        />
+                      </IconButton>
+                    )
+                  ) : (
+                    <Button
+                      startIcon={<NotificationsNoneIcon />}
+                      variant={
+                        filter === "new_applications" ? "contained" : "outlined"
+                      }
+                      onClick={() => setFilter("new_applications")}
+                    >
+                      New Applications
+                    </Button>
+                  )}
 
-            {isMobile ? (
-              filter === "archived" ? (
-                <Button
-                  variant="outlined"
-                  onClick={() => setFilter("archived")}
-                  startIcon={<ArchiveIcon />}
-                >
-                  Archived
-                </Button>
-              ) : (
-                <IconButton
-                  variant="outlined"
-                  onClick={() => setFilter("archived")}
-                >
-                  <ArchiveIcon sx={{ color: theme.palette.primary.main }} />
-                </IconButton>
-              )
-            ) : (
-              <Button
-                startIcon={<ArchiveIcon />}
-                variant={filter === "archived" ? "contained" : "outlined"}
-                onClick={() => setFilter("archived")}
-              >
-                Archived Members
-              </Button>
+                  {isMobile ? (
+                    filter === "archived" ? (
+                      <Button
+                        variant="outlined"
+                        onClick={() => setFilter("archived")}
+                        startIcon={<ArchiveIcon />}
+                      >
+                        Archived
+                      </Button>
+                    ) : (
+                      <IconButton
+                        variant="outlined"
+                        onClick={() => setFilter("archived")}
+                      >
+                        <ArchiveIcon sx={{ color: theme.palette.primary.main }} />
+                      </IconButton>
+                    )
+                  ) : (
+                    <Button
+                      startIcon={<ArchiveIcon />}
+                      variant={filter === "archived" ? "contained" : "outlined"}
+                      onClick={() => setFilter("archived")}
+                    >
+                      Archived Members
+                    </Button>
+                  )}
+                </>
+                )}
+              </>
             )}
           </Box>
           <Button
