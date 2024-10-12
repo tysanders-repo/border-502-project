@@ -37,7 +37,7 @@ export default function Navbar() {
   const menuItems = [
     { text: "Home", link: "/" },
     // Conditionally render "View Members" if role is not "member" and role exists
-    userRole && userRole !== "member" && { text: "View Members", link: "/Member" },
+    userRole && userRole !== "member" && userRole !== "subteam lead" && { text: "View Members", link: "/Member" },
   ].filter(Boolean); // Filter out falsey values
 
   const drawer = (

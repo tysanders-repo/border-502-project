@@ -13,6 +13,12 @@ import {
   MenuItem,
   Box,
   Button,
+  Dialog, 
+  DialogActions, 
+  DialogContent, 
+  DialogTitle,
+  Autocomplete,
+  TextField,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -25,6 +31,7 @@ import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import { getUserRole } from "@services/authService";
+import { UserRoles } from "@utils/arrays/roles";
 
 const UserListTemplate = () => {
   const [users, setUsers] = useState([]);
@@ -37,8 +44,34 @@ const UserListTemplate = () => {
   const [filter, setFilter] = useState("active");
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [openRoleDialog, setOpenRoleDialog] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(null);
 
   const router = useRouter();
+
+  const handleOpenRoleDialog = () => {
+    setOpenRoleDialog(true);
+  };
+
+  const handleCloseRoleDialog = () => {
+    setOpenRoleDialog(false);
+  };
+
+  const handleRoleChange = async () => {
+    if (!selectedRole) return;
+
+    try {
+      await updateUserPresident(selectedUser.uin, { role: selectedRole });
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.uin === selectedUser.uin ? { ...user, role: selectedRole } : user
+        )
+      );
+      handleCloseRoleDialog();
+    } catch (err) {
+      setError(err);
+    }
+  };
 
   const capitalizeAndReplace = (str) => {
     if (!str) return "hello";
@@ -168,22 +201,30 @@ const UserListTemplate = () => {
               },
             }}
           >
-            <MenuItem
-              onClick={() => router.push(`/Member/${selectedUser?.uin}`)}
-            >
+            <MenuItem onClick={() => router.push(`/Member/${selectedUser?.uin}`)}>
               View
             </MenuItem>
-            {userRole === "president" || userRole === "internal relations" ? (
-              <>
-                <MenuItem
-                  onClick={() => router.push(`/Member/${selectedUser?.uin}/Edit`)}
-                >
-                  Edit
-                </MenuItem>
-                <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
-              </>
-              ) : null}
+
+            {/* Check userRole and conditionally render menu items */}
+            {userRole === "president" || userRole === "vice president" ? 
+              <MenuItem key="updateRole" onClick={handleOpenRoleDialog}>
+                Update Role
+              </MenuItem>
+             : null}
+
+            {userRole === "president" || userRole === "internal relations" ? [
+              <MenuItem
+                key="edit"
+                onClick={() => router.push(`/Member/${selectedUser?.uin}/Edit`)}
+              >
+                Edit
+              </MenuItem>,
+              <MenuItem key="delete" onClick={handleDeleteClick}>
+                Delete
+              </MenuItem>,
+            ] : null}
           </Menu>
+
         </div>
       ),
     },
@@ -416,6 +457,42 @@ const UserListTemplate = () => {
         id={selectedUser?.uin}
         setError={setError}
       />
+
+      {/* updating role */}
+      <Dialog
+        open={openRoleDialog}
+        onClose={handleCloseRoleDialog}
+        maxWidth="xs"
+        fullWidth
+        sx={{
+          '& .MuiDialog-paper': {
+            width: isMobile ? '90%' : '400px', // Wider on desktop, smaller on mobile
+            padding: isMobile ? '10px' : '20px', // Adjust padding for mobile
+          },
+        }}
+      >
+      <DialogTitle>Update Role</DialogTitle>
+      <DialogContent>
+        <Autocomplete
+          value={UserRoles.find(role => role.value === selectedRole) || null}
+          onChange={(event, newValue) => {
+            setSelectedRole(newValue ? newValue.value : null); 
+          }}
+          options={UserRoles}
+          getOptionLabel={(option) => option.label || ''} 
+          renderInput={(params) => <TextField {...params} label="Select Role" />}
+          disableClearable
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCloseRoleDialog} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={handleRoleChange} color="primary">
+          Update
+        </Button>
+      </DialogActions>
+    </Dialog>
     </>
   );
 };
