@@ -20,6 +20,7 @@ import { signIn, signOut } from "next-auth/react";
 
 export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [userRole, setUserRole] = useState(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -35,8 +36,9 @@ export default function Navbar() {
 
   const menuItems = [
     { text: "Home", link: "/" },
-    { text: "View Members", link: "/Member" },
-  ];
+    // Conditionally render "View Members" if role is not "member" and role exists
+    userRole && userRole !== "member" && { text: "View Members", link: "/Member" },
+  ].filter(Boolean); // Filter out falsey values
 
   const drawer = (
     <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
@@ -85,6 +87,7 @@ export default function Navbar() {
         await setUserInfo()
         const role = await getUserRole()
         const uin = await getUserUIN()
+        setUserRole(role);
         console.log(role)
         console.log(uin)
       }
