@@ -1,5 +1,6 @@
 import { API_URL } from '../constants';
 
+
 async function fetchAllProjects() {
   const response = await fetch(`${API_URL}/projects`);
   if (!response.ok) {

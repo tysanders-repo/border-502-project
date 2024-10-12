@@ -73,9 +73,7 @@ export default function Navbar() {
     } catch (error) {
         console.error('Google error:', error);
     } finally {
-        // setIsLoading(false);
-        // console.log("This should print out");
-        // redirect("/");
+        // This doesn't run if the sign in/out is successful since they redirect
     }
   };
   // Sets up user info, if available
@@ -84,7 +82,9 @@ export default function Navbar() {
       const signedin = await signedIn()
       setIsSignedIn(signedin)
       if(signedin){
-        await setUserInfo()
+        if(role === undefined && uin === undefined) {
+          setUserInfo()
+        }
         const role = await getUserRole()
         const uin = await getUserUIN()
         setUserRole(role);
