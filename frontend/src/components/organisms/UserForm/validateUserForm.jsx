@@ -1,8 +1,20 @@
 /**
- * validateUserForm Function
- *
- * @description Validates the form fields for required inputs like name and UIN.
+ * Validates the form fields for required inputs like name and UIN.
  * If the fields are not valid, sets the formError state accordingly.
+ *
+ * @param {Object} user - The user object containing form data.
+ * @param {string} user.first_name - The first name of the user.
+ * @param {string} user.last_name - The last name of the user.
+ * @param {number|string} user.uin - The user's unique identification number.
+ * @param {string} user.major - The user's major field of study.
+ * @param {number} user.year - The year of study for the user.
+ * @param {string} user.email - The user's email address.
+ * @param {string} user.phone - The user's phone number.
+ * @param {string} user.tshirt_size - The user's t-shirt size.
+ * @param {string} [user.aggie_ring_day] - The user's Aggie Ring Day (optional).
+ * @param {string} user.birthday - The user's birthday.
+ * @param {string} user.graduation_day - The user's graduation day.
+ * @param {(errors: Object) => void} setFormError - Function to set the form error state.
  *
  * @returns {boolean} - Returns `true` if the form is valid, otherwise `false`.
  */

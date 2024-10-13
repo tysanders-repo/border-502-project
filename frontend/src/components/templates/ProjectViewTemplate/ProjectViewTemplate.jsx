@@ -13,8 +13,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 /**
  * ProjectViewTemplate Component
  *
- * @component
- * @description Displays the detailed view of a project, including its title, description, images, and date. It fetches project data from the server using the provided project ID.
+ *  Displays the detailed view of a project, including its title, description, images, and date. It fetches project data from the server using the provided project ID.
  *
  * @param {Object} props - The component's props object.
  * @param {Object} props.params - The route parameters containing the project ID.
@@ -85,6 +84,13 @@ function ProjectViewTemplate({ params }) {
               sx={{ width: "100%", height: "100%" }}
               cols={2}
               rowHeight={400}
+              slotProps={{
+                root: {
+                  sx: {
+                    border: "1px solid #e0e0e0", // Optional styling
+                  },
+                },
+              }}
             >
               {project.image_urls?.map((image) => (
                 <ImageListItem key={image.id}>

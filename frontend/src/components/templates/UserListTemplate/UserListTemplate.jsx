@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { fetchAllUsers, updateUserPresident } from "@services/userService";
 import DeleteConfirmationDialog from "@components/organisms/DeleteConfirmationDialog";
 import {
+  CircularProgress,
   Alert,
   Typography,
   IconButton,
@@ -12,9 +13,9 @@ import {
   MenuItem,
   Box,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
+  Dialog, 
+  DialogActions, 
+  DialogContent, 
   DialogTitle,
   Autocomplete,
   TextField,
@@ -31,8 +32,15 @@ import ArchiveIcon from "@mui/icons-material/Archive";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import { getUserRole } from "@services/authService";
 import { UserRoles } from "@utils/arrays/roles";
-import ProgressLoading from "@components/organisms/ProgressLoading";
 
+/**
+ * UserListTemplate component
+ *
+ * This component allows officers with correct permissions to view and update their information.
+ * It allows supports of users based on different fields.  
+ *
+ * @returns {JSX.Element} The rendered user list component.
+ */
 const UserListTemplate = () => {
   const [users, setUsers] = useState([]);
   const [userRole, setUserRole] = useState("none");
@@ -201,35 +209,30 @@ const UserListTemplate = () => {
               },
             }}
           >
-            <MenuItem
-              onClick={() => router.push(`/Member/${selectedUser?.uin}`)}
-            >
+            <MenuItem onClick={() => router.push(`/Member/${selectedUser?.uin}`)}>
               View
             </MenuItem>
 
             {/* Check userRole and conditionally render menu items */}
-            {userRole === "president" || userRole === "vice president" ? (
+            {userRole === "president" || userRole === "vice president" ? 
               <MenuItem key="updateRole" onClick={handleOpenRoleDialog}>
                 Update Role
               </MenuItem>
-            ) : null}
+             : null}
 
-            {userRole === "president" || userRole === "internal relations"
-              ? [
-                  <MenuItem
-                    key="edit"
-                    onClick={() =>
-                      router.push(`/Member/${selectedUser?.uin}/Edit`)
-                    }
-                  >
-                    Edit
-                  </MenuItem>,
-                  <MenuItem key="delete" onClick={handleDeleteClick}>
-                    Delete
-                  </MenuItem>,
-                ]
-              : null}
+            {userRole === "president" || userRole === "internal relations" ? [
+              <MenuItem
+                key="edit"
+                onClick={() => router.push(`/Member/${selectedUser?.uin}/Edit`)}
+              >
+                Edit
+              </MenuItem>,
+              <MenuItem key="delete" onClick={handleDeleteClick}>
+                Delete
+              </MenuItem>,
+            ] : null}
           </Menu>
+
         </div>
       ),
     },
@@ -246,8 +249,8 @@ const UserListTemplate = () => {
     }
 
     async function loadRole() {
-      const role = await getUserRole();
-      setUserRole(role);
+      const role = await getUserRole(); 
+      setUserRole(role);  
     }
 
     // Load role and users in parallel
@@ -312,7 +315,7 @@ const UserListTemplate = () => {
   });
 
   if (loading) {
-    return <ProgressLoading />;
+    return <CircularProgress />;
   }
 
   if (error) {
@@ -379,73 +382,63 @@ const UserListTemplate = () => {
             )}
             {userRole && (
               <>
-                {(userRole === "president" ||
-                  userRole === "vice president" ||
-                  userRole === "internal relations") && (
-                  <>
-                    {isMobile ? (
-                      filter === "new_applications" ? (
-                        <Button
-                          variant="outlined"
-                          onClick={() => setFilter("new_applications")}
-                          startIcon={<NotificationsNoneIcon />}
-                        >
-                          Applications
-                        </Button>
-                      ) : (
-                        <IconButton
-                          onClick={() => setFilter("new_applications")}
-                        >
-                          <NotificationsNoneIcon
-                            sx={{ color: theme.palette.primary.main }}
-                          />
-                        </IconButton>
-                      )
-                    ) : (
+                {(userRole === "president" || userRole === "vice president" || userRole === "internal relations") && (
+                <>
+                  {isMobile ? (
+                    filter === "new_applications" ? (
                       <Button
-                        startIcon={<NotificationsNoneIcon />}
-                        variant={
-                          filter === "new_applications"
-                            ? "contained"
-                            : "outlined"
-                        }
+                        variant="outlined"
                         onClick={() => setFilter("new_applications")}
+                        startIcon={<NotificationsNoneIcon />}
                       >
-                        New Applications
+                        Applications
                       </Button>
-                    )}
-
-                    {isMobile ? (
-                      filter === "archived" ? (
-                        <Button
-                          variant="outlined"
-                          onClick={() => setFilter("archived")}
-                          startIcon={<ArchiveIcon />}
-                        >
-                          Archived
-                        </Button>
-                      ) : (
-                        <IconButton
-                          variant="outlined"
-                          onClick={() => setFilter("archived")}
-                        >
-                          <ArchiveIcon
-                            sx={{ color: theme.palette.primary.main }}
-                          />
-                        </IconButton>
-                      )
                     ) : (
+                      <IconButton onClick={() => setFilter("new_applications")}>
+                        <NotificationsNoneIcon
+                          sx={{ color: theme.palette.primary.main }}
+                        />
+                      </IconButton>
+                    )
+                  ) : (
+                    <Button
+                      startIcon={<NotificationsNoneIcon />}
+                      variant={
+                        filter === "new_applications" ? "contained" : "outlined"
+                      }
+                      onClick={() => setFilter("new_applications")}
+                    >
+                      New Applications
+                    </Button>
+                  )}
+
+                  {isMobile ? (
+                    filter === "archived" ? (
                       <Button
+                        variant="outlined"
+                        onClick={() => setFilter("archived")}
                         startIcon={<ArchiveIcon />}
-                        variant={
-                          filter === "archived" ? "contained" : "outlined"
-                        }
+                      >
+                        Archived
+                      </Button>
+                    ) : (
+                      <IconButton
+                        variant="outlined"
                         onClick={() => setFilter("archived")}
                       >
-                        Archived Members
-                      </Button>
-                    )}
-                  </>
+                        <ArchiveIcon sx={{ color: theme.palette.primary.main }} />
+                      </IconButton>
+                    )
+                  ) : (
+                    <Button
+                      startIcon={<ArchiveIcon />}
+                      variant={filter === "archived" ? "contained" : "outlined"}
+                      onClick={() => setFilter("archived")}
+                    >
+                      Archived Members
+                    </Button>
+                  )}
+                </>
                 )}
               </>
             )}
@@ -485,38 +478,34 @@ const UserListTemplate = () => {
         maxWidth="xs"
         fullWidth
         sx={{
-          "& .MuiDialog-paper": {
-            width: isMobile ? "90%" : "400px", // Wider on desktop, smaller on mobile
-            padding: isMobile ? "10px" : "20px", // Adjust padding for mobile
+          '& .MuiDialog-paper': {
+            width: isMobile ? '90%' : '400px', // Wider on desktop, smaller on mobile
+            padding: isMobile ? '10px' : '20px', // Adjust padding for mobile
           },
         }}
       >
-        <DialogTitle>Update Role</DialogTitle>
-        <DialogContent>
-          <Autocomplete
-            value={
-              UserRoles.find((role) => role.value === selectedRole) || null
-            }
-            onChange={(event, newValue) => {
-              setSelectedRole(newValue ? newValue.value : null);
-            }}
-            options={UserRoles}
-            getOptionLabel={(option) => option.label || ""}
-            renderInput={(params) => (
-              <TextField {...params} label="Select Role" />
-            )}
-            disableClearable
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseRoleDialog} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleRoleChange} color="primary">
-            Update
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DialogTitle>Update Role</DialogTitle>
+      <DialogContent>
+        <Autocomplete
+          value={UserRoles.find(role => role.value === selectedRole) || null}
+          onChange={(event, newValue) => {
+            setSelectedRole(newValue ? newValue.value : null); 
+          }}
+          options={UserRoles}
+          getOptionLabel={(option) => option.label || ''} 
+          renderInput={(params) => <TextField {...params} label="Select Role" />}
+          disableClearable
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCloseRoleDialog} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={handleRoleChange} color="primary">
+          Update
+        </Button>
+      </DialogActions>
+    </Dialog>
     </>
   );
 };

@@ -30,7 +30,20 @@ import {
   deleteMemberInterestsByUin,
 } from "@services/memberInterestService";
 
+/**
+ * UserEditTemplate component
+ *
+ * This component allows users to edit and update their information.
+ * It fetches existing user data based on the provided user ID, handles
+ * dietary restrictions and interests, and submits the updated information.
+ *
+ * @param {Object} props - Component properties.
+ * @param {Object} props.params - Parameters containing user ID.
+ *
+ * @returns {JSX.Element} The rendered component.
+ */
 function UserEditTemplate({ params }) {
+  // State to hold user data
   const [user, setUser] = useState({
     first_name: "",
     last_name: "",
@@ -44,9 +57,13 @@ function UserEditTemplate({ params }) {
     birthday: null,
     graduation_day: null,
   });
+
+  // State to manage loading and error states
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [formError, setFormError] = useState({ name: false, uin: false });
+
+  // State for dietary restrictions and interests
   const [dietaryRestrictions, setDietaryRestrictions] = useState([]);
   const [selectedDietaryRestrictions, setSelectedDietaryRestrictions] =
     useState([]);
@@ -59,6 +76,7 @@ function UserEditTemplate({ params }) {
   const [careerInterests, setCareerInterests] = useState([]);
   const [selectedCareerInterests, setSelectedCareerInterests] = useState([]);
 
+  // Router for navigation
   const router = useRouter();
   const { id } = params;
 
@@ -66,10 +84,11 @@ function UserEditTemplate({ params }) {
     if (!id) return; // Don't run the effect if id is not available
     const fetchCurrentUser = async () => {
       try {
+        // Fetch user data based on ID
         const userData = await fetchUser(id);
         setUser(userData);
 
-        // Fetch all options
+        // Fetch all options for dietary restrictions and interests
         const restrictions = await fetchAllDietRestrictions();
         setDietaryRestrictions(restrictions);
 
@@ -82,8 +101,8 @@ function UserEditTemplate({ params }) {
         const companyInterests = await fetchAllCompanyInterests();
         setCompanyInterests(companyInterests);
 
+        // Fetch current dietary restrictions for the user
         const currentRestrictions = await getMemberDiet(userData.uin);
-
         if (currentRestrictions) {
           const mappedRestrictions = currentRestrictions.map((restriction) => ({
             id: restriction.item_id,
@@ -92,64 +111,63 @@ function UserEditTemplate({ params }) {
           setSelectedDietaryRestrictions(mappedRestrictions);
         }
 
+        // Fetch current personal interests for the user
         const currentPersonalInterests = await getMemberPersonalInterests(
           userData.uin
         );
-
         if (currentPersonalInterests) {
           const mappedPersonalInterests = currentPersonalInterests.map(
             (interests) => ({
               id: interests.interest_id,
-              //do i need the interest type here?
               name: interests.name,
             })
           );
           setSelectedPersonalInterests(mappedPersonalInterests);
         }
 
+        // Fetch current career interests for the user
         const currentCareerInterests = await getMemberCareerInterests(
           userData.uin
         );
-
         if (currentCareerInterests) {
           const mappedCareerInterests = currentCareerInterests.map(
             (interests) => ({
               id: interests.interest_id,
-              //do i need the interest type here?
               name: interests.name,
             })
           );
           setSelectedCareerInterests(mappedCareerInterests);
         }
 
+        // Fetch current company interests for the user
         const currentCompanyInterests = await getMemberCompanyInterests(
           userData.uin
         );
-
         if (currentCompanyInterests) {
           const mappedCompanyInterests = currentCompanyInterests.map(
             (interests) => ({
               id: interests.interest_id,
-              //do i need the interest type here?
               name: interests.name,
             })
           );
           setSelectedCompanyInterests(mappedCompanyInterests);
         }
       } catch (e) {
-        setError(e);
+        setError(e); // Set error state if fetching fails
       } finally {
-        setLoading(false);
+        setLoading(false); // Loading is complete
       }
     };
 
-    fetchCurrentUser();
+    fetchCurrentUser(); // Fetch user data on component mount
   }, [id]);
 
+  // Handler for dietary restriction change
   const handleDietaryRestrictionChange = (event, newValue) => {
     setSelectedDietaryRestrictions(newValue);
   };
 
+  // Handlers for interest changes
   const handlePersonalInterestRestrictionChange = async (event, newValue) => {
     setSelectedPersonalInterests(newValue);
   };
@@ -162,13 +180,21 @@ function UserEditTemplate({ params }) {
     setSelectedCompanyInterests(newValue);
   };
 
+  // Cancel button handler to navigate back to the Member page
   const handleCancel = () => {
     router.push(`/Member`);
   };
 
+  /**
+   * Handles form submission for updating user data.
+   *
+   * @param {React.FormEvent<HTMLFormElement>} e - The form event.
+   * @returns {Promise<void>}
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateUserForm(user, setFormError)) {
+      // Create updated user object
       const updatedUser = {
         first_name: user.first_name,
         last_name: user.last_name,
@@ -183,11 +209,15 @@ function UserEditTemplate({ params }) {
         graduation_day: user.graduation_day,
       };
       try {
+        // Update user data
         const response = await updateUser(id, updatedUser);
 
+        // Delete existing dietary restrictions
         const delRestrictions = await deleteMemberDietsByUin(response.uin);
         const delInterests = await deleteMemberInterestsByUin(response.uin);
+
         try {
+          // Add new dietary restrictions
           for (const restriction of selectedDietaryRestrictions) {
             let restrictionObject;
             if (typeof restriction === "string") {
@@ -206,13 +236,12 @@ function UserEditTemplate({ params }) {
             } else {
               restrictionObject = restriction;
             }
-            //only create member diet if it doesnt already exist
+
+            // Only create member diet if it doesn't already exist
             const exist_response = await checkMemberDietExists(
               response.uin,
               restrictionObject.id
             );
-            console.log("Existence check response:", exist_response);
-
             if (!exist_response) {
               await createMemberDiet({
                 uin: response.uin,
@@ -221,9 +250,11 @@ function UserEditTemplate({ params }) {
             }
           }
         } catch (e) {
-          setError("failed to add diets");
+          setError("failed to add diets"); // Set error if dietary restriction addition fails
         }
+
         try {
+          // Add new personal interests
           for (const personalInterest of selectedPersonalInterests) {
             let persInterestObj;
             if (typeof personalInterest === "string") {
@@ -232,7 +263,6 @@ function UserEditTemplate({ params }) {
                   persElem.name.toLowerCase() === personalInterest.toLowerCase()
               );
               if (!existingPersonalInterest) {
-                console.log("attempting to create new interest");
                 persInterestObj = await createInterest({
                   interest_type: "personal",
                   name: personalInterest,
@@ -243,28 +273,24 @@ function UserEditTemplate({ params }) {
             } else {
               persInterestObj = personalInterest;
             }
-            console.log("interest id: ");
-            console.log(persInterestObj.id);
             const exist_response = await checkMemberInterestExists({
               uin: response.uin,
               interest_id: persInterestObj.id,
             });
-            console.log("Existence check response:", exist_response);
 
             if (!exist_response) {
-              console.log("attempting to add personal interests");
               const creation_response = await createMemberInterest({
                 uin: response.uin,
                 interest_id: persInterestObj.id,
               });
-              console.log(creation_response);
             }
           }
         } catch (e) {
-          console.log("failed to add personal interests");
-          setError("failed to add personal interests");
+          setError("failed to add personal interests"); // Set error if personal interest addition fails
         }
+
         try {
+          // Add new career interests
           for (const careerInterest of selectedCareerInterests) {
             let carInterestObj;
             if (typeof careerInterest === "string") {
@@ -273,7 +299,6 @@ function UserEditTemplate({ params }) {
                   carElem.name.toLowerCase() === careerInterest.toLowerCase()
               );
               if (!existingCareerInterest) {
-                console.log("attempting to create new interest");
                 carInterestObj = await createInterest({
                   interest_type: "career",
                   name: careerInterest,
@@ -284,23 +309,24 @@ function UserEditTemplate({ params }) {
             } else {
               carInterestObj = careerInterest;
             }
-            const exist_response = await checkMemberInterestExists(
-              response.uin,
-              carInterestObj.id
-            );
-            console.log("Existence check response:", exist_response);
+            const exist_response = await checkMemberInterestExists({
+              uin: response.uin,
+              interest_id: carInterestObj.id,
+            });
 
             if (!exist_response) {
-              await createMemberInterest({
+              const creation_response = await createMemberInterest({
                 uin: response.uin,
                 interest_id: carInterestObj.id,
               });
             }
           }
         } catch (e) {
-          setError("failed to add career interests");
+          setError("failed to add career interests"); // Set error if career interest addition fails
         }
+
         try {
+          // Add new company interests
           for (const companyInterest of selectedCompanyInterests) {
             let compInterestObj;
             if (typeof companyInterest === "string") {
@@ -309,7 +335,6 @@ function UserEditTemplate({ params }) {
                   compElem.name.toLowerCase() === companyInterest.toLowerCase()
               );
               if (!existingCompanyInterest) {
-                console.log("attempting to create new interest");
                 compInterestObj = await createInterest({
                   interest_type: "company",
                   name: companyInterest,
@@ -320,68 +345,56 @@ function UserEditTemplate({ params }) {
             } else {
               compInterestObj = companyInterest;
             }
-            const exist_response = await checkMemberInterestExists(
-              response.uin,
-              compInterestObj.id
-            );
-            console.log("Existence check response:", exist_response);
+            const exist_response = await checkMemberInterestExists({
+              uin: response.uin,
+              interest_id: compInterestObj.id,
+            });
 
             if (!exist_response) {
-              await createMemberInterest({
+              const creation_response = await createMemberInterest({
                 uin: response.uin,
                 interest_id: compInterestObj.id,
               });
             }
           }
         } catch (e) {
-          setError("failed to add company interests");
+          setError("failed to add company interests"); // Set error if company interest addition fails
         }
-        console.log(response);
-        router.push(`/Member/${response.uin}`);
-      } catch (e) {
-        setError(e);
+
+        // Navigate back to the Member page after successful update
+        setUser(updatedUser);
+        router.push(`/Member`);
+      } catch (error) {
+        console.error("Failed to update user:", error);
+        setError("Failed to update user."); // Set error if user update fails
       }
     }
   };
 
-  const handleChange = (field, value) => {
-    setUser((prevUser) => ({
-      ...prevUser,
-      [field]: value,
-    }));
-  };
+  // Loading and error states for the UI
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error loading user data.</div>;
 
   return (
-    <Container maxWidth="md" sx={{ textAlign: "center" }}>
+    <Container>
       <Typography variant="h4" component="h1" gutterBottom>
-        Edit User - {user.first_name} {user.last_name}
+        Edit User
       </Typography>
       <UserForm
         user={user}
-        loading={loading}
-        error={error}
-        formError={formError}
-        onChange={handleChange}
-        onSubmit={handleSubmit}
-        handleCancel={handleCancel}
-        dietaryRestrictions={dietaryRestrictions}
-        handleDietaryRestrictionChange={handleDietaryRestrictionChange}
-        selectedDietaryRestrictions={selectedDietaryRestrictions}
-        personalInterests={personalInterests}
-        handlePersonalInterestRestrictionChange={
-          handlePersonalInterestRestrictionChange
-        }
-        selectedPersonalInterests={selectedPersonalInterests}
-        careerInterests={careerInterests}
-        handleCareerInterestRestrictionChange={
-          handleCareerInterestRestrictionChange
-        }
-        selectedCareerInterests={selectedCareerInterests}
-        companyInterests={companyInterests}
-        handleCompanyInterestRestrictionChange={
-          handleCompanyInterestRestrictionChange
-        }
-        selectedCompanyInterests={selectedCompanyInterests}
+        onChange={setUser} // Handle user data change
+        onDietaryRestrictionsChange={handleDietaryRestrictionChange} // Handle dietary restrictions change
+        selectedDietaryRestrictions={selectedDietaryRestrictions} // Current dietary restrictions
+        selectedPersonalInterests={selectedPersonalInterests} // Current personal interests
+        selectedCareerInterests={selectedCareerInterests} // Current career interests
+        selectedCompanyInterests={selectedCompanyInterests} // Current company interests
+        onPersonalInterestsChange={handlePersonalInterestRestrictionChange} // Handle personal interests change
+        onCareerInterestsChange={handleCareerInterestRestrictionChange} // Handle career interests change
+        onCompanyInterestsChange={handleCompanyInterestRestrictionChange} // Handle company interests change
+        onSubmit={handleSubmit} // Handle form submission
+        onCancel={handleCancel} // Handle cancellation
+        formError={formError} // Form error state
+        error={error} // Error state
       />
     </Container>
   );

@@ -1,0 +1,16 @@
+{
+  "out": "docs", // Output directory for the generated documentation
+  "exclude": [
+    "src/app/**/*",
+    "src/constants.js",
+    "src/auth.js",
+    "src/utils/**/*",
+    "**/*.test.jsx",
+    "**/*.styles.jsx",
+    "**/index.js",
+    "node_modules"
+  ], // Exclude test, style, export files and node_modules
+  "theme": "default", // Theme for the documentation
+  "tsconfig": "tsconfig.json", // Path to your JavaScript configuration file
+  "entryPoints": ["src/**/*.{js,jsx}"] // Include all JavaScript and JSX files in the src directory
+}

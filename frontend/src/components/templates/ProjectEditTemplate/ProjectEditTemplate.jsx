@@ -1,10 +1,5 @@
 "use client"; // Marks this component for client-side rendering in Next.js
 
-/**
- * @file ProjectEditTemplate.jsx
- * @description This component handles the editing of a project. It fetches the project's existing details, displays them in an editable form, and allows users to make changes, upload new images, and save their modifications.
- */
-
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // Next.js router for navigation
 import { Container, Typography, Alert } from "@mui/material";
@@ -13,11 +8,9 @@ import ProjectForm from "@components/organisms/ProjectForm/ProjectForm"; // Form
 import ProgressLoading from "@components/organisms/ProgressLoading";
 
 /**
- * ProjectEditTemplate Component
+ * ProjectEditTemplate component
  *
- * @component
- * @description Displays an editable form for modifying a project's details. It pre-fills the form with existing data and handles form submission, image uploads, and navigation.
- *
+ * This component handles the editing of a project. It fetches the project's existing details, displays them in an editable form, and allows users to make changes, upload new images, and save their modifications.
  * @param {Object} props - The props object.
  * @param {Object} props.params - The route parameters containing the project ID.
  * @returns {JSX.Element} A form view for editing a project.

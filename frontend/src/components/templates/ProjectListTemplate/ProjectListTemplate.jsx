@@ -1,4 +1,5 @@
-"use client";
+"use client"; // Marks this component for client-side rendering in Next.js
+
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -6,7 +7,6 @@ import { fetchAllProjects } from "@services/projectService";
 import DeleteProjectDialog from "@components/organisms/DeleteProjectDialog";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import { format } from "date-fns";
-
 import {
   Alert,
   Typography,
@@ -23,26 +23,31 @@ import { useTheme } from "@mui/material/styles";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ProgressLoading from "@components/organisms/ProgressLoading";
 
+/**
+ * ProjectListTemplate component
+ * This component displays a list of projects. It fetches project data from the server, shows it in a table, and provides options to view, edit, or delete projects.
+ * @returns {JSX.Element} A list view for projects with options to manage them.
+ */
 function ProjectListTemplate() {
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedProject, setSelectedProject] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [projects, setProjects] = useState([]); // State to manage the list of projects.
+  const [loading, setLoading] = useState(true); // State to manage loading status.
+  const [error, setError] = useState(null); // State to manage error messages.
+  const [anchorEl, setAnchorEl] = useState(null); // State for managing the anchor element of the menu.
+  const [selectedProject, setSelectedProject] = useState(null); // State for managing the currently selected project for actions.
+  const [openDialog, setOpenDialog] = useState(false); // State to manage the open/close state of the delete confirmation dialog.
+  const theme = useTheme(); // Hook to access the theme for responsive design.
+  const isMobile = useMediaQuery(theme.breakpoints.down("md")); // Determine if the view is mobile based on the screen size.
 
-  const router = useRouter();
+  const router = useRouter(); // Next.js router for navigation.
 
   const columns = [
-    { field: "title", headerName: "Title", flex: 1 },
-    { field: "description", headerName: "Description", flex: 1 },
+    { field: "title", headerName: "Title", flex: 1 }, // Column definition for project title.
+    { field: "description", headerName: "Description", flex: 1 }, // Column definition for project description.
     {
       field: "date",
       headerName: "Start Date",
       flex: 1,
-      renderCell: (params) => format(new Date(params.value), "MMMM d, yyyy"),
+      renderCell: (params) => format(new Date(params.value), "MMMM d, yyyy"), // Format the date for display.
     },
     {
       field: "actions",
@@ -88,43 +93,73 @@ function ProjectListTemplate() {
     },
   ];
 
+  /**
+   * loadProjects Function
+   *
+   * @description Fetches all projects from the server and updates the projects state. Handles loading and error states.
+   */
   const loadProjects = async () => {
     try {
-      const data = await fetchAllProjects();
-      setProjects(data);
-      setLoading(false);
+      const data = await fetchAllProjects(); // Fetch project data from the service.
+      setProjects(data); // Update projects state with fetched data.
+      setLoading(false); // Set loading state to false.
     } catch (e) {
-      setError(e);
-      setLoading(false);
+      setError(e); // Set error state if the request fails.
+      setLoading(false); // Set loading state to false.
     }
   };
 
   useEffect(() => {
-    loadProjects();
+    loadProjects(); // Load projects when the component mounts.
   }, []);
 
+  /**
+   * handleMenuClick Function
+   *
+   * @description Opens the menu for the selected project.
+   *
+   * @param {MouseEvent} event - The event object from the click event.
+   * @param {Object} project - The project object that was clicked.
+   */
   const handleMenuClick = (event, project) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedProject(project);
+    setAnchorEl(event.currentTarget); // Set the anchor element for the menu.
+    setSelectedProject(project); // Update selected project state.
   };
 
+  /**
+   * handleCloseDialog Function
+   *
+   * @description Closes the delete confirmation dialog.
+   */
   const handleCloseDialog = () => {
-    setOpenDialog(false);
+    setOpenDialog(false); // Set the dialog open state to false.
   };
 
+  /**
+   * handleCloseMenu Function
+   *
+   * @description Closes the actions menu.
+   */
   const handleCloseMenu = () => {
-    setAnchorEl(null);
+    setAnchorEl(null); // Clear the anchor element to close the menu.
   };
 
+  /**
+   * handleDeleteClick Function
+   *
+   * @description Opens the delete confirmation dialog and closes the menu.
+   */
   const handleDeleteClick = () => {
-    setOpenDialog(true);
-    handleCloseMenu();
+    setOpenDialog(true); // Open the delete confirmation dialog.
+    handleCloseMenu(); // Close the actions menu.
   };
 
+  // If the data is still loading, show a loading spinner.
   if (loading) {
     return <ProgressLoading />;
   }
 
+  // If an error occurred while fetching data, display an error message.
   if (error) {
     return <Alert severity="error">{error.message}</Alert>;
   }
@@ -181,7 +216,7 @@ function ProjectListTemplate() {
         handleCloseDialog={handleCloseDialog}
         id={selectedProject?.id}
         setError={setError}
-        onDelete={loadProjects}
+        onDelete={loadProjects} // Callback function to reload projects after deletion.
       />
     </>
   );
