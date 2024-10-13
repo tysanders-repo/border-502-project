@@ -9,6 +9,8 @@ import Navbar from "@components/organisms/Navbar";
 import Footer from "@components/organisms/Footer";
 import theme from "@utils/theme";
 
+import './globals.css';
+
 export default function RootLayout({ children }) {
   const router = useRouter();
 
