@@ -16,6 +16,15 @@ import {
 import { useRouter } from "next/navigation"; // Import useRouter for navigation
 import ProgressLoading from "@components/organisms/ProgressLoading";
 
+/**
+ * UserDetailsTemplate Component
+ *
+ * This component displays the details of a selected user, including personal information and important dates.
+ * The component allows users to edit or delete their profile and handles navigation and dialog visibility.
+ *
+ * @param {Object} props - The route parameters containing the user ID.
+ * @returns {JSX.Element} A detailed view of the selected user.
+ */
 function UserDetailsTemplate({ params }) {
   const router = useRouter();
   const { id } = params;

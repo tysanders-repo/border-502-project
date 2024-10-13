@@ -7,7 +7,7 @@
  * On successful submission, the user is redirected to the new project's detail page.
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation"; // Next.js router for navigation.
 import { createProject } from "@services/projectService"; // Service function to handle project creation.
 import { Container, Typography } from "@mui/material";
@@ -15,10 +15,9 @@ import ProjectForm from "@components/organisms/ProjectForm/ProjectForm"; // Form
 import ProgressLoading from "@components/organisms/ProgressLoading"; // Loading indicator component for async operations.
 
 /**
- * NewProjectFormTemplate Component
+ * NewProjectFormTemplate Component.
  *
- * @component
- * @description Renders a form for creating new projects with fields for project details like title, description, and images.
+ * This component renders a form for creating new projects with fields for project details like title, description, and images.
  * It manages form state, handles form submission, and provides feedback for loading and errors.
  *
  * @returns {JSX.Element} A form for creating new projects with inputs for project details.
@@ -45,18 +44,17 @@ function NewProjectFormTemplate() {
   const router = useRouter(); // Next.js router for handling navigation.
 
   /**
-   * handleCancel Function
+   * Handles redirecting the user back to the Projects page when the cancel button is clicked.
    *
-   * @description Redirects the user back to the Projects page when the cancel button is clicked.
+   * @async
+   * @function handleCancel
    */
   const handleCancel = async () => {
     router.push(`/Project`);
   };
 
   /**
-   * handleImageChange Function
-   *
-   * @description Updates the project state with an array of selected image files.
+   * Updates the project state with an array of selected image files.
    * Converts the FileList into an array and updates the corresponding field in the project state.
    *
    * @param {string} field - The name of the field to update (e.g., 'images').
@@ -71,9 +69,7 @@ function NewProjectFormTemplate() {
   };
 
   /**
-   * handleSubmit Function
-   *
-   * @description Handles form submission by sending the project data to the `createProject` service.
+   * Handles form submission by sending the project data to the `createProject` service.
    * If the submission is successful, the user is redirected to the newly created project's detail page.
    * In case of an error, an error message is displayed.
    *
@@ -103,9 +99,7 @@ function NewProjectFormTemplate() {
   };
 
   /**
-   * handleChange Function
-   *
-   * @description Updates the state of the form fields based on user input.
+   * Updates the state of the form fields based on user input.
    *
    * @param {string} field - The name of the field being updated (e.g., 'title').
    * @param {any} value - The new value for the field.
@@ -118,9 +112,7 @@ function NewProjectFormTemplate() {
   };
 
   /**
-   * validateForm Function
-   *
-   * @description Function to validate form fields.
+   * Validates form fields.
    *
    * @returns {boolean} - Returns `true` if the form is valid, otherwise `false`.
    */
