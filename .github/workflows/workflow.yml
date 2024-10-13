@@ -6,6 +6,7 @@ env:
   DATABASE_PASSWORD: password
   DATABASE_HOST: localhost
   FRONTEND_ORIGIN: localhost:3000
+  AUTH_SECRET: 7OxgCPqJVDFlFQTrlJQg49JNIS/vKxQaBdIZCZ2MJ8U=
 
 name: Rails tests
 on: [push, pull_request]
