@@ -61,7 +61,7 @@ describe("ProjectDetailsTemplate", () => {
     });
 
     expect(
-      screen.getByText(/Error fetching project: Failed to fetch project/i)
+      screen.getByText(/Error fetching project: Failed to fetch project/i),
     ).toBeInTheDocument();
   });
 
@@ -93,7 +93,7 @@ describe("ProjectDetailsTemplate", () => {
 
     // Check if the "Edit Project" button is rendered
     expect(
-      screen.getByRole("button", { name: /Edit Project/i })
+      screen.getByRole("button", { name: /Edit Project/i }),
     ).toBeInTheDocument();
   });
 });

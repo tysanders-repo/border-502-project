@@ -1,1 +1,1 @@
-export { default } from './UserDetailsTemplate'
+export { default } from "./UserDetailsTemplate";

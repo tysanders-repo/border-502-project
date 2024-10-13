@@ -1,1 +1,1 @@
-export { default } from './DeleteProjectDialog'
+export { default } from "./DeleteProjectDialog";

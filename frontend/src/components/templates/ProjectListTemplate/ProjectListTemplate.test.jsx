@@ -53,7 +53,7 @@ describe("ProjectListTemplate", () => {
 
   test("renders error state when fetch fails", async () => {
     fetchAllProjects.mockRejectedValueOnce(
-      new Error("Failed to fetch projects")
+      new Error("Failed to fetch projects"),
     );
 
     render(<ProjectListTemplate />);

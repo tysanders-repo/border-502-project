@@ -18,7 +18,7 @@ describe("UserListTemplate", () => {
     render(
       <MemoryRouter>
         <UserListTemplate />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByRole("progressbar")).toBeInTheDocument();
@@ -30,7 +30,7 @@ describe("UserListTemplate", () => {
     render(
       <MemoryRouter>
         <UserListTemplate />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     await waitFor(() => {

@@ -34,7 +34,7 @@ describe("UserDetailsTemplate", () => {
     render(
       <MemoryRouter initialEntries={["/Member/12345"]}>
         <UserDetailsTemplate />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByRole("progressbar")).toBeInTheDocument();
@@ -46,7 +46,7 @@ describe("UserDetailsTemplate", () => {
     render(
       <MemoryRouter initialEntries={[`/Member/4123`]}>
         <UserDetailsTemplate />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     await waitFor(() => {
@@ -54,14 +54,14 @@ describe("UserDetailsTemplate", () => {
     });
 
     expect(
-      screen.getByText(/Gemma Goddard's Information/i)
+      screen.getByText(/Gemma Goddard's Information/i),
     ).toBeInTheDocument();
     expect(screen.getByText(/UIN: 4123/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/Major: Aerospace Engineering/i)
+      screen.getByText(/Major: Aerospace Engineering/i),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/Email: gemgoddard@yahoo.com/i)
+      screen.getByText(/Email: gemgoddard@yahoo.com/i),
     ).toBeInTheDocument();
   });
 
@@ -72,12 +72,12 @@ describe("UserDetailsTemplate", () => {
       render(
         <MemoryRouter initialEntries={["/Member/12345"]}>
           <UserDetailsTemplate />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
     });
 
     expect(
-      screen.getByText(/Error fetching user: Failed to fetch user/i)
+      screen.getByText(/Error fetching user: Failed to fetch user/i),
     ).toBeInTheDocument();
   });
 
@@ -87,7 +87,7 @@ describe("UserDetailsTemplate", () => {
     render(
       <MemoryRouter initialEntries={["/Member/12345"]}>
         <UserDetailsTemplate />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // Wait for the loading spinner to disappear
@@ -96,7 +96,7 @@ describe("UserDetailsTemplate", () => {
     });
 
     expect(
-      screen.getByText(/Gemma Goddard's Information/i)
+      screen.getByText(/Gemma Goddard's Information/i),
     ).toBeInTheDocument();
 
     // Simulate clicking the "Delete Account" button
@@ -114,7 +114,7 @@ describe("UserDetailsTemplate", () => {
     const { container } = render(
       <MemoryRouter initialEntries={["/Member/4123"]}>
         <UserDetailsTemplate />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     await waitFor(() => {

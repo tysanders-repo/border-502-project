@@ -53,10 +53,10 @@ describe("HomepageTemplate", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText((content) => content.startsWith("Project A"))
+        screen.getByText((content) => content.startsWith("Project A")),
       ).toBeInTheDocument();
       expect(
-        screen.getByText((content) => content.startsWith("Project B"))
+        screen.getByText((content) => content.startsWith("Project B")),
       ).toBeInTheDocument();
       expect(screen.getByText("Description for Project A")).toBeInTheDocument();
       expect(screen.getByText("Description for Project B")).toBeInTheDocument();

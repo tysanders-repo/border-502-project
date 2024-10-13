@@ -1,5 +1,3 @@
-import { styled } from '@mui/material/styles' 
+import { styled } from "@mui/material/styles";
 
-export const StyledProjectListTemplate = styled('div')(({theme}) => ({
-
-}))
+export const StyledProjectListTemplate = styled("div")(({ theme }) => ({}));

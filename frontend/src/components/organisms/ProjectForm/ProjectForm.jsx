@@ -72,7 +72,7 @@ const ProjectForm = ({
       (prevRemoved) =>
         prevRemoved.includes(image)
           ? prevRemoved.filter((img) => img !== image) // Remove from the list
-          : [...prevRemoved, image] // Add to the list
+          : [...prevRemoved, image], // Add to the list
     );
   };
 
@@ -85,8 +85,8 @@ const ProjectForm = ({
   const handlePreviewImageClick = (image) => {
     const imageIndex = projectPreview.indexOf(image); // Get the index of the clicked image
 
-    setProjectPreview((prevPreview) =>
-      prevPreview.filter((_, index) => index !== imageIndex) // Remove the clicked image from the preview
+    setProjectPreview(
+      (prevPreview) => prevPreview.filter((_, index) => index !== imageIndex), // Remove the clicked image from the preview
     );
 
     setProject((prevProject) => ({
@@ -103,8 +103,8 @@ const ProjectForm = ({
    * @param {FileList} files - The list of files selected from the input.
    */
   const handleImageListChange = (name, files) => {
-    const newImages = Array.from(files).map((file) =>
-      URL.createObjectURL(file) // Convert FileList to an array and create URLs
+    const newImages = Array.from(files).map(
+      (file) => URL.createObjectURL(file), // Convert FileList to an array and create URLs
     );
     setProjectPreview((prevList) => [...prevList, ...newImages]); // Update the preview list
     handleImageChange(name, files); // Call the parent function to handle the file changes
