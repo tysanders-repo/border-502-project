@@ -20,6 +20,8 @@ SimpleCov.start 'rails' do
   add_filter '/controllers/api/users_controller.rb' #unused model
   add_filter '/jobs/'
   add_filter '/models/user.rb' #unused model
+  add_filter '/mailers/' #unused
+  add_filter '/controllers/concerns/authentication.rb'
 end
 
 
