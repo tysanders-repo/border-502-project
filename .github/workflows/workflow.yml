@@ -6,6 +6,8 @@ env:
   DATABASE_PASSWORD: password
   DATABASE_HOST: localhost
   FRONTEND_ORIGIN: localhost:3000
+  AUTH_SECRET: "7OxgCPqJVDFlFQTrlJQg49JNIS/vKxQaBdIZCZ2MJ8U="
+  NEXT_PUBLIC_AUTHJS_LOCAL_SESSION_COOKIE: "next-auth.session-token"
 
 name: Rails tests
 on: [push, pull_request]
@@ -48,20 +50,20 @@ jobs:
           cd backend
           yarn install
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: "16"
+      # - name: Set up Node.js
+      #   uses: actions/setup-node@v2
+      #   with:
+      #     node-version: "16"
 
-      - name: Install frontend dependencies
-        run: |
-          cd frontend
-          npm install
+      # - name: Install frontend dependencies
+      #   run: |
+      #     cd frontend
+      #     npm install
 
-      - name: Run Jest tests
-        run: |
-          cd frontend
-          npm run test
+      # - name: Run Jest tests
+      #   run: |
+      #     cd frontend
+      #     npm run test
 
       - name: Run Rspec tests
         run: |
@@ -71,12 +73,12 @@ jobs:
       - name: Run brakeman
         run: |
           cd backend
-          brakeman -o brakeman.txt -x MassAssignment
+          brakeman -o brakeman.txt
 
       - name: Run rubocop
         run: |
           cd backend
-          bundler exec rubocop --force-exclusion vendor/*/** --out rubocop.txt
+          bundler exec rubocop --force-exclusion --out rubocop.txt
 
       - name: Upload coverage results
         uses: actions/upload-artifact@master

@@ -1,7 +1,7 @@
-require 'jose'
-require 'json'
-require 'base64'
-require 'openssl'
+require "jose"
+require "json"
+require "base64"
+require "openssl"
 
 
 def derive_encryption_key(hash_algo, key_material, salt, info, length)
@@ -24,7 +24,7 @@ salt = ENV["NEXT_PUBLIC_AUTHJS_LOCAL_SESSION_COOKIE"]
 info = "Auth.js Generated Encryption Key (#{salt})"
 length = 64
 
-derived_key = derive_encryption_key('sha256', AUTH_SECRET, salt, info, length)
+derived_key = derive_encryption_key("sha256", AUTH_SECRET, salt, info, length)
 
 
 JWK_OCT512 = JOSE::JWK.from_oct(derived_key)

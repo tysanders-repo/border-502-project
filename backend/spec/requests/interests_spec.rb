@@ -20,7 +20,7 @@ RSpec.describe "/interests", type: :request do
     {
       interest_type: "career",
       name: "software developer"
-    } 
+    }
   }
 
   let(:invalid_attributes) {

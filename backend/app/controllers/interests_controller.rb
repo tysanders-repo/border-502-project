@@ -9,17 +9,17 @@ class InterestsController < ApplicationController
   end
 
   def career_interests
-    @career_interests = Interest.where(interest_type: 'career')
+    @career_interests = Interest.where(interest_type: "career")
     render json: @career_interests
   end
 
   def company_interests
-    @company_interests = Interest.where(interest_type: 'company')
+    @company_interests = Interest.where(interest_type: "company")
     render json: @company_interests
   end
 
   def personal_interests
-    @personal_interests = Interest.where(interest_type: 'personal')
+    @personal_interests = Interest.where(interest_type: "personal")
     render json: @personal_interests
   end
 

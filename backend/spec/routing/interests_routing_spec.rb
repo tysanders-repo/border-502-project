@@ -11,7 +11,7 @@ RSpec.describe InterestsController, type: :routing do
     end
 
     it 'routes to #career_interests' do
-      expect(get: '/interests/type/career').to route_to('interests#career_interests') 
+      expect(get: '/interests/type/career').to route_to('interests#career_interests')
     end
 
     it 'routes to #company_interests' do
