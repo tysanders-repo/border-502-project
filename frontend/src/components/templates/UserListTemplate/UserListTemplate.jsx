@@ -329,11 +329,6 @@ const UserListTemplate = () => {
     return <Alert severity="error">{error.message}</Alert>;
   }
 
-  //might need to remove this if js doesnt work the way i want it to
-  if (!userRole) {
-    router.push("/");
-  }
-
   return (
     <>
       <Box
