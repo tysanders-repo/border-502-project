@@ -32,20 +32,50 @@ RSpec.describe "/member_interests", type: :request do
     }
   }
 
-  let(:valid_diet_attributes) {
+  let(:valid_interest_attributes) {
     {
       interest_type: "career",
       name: "software developer"
     }
   }
 
+  let(:valid_interest_attributes2) {
+    {
+      interest_type: "company",
+      name: "software developer"
+    }
+  }
+
+  let(:valid_interest_attributes3) {
+    {
+      interest_type: "personal",
+      name: "software developer"
+    }
+  }
+
   let!(:member) { Member.create!(valid_member_attributes) }
-  let!(:interest) { Interest.create!(valid_diet_attributes) }
-  let!(:interest2) { Interest.create!(valid_diet_attributes) }
+  let!(:interest) { Interest.create!(valid_interest_attributes) }
+  let!(:interest2) { Interest.create!(valid_interest_attributes) }
+  let!(:interest3) { Interest.create!(valid_interest_attributes2) }
+  let!(:interest4) { Interest.create!(valid_interest_attributes3) }
   let(:valid_attributes) {
     {
       uin: member.uin,
       interest_id: interest.id
+    }
+  }
+
+  let(:valid_attributes2) {
+    {
+      uin: member.uin,
+      interest_id: interest3.id
+    }
+  }
+
+  let(:valid_attributes3) {
+    {
+      uin: member.uin,
+      interest_id: interest4.id
     }
   }
 
@@ -84,7 +114,7 @@ RSpec.describe "/member_interests", type: :request do
     end
   end
 
-  describe 'GET /member_interests/uin/company/:uin' do
+  describe 'GET /member_interests/uin/company/:uin bad' do
     it 'returns company-related member interests by uin' do
       MemberInterest.create! valid_attributes
       get "/member_interests/uin/company/#{uin}"
@@ -93,12 +123,30 @@ RSpec.describe "/member_interests", type: :request do
     end
   end
 
-  describe 'GET /member_interests/uin/personal/:uin' do
+  describe 'GET /member_interests/uin/company/:uin good' do
+    it 'returns company-related member interests by uin' do
+      MemberInterest.create! valid_attributes2
+      get "/member_interests/uin/company/#{uin}"
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'GET /member_interests/uin/personal/:uin bad' do
     it 'returns personal-related member interests by uin' do
       MemberInterest.create! valid_attributes
       get "/member_interests/uin/personal/#{uin}"
 
       expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  describe 'GET /member_interests/uin/personal/:uin good' do
+    it 'returns personal-related member interests by uin' do
+      MemberInterest.create! valid_attributes3
+      get "/member_interests/uin/personal/#{uin}"
+
+      expect(response).to have_http_status(:ok)
     end
   end
 
