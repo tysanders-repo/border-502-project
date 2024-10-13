@@ -1,5 +1,5 @@
 "use server";
-const API_URL = "http://localhost:3000";
+import { API_URL } from "../constants";
 import { cookies } from "next/headers";
 
 /**
