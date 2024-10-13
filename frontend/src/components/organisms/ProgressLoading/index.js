@@ -1,1 +1,1 @@
-export { default } from './ProgressLoading'
+export { default } from "./ProgressLoading";

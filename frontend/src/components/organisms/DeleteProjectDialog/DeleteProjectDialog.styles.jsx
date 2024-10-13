@@ -1,5 +1,3 @@
-import { styled } from '@mui/material/styles' 
+import { styled } from "@mui/material/styles";
 
-export const StyledDeleteProjectDialog = styled('div')(({theme}) => ({
-
-}))
+export const StyledDeleteProjectDialog = styled("div")(({ theme }) => ({}));

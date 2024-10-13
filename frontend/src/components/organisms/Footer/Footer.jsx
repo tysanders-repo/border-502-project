@@ -20,7 +20,8 @@ const Footer = () => {
         <Typography>Navigation</Typography> {/* Navigation section heading */}
         <Link href="/">Home</Link> {/* Link to the home page */}
       </VeritcalBox>
-      <img src="/logo.png" alt="Logo" style={{ height: "70px" }} /> {/* Logo image */}
+      <img src="/logo.png" alt="Logo" style={{ height: "70px" }} />{" "}
+      {/* Logo image */}
     </StyledFooter>
   );
 };

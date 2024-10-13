@@ -1,1 +1,1 @@
-export { default } from './NewMemberFormTemplate'
+export { default } from "./NewMemberFormTemplate";

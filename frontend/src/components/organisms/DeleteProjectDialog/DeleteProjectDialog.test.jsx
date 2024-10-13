@@ -34,18 +34,18 @@ describe("DeleteProjectDialog", () => {
         handleCloseDialog={mockHandleCloseDialog}
         id={id}
         setError={mockSetError}
-      />
+      />,
     );
 
     expect(screen.getByText(/Confirm Delete Project/i)).toBeInTheDocument();
     expect(
       screen.getByText(
-        /Are you sure you want to delete the My Project project\? This action cannot be undone\./i
-      )
+        /Are you sure you want to delete the My Project project\? This action cannot be undone\./i,
+      ),
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Cancel/i })).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: /Delete Project/i })
+      screen.getByRole("button", { name: /Delete Project/i }),
     ).toBeInTheDocument();
   });
 
@@ -57,7 +57,7 @@ describe("DeleteProjectDialog", () => {
         handleCloseDialog={mockHandleCloseDialog}
         id={id}
         setError={mockSetError}
-      />
+      />,
     );
 
     fireEvent.click(screen.getByRole("button", { name: /Cancel/i }));
@@ -74,7 +74,7 @@ describe("DeleteProjectDialog", () => {
         handleCloseDialog={mockHandleCloseDialog}
         id={id}
         setError={mockSetError}
-      />
+      />,
     );
 
     fireEvent.click(screen.getByRole("button", { name: /Delete Project/i }));
@@ -97,7 +97,7 @@ describe("DeleteProjectDialog", () => {
         handleCloseDialog={mockHandleCloseDialog}
         id={id}
         setError={mockSetError}
-      />
+      />,
     );
 
     fireEvent.click(screen.getByRole("button", { name: /Delete Project/i }));

@@ -61,7 +61,7 @@ describe("ProjectEditTemplate", () => {
     });
 
     expect(
-      screen.getByText(/Edit Project - Project Apollo/i)
+      screen.getByText(/Edit Project - Project Apollo/i),
     ).toBeInTheDocument();
   });
 

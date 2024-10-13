@@ -54,10 +54,12 @@ export default function Navbar() {
   const menuItems = [
     { text: "Home", link: "/" },
     // Conditionally render "View Members" if role is not "member" and role exists
-    userRole && userRole !== "member" && userRole !== "subteam lead" && {
-      text: "View Members",
-      link: "/Member",
-    },
+    userRole &&
+      userRole !== "member" &&
+      userRole !== "subteam lead" && {
+        text: "View Members",
+        link: "/Member",
+      },
   ].filter(Boolean); // Filter out falsy values
 
   const drawer = (
@@ -90,9 +92,7 @@ export default function Navbar() {
     const signedin = await signedIn();
     try {
       if (signedin) await deleteUserInfo();
-      signedin
-        ? signOut("google")
-        : signIn("google", { redirectTo: "/" });
+      signedin ? signOut("google") : signIn("google", { redirectTo: "/" });
     } catch (error) {
       console.error("Google error:", error);
     } finally {
@@ -188,13 +188,7 @@ export default function Navbar() {
                 color="inherit"
                 disabled={isLoading}
               >
-                {isLoading ? (
-                  "Loading..."
-                ) : isSignedIn ? (
-                  "Sign out"
-                ) : (
-                  "Sign in"
-                )}
+                {isLoading ? "Loading..." : isSignedIn ? "Sign out" : "Sign in"}
               </Button>
             </Box>
           )}
