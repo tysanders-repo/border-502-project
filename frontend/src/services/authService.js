@@ -30,12 +30,12 @@ export async function setUserInfo() {
     cache: "no-cache",
   });
 
-  const isUser = response.ok;
-  const data = isUser ? await response.json() : null;
+  const isOK = response.ok
+  const data = isOK ? await response.json() : null;
 
   cookies().set({
     name: "role",
-    value: isUser ? data?.role : "none",
+    value: data?.role !== undefined ? data?.role : "none",
     httpOnly: true,
     secure: false, // false for now, will be secure once hosted online.
     sameSite: "lax",
@@ -45,7 +45,7 @@ export async function setUserInfo() {
 
   cookies().set({
     name: "uin",
-    value: isUser ? data?.uin : "none",
+    value: data?.uin !== undefined ? data?.uin : "none",
     httpOnly: true,
     secure: false, // false for now, will be secure once hosted online.
     sameSite: "lax",
@@ -70,6 +70,8 @@ export async function deleteUserInfo() {
  * @returns {Promise<string|null>} A promise that resolves to the user's role or null if not found.
  */
 export async function getUserRole() {
+  if(cookies().get("role")?.value === undefined || cookies().get("role")?.value == "none")
+    await setUserInfo();
   return cookies().get("role")?.value;
 }
 
@@ -79,5 +81,7 @@ export async function getUserRole() {
  * @returns {Promise<string|null>} A promise that resolves to the user's UIN or null if not found.
  */
 export async function getUserUIN() {
+  if(cookies().get("uin")?.value === undefined || cookies().get("uin")?.value == "none")
+    await setUserInfo();
   return cookies().get("uin")?.value;
 }
