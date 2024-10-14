@@ -4,26 +4,9 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { fetchAllUsers, updateUserPresident } from "@services/userService";
 import DeleteConfirmationDialog from "@components/organisms/DeleteConfirmationDialog";
-import {
-  Alert,
-  Typography,
-  IconButton,
-  Menu,
-  MenuItem,
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Autocomplete,
-  TextField,
-} from "@mui/material";
+import { Alert, Typography, IconButton, Box, Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useMediaQuery } from "@mui/material";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
 import { useTheme } from "@mui/material/styles";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
@@ -32,6 +15,9 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import { getUserRole } from "@services/authService";
 import { UserRoles } from "@utils/arrays/roles";
 import ProgressLoading from "@components/organisms/ProgressLoading";
+import UpdateRoleDialog from "./UpdateRoleDialog";
+import UserMenu from "./UserMenu";
+import { capitalizeAndReplace } from "@utils/functions";
 
 /**
  * UserListTemplate component
@@ -54,13 +40,16 @@ const UserListTemplate = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [openRoleDialog, setOpenRoleDialog] = useState(false);
   const [selectedRole, setSelectedRole] = useState(null);
+  const [firstRender, setFirstRender] = useState(true);
 
   const router = useRouter();
 
-  const handleOpenRoleDialog = () => {
-    setOpenRoleDialog(true);
+  const handleUpdateDeleteUser = () => {
+    setUsers((prevUsers) =>
+      prevUsers.filter((user) => user.uin !== selectedUser.uin)
+    );
+    window.location.reload();
   };
-
   const handleCloseRoleDialog = () => {
     setOpenRoleDialog(false);
   };
@@ -81,25 +70,25 @@ const UserListTemplate = () => {
     }
   };
 
-  const capitalizeAndReplace = (str) => {
-    if (!str) return "hello";
-    return str
-      .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
-
   const [columnVisibilityModel, setColumnVisibilityModel] = useState({
     uin: false,
+    first_name: true,
+    last_name: true,
+    role: true,
+    major: true,
+    year: true,
+    email: true,
+    phone: true,
     tshirt_size: false,
+    paid_dues: true,
     join_date: false,
     aggie_ring_day: false,
     birthday: false,
     graduation_day: false,
     accepted: false,
-    year: false,
   });
 
+  // Adjusting display params when changing screen sizes
   useEffect(() => {
     if (isMobile) {
       setColumnVisibilityModel({
@@ -109,7 +98,7 @@ const UserListTemplate = () => {
         role: false,
         major: false,
         year: false,
-        email: true,
+        email: false,
         phone: false,
         tshirt_size: false,
         paid_dues: false,
@@ -139,6 +128,47 @@ const UserListTemplate = () => {
       });
     }
   }, [isMobile]);
+
+  // Adjusting display params when changing views
+  useEffect(() => {
+    if (filter === "archived") {
+      setColumnVisibilityModel({
+        uin: false,
+        first_name: true,
+        last_name: true,
+        role: true,
+        major: true,
+        year: true,
+        email: false,
+        phone: false,
+        tshirt_size: false,
+        paid_dues: false,
+        join_date: false,
+        aggie_ring_day: false,
+        birthday: false,
+        graduation_day: false,
+        accepted: false,
+      });
+    } else {
+      setColumnVisibilityModel({
+        uin: false,
+        first_name: true,
+        last_name: true,
+        role: true,
+        major: true,
+        year: true,
+        email: true,
+        phone: true,
+        tshirt_size: false,
+        paid_dues: true,
+        join_date: false,
+        aggie_ring_day: false,
+        birthday: false,
+        graduation_day: false,
+        accepted: false,
+      });
+    }
+  }, [filter]);
 
   const columns = [
     { field: "uin", headerName: "UIN", flex: 1 },
@@ -181,100 +211,59 @@ const UserListTemplate = () => {
       hideable: false,
       headerName: "",
       renderCell: (params) => (
-        <div>
-          {filter === "new_applications" ? (
-            <div>
-              <IconButton onClick={() => handleAccept(params.row.uin)}>
-                <CheckIcon color="success" />
-              </IconButton>
-              <IconButton onClick={() => handleArchive(params.row.uin)}>
-                <CloseIcon color="error" />
-              </IconButton>
-            </div>
-          ) : (
-            <IconButton onClick={(event) => handleMenuClick(event, params.row)}>
-              <MoreVertIcon />
-            </IconButton>
-          )}
-
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleCloseMenu}
-            slotProps={{
-              paper: {
-                sx: {
-                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.5)",
-                },
-              },
-            }}
-          >
-            <MenuItem
-              onClick={() => router.push(`/Member/${selectedUser?.uin}`)}
-            >
-              View
-            </MenuItem>
-
-            {/* Check userRole and conditionally render menu items */}
-            {userRole === "president" || userRole === "vice president" ? (
-              <MenuItem key="updateRole" onClick={handleOpenRoleDialog}>
-                Update Role
-              </MenuItem>
-            ) : null}
-
-            {userRole === "president" || userRole === "internal relations"
-              ? [
-                  <MenuItem
-                    key="edit"
-                    onClick={() =>
-                      router.push(`/Member/${selectedUser?.uin}/Edit`)
-                    }
-                  >
-                    Edit
-                  </MenuItem>,
-                  <MenuItem key="delete" onClick={handleDeleteClick}>
-                    Delete
-                  </MenuItem>,
-                ]
-              : null}
-          </Menu>
-        </div>
+        <UserMenu
+          filter={filter}
+          userRole={userRole}
+          row={params.row}
+          handleAccept={handleAccept}
+          handleArchive={handleArchive}
+          handleDeleteClick={handleDeleteClick}
+          handleOpenRoleDialog={() => setOpenRoleDialog(true)}
+          handleMenuClick={handleMenuClick}
+          handleCloseMenu={handleCloseMenu}
+          anchorEl={anchorEl}
+          selectedUser={selectedUser}
+        />
       ),
     },
   ];
 
-  useEffect(() => {
-    async function loadUsers() {
-      try {
-        const data = await fetchAllUsers();
-        setUsers(data);
-      } catch (e) {
-        setError(e);
-      }
-    }
+useEffect(() => {
+  setLoading(true); // Start loading state
 
-    async function loadRole() {
+  // Define functions to load users and role
+  async function loadUsers() {
+    try {
+      const data = await fetchAllUsers();
+      setUsers(data); // Set the fetched users
+    } catch (e) {
+      setError(e); // Set the error if fetching users fails
+      setLoading(false); // Stop loading on error
+    }
+  }
+
+  async function loadRole() {
+    try {
       const role = await getUserRole();
-      setUserRole(role);
+      setUserRole(role); // Set the fetched user role
+    } catch (e) {
+      setError(e); // Set the error if fetching the role fails
+      setLoading(false); // Stop loading on error
     }
+  }
 
-    // Load role and users in parallel
-    const fetchData = async () => {
-      await Promise.all([loadUsers(), loadRole()]);
-      setLoading(false); // Set loading to false after both are completed
-    };
+  // Load role and users in parallel
+  const fetchData = async () => {
+    await Promise.all([loadUsers(), loadRole()]);
+    setLoading(false); // Set loading to false after both are completed
+  };
 
-    fetchData();
-  }, []);
+  fetchData();
+}, []);
 
   const handleMenuClick = (event, user) => {
     setAnchorEl(event.currentTarget);
     setSelectedUser(user);
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    window.location.reload();
   };
 
   const handleCloseMenu = () => {
@@ -299,14 +288,15 @@ const UserListTemplate = () => {
     }
   };
 
-  const handleArchive = async (uin) => {
+  const handleArchive = async (uin, status) => {
     try {
-      await updateUserPresident(uin, { archived: true });
+      await updateUserPresident(uin, { archived: status });
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uin === uin ? { ...user, archived: true } : user
+          user.uin === uin ? { ...user, archived: status } : user
         )
       );
+      window.location.reload();
     } catch (err) {
       setError(err);
     }
@@ -319,7 +309,7 @@ const UserListTemplate = () => {
     return true;
   });
 
-  if (loading) {
+  if (loading || !userRole) {
     return <ProgressLoading />;
   }
 
@@ -328,7 +318,7 @@ const UserListTemplate = () => {
   }
 
   return (
-    <>
+    <div>
       <Box
         sx={{
           display: "flex",
@@ -475,52 +465,23 @@ const UserListTemplate = () => {
 
       <DeleteConfirmationDialog
         user={selectedUser}
+        handleUpdateDeleteUser={handleUpdateDeleteUser}
         openDialog={openDialog}
-        handleCloseDialog={handleCloseDialog}
+        handleCloseDialog={() => setOpenDialog(false)}
         id={selectedUser?.uin}
         setError={setError}
       />
 
-      {/* updating role */}
-      <Dialog
-        open={openRoleDialog}
-        onClose={handleCloseRoleDialog}
-        maxWidth="xs"
-        fullWidth
-        sx={{
-          "& .MuiDialog-paper": {
-            width: isMobile ? "90%" : "400px", // Wider on desktop, smaller on mobile
-            padding: isMobile ? "10px" : "20px", // Adjust padding for mobile
-          },
-        }}
-      >
-        <DialogTitle>Update Role</DialogTitle>
-        <DialogContent>
-          <Autocomplete
-            value={
-              UserRoles.find((role) => role.value === selectedRole) || null
-            }
-            onChange={(event, newValue) => {
-              setSelectedRole(newValue ? newValue.value : null);
-            }}
-            options={UserRoles}
-            getOptionLabel={(option) => option.label || ""}
-            renderInput={(params) => (
-              <TextField {...params} label="Select Role" />
-            )}
-            disableClearable
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseRoleDialog} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleRoleChange} color="primary">
-            Update
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+      <UpdateRoleDialog
+        openRoleDialog={openRoleDialog}
+        handleCloseRoleDialog={handleCloseRoleDialog}
+        isMobile={false} // Set this based on your responsive logic
+        selectedRole={selectedRole}
+        setSelectedRole={setSelectedRole}
+        UserRoles={UserRoles}
+        handleRoleChange={handleRoleChange}
+      />
+    </div>
   );
 };
 
