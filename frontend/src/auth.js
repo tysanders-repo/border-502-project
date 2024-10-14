@@ -1,9 +1,9 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
-console.log(process.env.NEXTAUTH_URL);
-const useSecureCookies = process.env.NEXTAUTH_URL.startsWith("https://");
+console.log(process.env.NEXT_PUBLIC_NEXTAUTH_URL);
+const useSecureCookies = process.env.NEXT_PUBLIC_NEXTAUTH_URL.startsWith("https://");
 const cookiePrefix = useSecureCookies ? "__Secure-" : "";
-const hostName = new URL(process.env.NEXTAUTH_URL).hostname;
+const hostName = new URL(process.env.NEXT_PUBLIC_NEXTAUTH_URL).hostname;
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [Google],
