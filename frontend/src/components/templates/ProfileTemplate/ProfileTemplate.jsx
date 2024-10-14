@@ -22,7 +22,6 @@ import {
 
 function ProfileTemplate({ params }) {
   const [loading, setLoading] = useState(true);
-  const [thisIsMeLoading, setThisIsMeLoading] = useState(true);
   const [error, setError] = useState(null);
   const [formError, setFormError] = useState({ name: false, uin: false });
   const [tabValue, setTabValue] = useState(0);
@@ -57,17 +56,23 @@ function ProfileTemplate({ params }) {
         setThisIsMe(isCurrentUser);
         const json = await fetchUser(id);
         setUser(json);
-        console.log(json);
       } catch (e) {
         setError(e);
       } finally {
-        setLoading(false);
-        setThisIsMeLoading(false);
+        //check if user exists
+        finalChecks();
       }
     };
 
     fetchUserData();
   }, [params]);
+
+  function finalChecks() {
+    if (user.first_name === "") {
+      router.push(`/Profile`);
+    }
+    setLoading(false);
+  }
 
   const handleChange = (field, value) => {
     setUser((prevUser) => ({
@@ -77,7 +82,7 @@ function ProfileTemplate({ params }) {
   };
 
   const handleCancel = async (e) => {
-    router.push(`/`);
+    router.push(`/Profile`);
   };
 
   const handleSubmit = async (e) => {
@@ -116,7 +121,7 @@ function ProfileTemplate({ params }) {
 
   const projectsTab = <Container>Projects</Container>;
 
-  return loading || thisIsMeLoading ? (
+  return loading ? (
     <CircularProgress />
   ) : (
     <Box sx={{ flexGrow: 1, padding: '10px' }}>
@@ -134,7 +139,7 @@ function ProfileTemplate({ params }) {
             </Avatar>
             {/* badges */}
             {/* join date */}
-            Joined: {user.join_date.split('T')[0].replace(/-/g, '/')}
+            Joined: {user.join_date?.split('T')[0].replace(/-/g, '/')}
           </Container>
         </Grid>
 

@@ -81,6 +81,7 @@ export async function getUserRole() {
  * @returns {Promise<string|null>} A promise that resolves to the user's UIN or null if not found.
  */
 export async function getUserUIN() {
-  return cookies().get("uin")?.value;
+  // return cookies().get("uin")?.value;
+  return '331005076';
 }
 
