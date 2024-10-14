@@ -63,7 +63,7 @@ const DeleteConfirmationDialog = ({
       <DialogTitle id="alert-dialog-title">Confirm Delete Account</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          Are you sure you want to delete {user?.first_name} {user?.last_name}'s
+          Are you sure you want to delete {user?.first_name} {user?.last_name}&apos;t
           profile? This action cannot be undone.
         </DialogContentText>
       </DialogContent>

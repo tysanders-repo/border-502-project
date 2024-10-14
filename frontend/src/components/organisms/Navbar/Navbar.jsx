@@ -1,4 +1,5 @@
 "use client";
+// import Image from 'next/image';
 import React, { useState, useEffect } from "react";
 import {
   AppBar,
@@ -146,6 +147,7 @@ export default function Navbar() {
           }}
         >
           <Link href="/" passHref>
+            {/* <Image src="/logo.png" alt="Logo" height={70} /> */}
             <img src="/logo.png" alt="Logo" style={{ height: "70px" }} />
           </Link>
           {isMobile ? (

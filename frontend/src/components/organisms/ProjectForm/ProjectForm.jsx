@@ -19,6 +19,8 @@ import ImageListItem from "@mui/material/ImageListItem";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
 import UploadIcon from "@mui/icons-material/Upload";
+import { useTheme } from "@emotion/react";
+
 
 /**
  * ProjectForm Component
@@ -203,7 +205,6 @@ const ProjectForm = ({
                       </Typography>
                     </Box>
                   </DeleteBox>
-
                   <img
                     src={imageUrl.url}
                     alt="Project"
