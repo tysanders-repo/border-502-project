@@ -59,19 +59,24 @@ function ProfileTemplate({ params }) {
       } catch (e) {
         setError(e);
       } finally {
-        //check if user exists
-        finalChecks();
+        setLoading(false);
       }
     };
 
     fetchUserData();
   }, [params]);
 
+  // Run final checks after user is set and loading is complete
+  useEffect(() => {
+    if (!loading && user.first_name === "") {
+      finalChecks();
+    }
+  }, [loading, user]);
+
   function finalChecks() {
     if (user.first_name === "") {
       router.push(`/Profile`);
     }
-    setLoading(false);
   }
 
   const handleChange = (field, value) => {
@@ -107,14 +112,14 @@ function ProfileTemplate({ params }) {
   );
 
   const profileTab_LoggedOut = (
-    <div style={{display: 'flex', gap: '25px', flexDirection: 'column'}}>
-      <div style={{ display: 'flex', gap: '15px', flexDirection: 'row' }}>
+    <div style={{ display: "flex", gap: "25px", flexDirection: "column" }}>
+      <div style={{ display: "flex", gap: "15px", flexDirection: "row" }}>
         <MimicTextBox text={user.first_name} uppertext={"first name"} />
-        <MimicTextBox text={user.last_name} uppertext={"last name"}/>
+        <MimicTextBox text={user.last_name} uppertext={"last name"} />
       </div>
-      <div style={{ display: 'flex', gap: '15px', flexDirection: 'row' }}>
-        <MimicTextBox text={user.phone} uppertext={"phone"}/>
-        <MimicTextBox text={user.email} uppertext={"email"}/>
+      <div style={{ display: "flex", gap: "15px", flexDirection: "row" }}>
+        <MimicTextBox text={user.phone} uppertext={"phone"} />
+        <MimicTextBox text={user.email} uppertext={"email"} />
       </div>
     </div>
   );
@@ -124,22 +129,22 @@ function ProfileTemplate({ params }) {
   return loading ? (
     <CircularProgress />
   ) : (
-    <Box sx={{ flexGrow: 1, padding: '10px' }}>
+    <Box sx={{ flexGrow: 1, padding: "10px" }}>
       <Grid container spacing={5}>
         <Grid item sm={4} xl={2}>
           <Container
             style={{
-              background: '#eef',
+              background: "#eef",
               minHeight: "800px",
-              padding: '16px',
+              padding: "16px",
             }}
           >
-            <Avatar sx={{ bgcolor: '#085eb3' }}>
-              {user.first_name[0]?.toUpperCase()}
+            <Avatar sx={{ bgcolor: "#085eb3" }}>
+              {user.first_name?.[0]?.toUpperCase() || "?"}
             </Avatar>
             {/* badges */}
             {/* join date */}
-            Joined: {user.join_date?.split('T')[0].replace(/-/g, '/')}
+            Joined: {user.join_date?.split("T")[0].replace(/-/g, "/")}
           </Container>
         </Grid>
 
@@ -149,13 +154,13 @@ function ProfileTemplate({ params }) {
               value={tabValue}
               onChange={handleTabChange}
               aria-label="profile and projects tabs"
-              style={{ background: '#eef', marginBottom: '24px' }}
+              style={{ background: "#eef", marginBottom: "24px" }}
             >
               <Tab label="Profile" />
               <Tab label="Projects" />
             </Tabs>
 
-            <Container px={{ p: '16px' }}>
+            <Container px={{ p: "16px" }}>
               {tabValue === 0
                 ? thisIsMe
                   ? profileTab_LoggedIn
