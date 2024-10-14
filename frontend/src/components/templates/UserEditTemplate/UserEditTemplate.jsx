@@ -82,25 +82,49 @@ function UserEditTemplate({ params }) {
   const { id } = params;
 
   useEffect(() => {
-    if (!id) return; // Don't run the effect if id is not available
+    if (!id) return; 
+
+    const fetchDietaryRestrictions = async () => {
+      try {
+        const restrictions = await fetchAllDietRestrictions();
+        setDietaryRestrictions(restrictions);
+      } catch (error) {
+        console.error("Error fetching dietary restrictions:", error);
+      }
+    };
+
+    const fetchPersonalInterests = async () => {
+      try {
+        const interests = await fetchAllPersonalInterests();
+        setPersonalInterests(interests);
+      } catch (error) {
+        console.error("Error fetching personal interests:", error);
+      }
+    };
+
+    const fetchCareerInterests = async () => {
+      try {
+        const interests = await fetchAllCareerInterests();
+        setCareerInterests(interests);
+      } catch (error) {
+        console.error("Error fetching career interests:", error);
+      }
+    };
+
+    const fetchCompanyInterests = async () => {
+      try {
+        const interests = await fetchAllCompanyInterests();
+        setCompanyInterests(interests);
+      } catch (error) {
+        console.error("Error fetching company interests:", error);
+      }
+    };
+
     const fetchCurrentUser = async () => {
       try {
         // Fetch user data based on ID
         const userData = await fetchUser(id);
         setUser(userData);
-
-        // Fetch all options for dietary restrictions and interests
-        const restrictions = await fetchAllDietRestrictions();
-        setDietaryRestrictions(restrictions);
-
-        const personalInterests = await fetchAllPersonalInterests();
-        setPersonalInterests(personalInterests);
-
-        const careerInterests = await fetchAllCareerInterests();
-        setCareerInterests(careerInterests);
-
-        const companyInterests = await fetchAllCompanyInterests();
-        setCompanyInterests(companyInterests);
 
         // Fetch current dietary restrictions for the user
         const currentRestrictions = await getMemberDiet(userData.uin);
@@ -155,12 +179,21 @@ function UserEditTemplate({ params }) {
         }
       } catch (e) {
         setError(e); // Set error state if fetching fails
-      } finally {
-        setLoading(false); // Loading is complete
-      }
+      } 
     };
 
-    fetchCurrentUser(); // Fetch user data on component mount
+    const fetchData = async () => {
+      await Promise.all([
+        fetchDietaryRestrictions(),
+        fetchPersonalInterests(),
+        fetchCareerInterests(),
+        fetchCompanyInterests(),
+        fetchCurrentUser(),
+      ]);
+      setLoading(false);
+    };
+
+    fetchData();
   }, [id]);
 
   // Handler for dietary restriction change
@@ -398,19 +431,30 @@ function UserEditTemplate({ params }) {
       </Typography>
       <UserForm
         user={user}
-        onChange={handleChange} // Handle user data change
-        onDietaryRestrictionsChange={handleDietaryRestrictionChange} // Handle dietary restrictions change
-        selectedDietaryRestrictions={selectedDietaryRestrictions} // Current dietary restrictions
-        selectedPersonalInterests={selectedPersonalInterests} // Current personal interests
-        selectedCareerInterests={selectedCareerInterests} // Current career interests
-        selectedCompanyInterests={selectedCompanyInterests} // Current company interests
-        onPersonalInterestsChange={handlePersonalInterestRestrictionChange} // Handle personal interests change
-        onCareerInterestsChange={handleCareerInterestRestrictionChange} // Handle career interests change
-        onCompanyInterestsChange={handleCompanyInterestRestrictionChange} // Handle company interests change
-        onSubmit={handleSubmit} // Handle form submission
-        onCancel={handleCancel} // Handle cancellation
-        formError={formError} // Form error state
-        error={error} // Error state
+        loading={loading}
+        error={error}
+        formError={formError}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        handleCancel={handleCancel}
+        dietaryRestrictions={dietaryRestrictions}
+        handleDietaryRestrictionChange={handleDietaryRestrictionChange}
+        selectedDietaryRestrictions={selectedDietaryRestrictions}
+        personalInterests={personalInterests}
+        handlePersonalInterestRestrictionChange={
+          handlePersonalInterestRestrictionChange
+        }
+        selectedPersonalInterests={selectedPersonalInterests}
+        careerInterests={careerInterests}
+        handleCareerInterestRestrictionChange={
+          handleCareerInterestRestrictionChange
+        }
+        selectedCareerInterests={selectedCareerInterests}
+        companyInterests={companyInterests}
+        handleCompanyInterestRestrictionChange={
+          handleCompanyInterestRestrictionChange
+        }
+        selectedCompanyInterests={selectedCompanyInterests}
       />
     </Container>
   );
