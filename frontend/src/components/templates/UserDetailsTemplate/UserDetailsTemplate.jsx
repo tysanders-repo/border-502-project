@@ -9,15 +9,22 @@ import {
   Button,
   Container,
   Typography,
-  CircularProgress,
   IconButton,
   Alert,
   Box,
 } from "@mui/material";
-import Link from "next/link";
 import { useRouter } from "next/navigation"; // Import useRouter for navigation
 import ProgressLoading from "@components/organisms/ProgressLoading";
 
+/**
+ * UserDetailsTemplate Component
+ *
+ * This component displays the details of a selected user, including personal information and important dates.
+ * The component allows users to edit or delete their profile and handles navigation and dialog visibility.
+ *
+ * @param {Object} props - The route parameters containing the user ID.
+ * @returns {JSX.Element} A detailed view of the selected user.
+ */
 function UserDetailsTemplate({ params }) {
   const router = useRouter();
   const { id } = params;
@@ -73,7 +80,7 @@ function UserDetailsTemplate({ params }) {
     <Container maxWidth="sm" sx={{ marginTop: 4 }}>
       {user ? (
         <Box sx={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-          <IconButton onClick={() => router.push("/Member")}>
+          <IconButton onClick={() => router.push("/Member")} role="back">
             <ArrowBackIcon />
           </IconButton>
           <Box>

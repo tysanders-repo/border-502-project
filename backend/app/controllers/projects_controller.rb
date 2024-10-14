@@ -1,5 +1,6 @@
 class ProjectsController < ApplicationController
-  skip_before_action :authenticate_request, only: [:show, :index]
+  # skip_before_action :authenticate_request, only: [:show, :index]
+  skip_before_action :authenticate_request
   before_action :set_project, only: %i[show update destroy]
 
   # GET /projects
@@ -28,23 +29,23 @@ class ProjectsController < ApplicationController
   def update
     # Find the project
     @project = Project.find(params[:id])
-  
+
     # Attempt to update the project attributes (excluding images and remove_images)
     if @project.update(project_params.except(:images, :remove_images))
-      
+
       # Attach new images if present
       if params[:project][:images].present?
         params[:project][:images].each do |image|
           @project.images.attach(image) if image.is_a?(ActionDispatch::Http::UploadedFile)
         end
       end
-  
+
       # Remove specified images using their blob IDs
       if params[:project][:remove_images].present?
         params[:project][:remove_images].each do |blob_id|
           # Find the attachment by blob ID
           attachment = @project.images.attachments.find_by(blob_id: blob_id)
-  
+
           # Check if the attachment exists
           if attachment
             # Purge the attachment (removes from active_storage_attachments and active_storage_blobs)
@@ -54,13 +55,13 @@ class ProjectsController < ApplicationController
           end
         end
       end
-  
+
       render json: @project.as_json(methods: :image_urls)
     else
       render json: @project.errors, status: :unprocessable_entity
     end
-  end  
-  
+  end
+
   # DELETE /projects/1
   def destroy
     @project.destroy

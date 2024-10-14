@@ -26,18 +26,18 @@ describe("DeleteConfirmationDialog", () => {
         handleCloseDialog={mockHandleCloseDialog}
         id={id}
         setError={mockSetError}
-      />
+      />,
     );
 
     expect(screen.getByText(/Confirm Delete Account/i)).toBeInTheDocument();
     expect(
       screen.getByText(
-        /Are you sure you want to delete Gemma Goddard's profile?/i
-      )
+        /Are you sure you want to delete Gemma Goddard's profile?/i,
+      ),
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Cancel/i })).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: /Delete Account/i })
+      screen.getByRole("button", { name: /Delete Account/i }),
     ).toBeInTheDocument();
   });
 
@@ -49,7 +49,7 @@ describe("DeleteConfirmationDialog", () => {
         handleCloseDialog={mockHandleCloseDialog}
         id={id}
         setError={mockSetError}
-      />
+      />,
     );
 
     fireEvent.click(screen.getByRole("button", { name: /Cancel/i }));
@@ -66,7 +66,7 @@ describe("DeleteConfirmationDialog", () => {
         handleCloseDialog={mockHandleCloseDialog}
         id={id}
         setError={mockSetError}
-      />
+      />,
     );
 
     fireEvent.click(screen.getByRole("button", { name: /Delete Account/i }));
@@ -86,11 +86,11 @@ describe("DeleteConfirmationDialog", () => {
         handleCloseDialog={mockHandleCloseDialog}
         id={id}
         setError={mockSetError}
-      />
+      />,
     );
 
     await fireEvent.click(
-      screen.getByRole("button", { name: /Delete Account/i })
+      screen.getByRole("button", { name: /Delete Account/i }),
     );
 
     expect(mockSetError).toHaveBeenCalledWith(new Error(errorMessage));

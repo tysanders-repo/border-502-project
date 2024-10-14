@@ -65,7 +65,7 @@ RSpec.describe "/member_diets", type: :request do
   let(:uin) { member.uin }
   let(:item_id) { dietary_restriction.id }
 
-  describe 'GET /member_diets/exists/:uin/:item_id' do
+  describe 'GET /member_diets/exists/:uin/:item_id good' do
     it 'returns the existence of a member diet' do
       MemberDiet.create! valid_attributes
       get "/member_diets/exists/#{uin}/#{item_id}"
@@ -74,7 +74,15 @@ RSpec.describe "/member_diets", type: :request do
     end
   end
 
-  describe 'GET /member_diets/uin/:uin' do
+  describe 'GET /member_diets/exists/:uin/:item_id bad' do
+    it 'returns the existence of a member diet' do
+      get "/member_diets/exists/#{uin}/#{item_id}"
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'GET /member_diets/uin/:uin good' do
     it 'returns member diets by uin' do
       MemberDiet.create! valid_attributes
       get "/member_diets/uin/#{uin}"
@@ -83,12 +91,28 @@ RSpec.describe "/member_diets", type: :request do
     end
   end
 
-  describe 'DELETE /member_diets/uin/:uin' do
+  describe 'GET /member_diets/uin/:uin bad' do
+    it 'returns member diets by uin' do
+      get "/member_diets/uin/#{uin}"
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  describe 'DELETE /member_diets/uin/:uin good' do
     it 'deletes member diets by uin' do
       MemberDiet.create! valid_attributes
       delete "/member_diets/uin/#{uin}"
 
       expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'DELETE /member_diets/uin/:uin bad' do
+    it 'deletes member diets by uin' do
+      delete "/member_diets/uin/#{uin}"
+
+      expect(response).to have_http_status(:not_found)
     end
   end
 

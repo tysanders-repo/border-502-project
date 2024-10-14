@@ -1,1 +1,1 @@
-export { default } from './UserListTemplate'
+export { default } from "./UserListTemplate";

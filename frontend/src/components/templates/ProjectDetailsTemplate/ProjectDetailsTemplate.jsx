@@ -28,12 +28,10 @@ import {
 /**
  * ProjectDetailsTemplate Component
  *
- * @component
- * @description Displays the details of a selected project, including project title, description, and images.
+ * This component displays the details of a selected project, including project title, description, and images.
  * The component allows users to edit or delete the project and handles navigation and dialog visibility.
  *
- * @param {Object} props - The props object.
- * @param {Object} props.params - The route parameters containing the project ID.
+ * @param {Object} props - The route parameters containing the project ID.
  * @returns {JSX.Element} A detailed view of the selected project.
  */
 function ProjectDetailsTemplate({ params }) {
@@ -56,7 +54,7 @@ function ProjectDetailsTemplate({ params }) {
   /**
    * useEffect Hook
    *
-   * @description Fetches the project details from the server when the component is mounted or when the `id` changes.
+   * Fetches the project details from the server when the component is mounted or when the `id` changes.
    * It sets the project data or handles errors if the fetch fails.
    */
   useEffect(() => {
@@ -77,7 +75,7 @@ function ProjectDetailsTemplate({ params }) {
   /**
    * handleOpenDialog Function
    *
-   * @description Opens the delete confirmation dialog.
+   * Opens the delete confirmation dialog.
    */
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -86,7 +84,7 @@ function ProjectDetailsTemplate({ params }) {
   /**
    * handleCloseDialog Function
    *
-   * @description Closes the delete confirmation dialog.
+   * Closes the delete confirmation dialog.
    */
   const handleCloseDialog = () => {
     setOpenDialog(false);
@@ -100,20 +98,21 @@ function ProjectDetailsTemplate({ params }) {
     return (
       <Alert severity="error">Error fetching project: {error.message}</Alert>
     );
+
   return (
     <Container maxWidth="md" sx={{ marginTop: 4 }}>
       {project ? (
         // Main container for project details and actions.
         <Box sx={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
           {/* Back button to navigate to the Projects list page */}
-          <IconButton onClick={() => router.push("/Project")}>
+          <IconButton onClick={() => router.push("/Project")} aria-label="back">
             <ArrowBackIcon />
           </IconButton>
 
           {/* Project details container */}
           <Box sx={{ width: "100%" }}>
             {/* Project title */}
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" gutterBottom aria-label="title">
               {project.title}
             </Typography>
 
@@ -139,12 +138,12 @@ function ProjectDetailsTemplate({ params }) {
             </ImageList>
 
             {/* Project start date */}
-            <Typography variant="h6">
+            <Typography variant="h6" aria-label="start">
               Start Date: {format(new Date(project.date), "MMMM d, yyyy")}
             </Typography>
 
             {/* Project description */}
-            <Typography variant="h6">
+            <Typography variant="h6" aria-label="description">
               Description: {project.description}
             </Typography>
 

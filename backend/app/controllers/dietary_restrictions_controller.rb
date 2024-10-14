@@ -1,6 +1,6 @@
 class DietaryRestrictionsController < ApplicationController
   before_action :set_dietary_restriction, only: %i[ show update destroy ]
-  skip_before_action :authenticate_request, only: [:create]
+  skip_before_action :authenticate_request
   # GET /dietary_restrictions
   def index
     @dietary_restrictions = DietaryRestriction.all

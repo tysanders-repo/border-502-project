@@ -13,8 +13,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 /**
  * ProjectViewTemplate Component
  *
- * @component
- * @description Displays the detailed view of a project, including its title, description, images, and date. It fetches project data from the server using the provided project ID.
+ *  Displays the detailed view of a project, including its title, description, images, and date. It fetches project data from the server using the provided project ID.
  *
  * @param {Object} props - The component's props object.
  * @param {Object} props.params - The route parameters containing the project ID.
@@ -76,7 +75,7 @@ function ProjectViewTemplate({ params }) {
 
           <Box sx={{ width: "100%" }}>
             {/* Project title */}
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" gutterBottom role="title">
               {project.title}
             </Typography>
 
@@ -85,6 +84,13 @@ function ProjectViewTemplate({ params }) {
               sx={{ width: "100%", height: "100%" }}
               cols={2}
               rowHeight={400}
+              slotProps={{
+                root: {
+                  sx: {
+                    border: "1px solid #e0e0e0",
+                  },
+                },
+              }}
             >
               {project.image_urls?.map((image) => (
                 <ImageListItem key={image.id}>
@@ -102,15 +108,15 @@ function ProjectViewTemplate({ params }) {
             </ImageList>
 
             {/* Project start date */}
-            <Typography variant="h6">
-              Start Date:{" "}
+            <Typography variant="h6" role="start">
+              Start Date:
               {project.date
                 ? format(new Date(project.date), "MMMM d, yyyy")
                 : "N/A"}
             </Typography>
 
             {/* Project description */}
-            <Typography variant="h6">
+            <Typography variant="h6" role="description">
               Description: {project.description}
             </Typography>
           </Box>

@@ -1,6 +1,6 @@
 class MembersController < ApplicationController
   before_action :set_member, only: %i[ show update destroy ]
-  skip_before_action :authenticate_request, only: [:create]
+  # skip_before_action :authenticate_request
   # GET /members
   def index
     @members = Member.all

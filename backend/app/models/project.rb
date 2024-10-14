@@ -5,14 +5,14 @@ class Project < ApplicationRecord
     has_many_attached :images
 
     def image_urls
-        images.map do |image| 
+        images.map do |image|
           {
             id: image.id,
             url: Rails.application.routes.url_helpers.rails_blob_url(image, only_path: false)
           }
         end
       end
-      
-        
+
+
     validates :title, :description, presence: true
 end

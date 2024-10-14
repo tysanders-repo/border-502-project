@@ -3,6 +3,11 @@ import React from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 
+/**
+ * A functional component that displays a loading spinner.
+ * This component is typically used while data is being fetched or processed.
+ * @returns {JSX.Element} The rendered ProgressLoading component.
+ */
 const ProgressLoading = () => {
   return (
     <Box
@@ -14,7 +19,7 @@ const ProgressLoading = () => {
         alignItems: "center",
       }}
     >
-      <CircularProgress />
+      <CircularProgress role="progressbar" />
     </Box>
   );
 };

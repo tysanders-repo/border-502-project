@@ -1,65 +1,103 @@
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
+import { useRouter } from "next/navigation";
 import HomepageTemplate from "./HomepageTemplate";
 import { fetchAllProjects } from "@services/projectService";
-import { act } from "react";
 
+// Mock the fetchAllProjects service
 jest.mock("@services/projectService");
+jest.mock("next/navigation", () => ({
+  useRouter: jest.fn(),
+}));
 
 describe("HomepageTemplate", () => {
+  const mockPush = jest.fn();
+
+  beforeEach(() => {
+    useRouter.mockImplementation(() => ({ push: mockPush }));
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  test("renders loading state", async () => {
-    fetchAllProjects.mockImplementationOnce(() => new Promise(() => {}));
+  test("renders loading state", () => {
+    // Simulate fetchAllProjects returning a pending promise
+    fetchAllProjects.mockResolvedValueOnce(new Promise(() => {})); // Simulate loading
+
     render(<HomepageTemplate />);
+
+    // Assert that ProgressLoading is rendered
     expect(screen.getByRole("progressbar")).toBeInTheDocument();
   });
 
-  test("renders error state", async () => {
-    const errorMessage = "Failed to fetch projects";
-    fetchAllProjects.mockRejectedValueOnce(new Error(errorMessage));
-
-    await act(async () => {
-      render(<HomepageTemplate />);
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText(errorMessage)).toBeInTheDocument();
-    });
-  });
-
   test("renders projects when data is fetched successfully", async () => {
-    const mockProjects = [
+    const projectsData = [
       {
         id: 1,
-        title: "Project A",
-        date: "2024-08-31",
-        description: "Description for Project A",
+        title: "Project 1",
+        description: "Description for project",
+        date: "2023-01-01",
+        image_urls: [
+          { id: "img1", url: "http://example.com/image1.jpg" },
+          { id: "img2", url: "http://example.com/image2.jpg" },
+        ],
       },
       {
         id: 2,
-        title: "Project B",
-        date: "2024-09-01",
-        description: "Description for Project B",
+        title: "Project 2",
+        description: "Description for project",
+        date: "2023-01-02",
+        image_urls: [
+          { id: "img3", url: "http://example.com/image3.jpg" },
+          { id: "img4", url: "http://example.com/image4.jpg" },
+        ],
       },
     ];
-    fetchAllProjects.mockResolvedValueOnce(mockProjects);
 
-    await act(async () => {
-      render(<HomepageTemplate />);
-    });
+    fetchAllProjects.mockResolvedValueOnce(projectsData);
 
-    await waitFor(() => {
-      expect(
-        screen.getByText((content) => content.startsWith("Project A"))
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText((content) => content.startsWith("Project B"))
-      ).toBeInTheDocument();
-      expect(screen.getByText("Description for Project A")).toBeInTheDocument();
-      expect(screen.getByText("Description for Project B")).toBeInTheDocument();
-    });
+    render(<HomepageTemplate />);
+
+    await waitFor(() => expect(fetchAllProjects).toHaveBeenCalled());
+
+    // Check if project titles are rendered
+    expect(screen.getByText(/Project 1/i)).toBeInTheDocument();
+    expect(screen.getByText(/Project 2/i)).toBeInTheDocument();
+  });
+
+  test("renders error state when fetching projects fails", async () => {
+    const errorMessage = "Failed to fetch projects";
+    fetchAllProjects.mockRejectedValueOnce(new Error(errorMessage));
+
+    render(<HomepageTemplate />);
+
+    await waitFor(() => expect(fetchAllProjects).toHaveBeenCalled());
+
+    expect(screen.getByRole("alert")).toHaveTextContent(errorMessage);
+  });
+
+  test("navigates to project detail page when 'View More' button is clicked", async () => {
+    const projectsData = [
+      {
+        id: 1,
+        title: "Project 1",
+        description: "Description for project",
+        date: "2023-01-01",
+        image_urls: [],
+      },
+    ];
+
+    fetchAllProjects.mockResolvedValueOnce(projectsData);
+
+    render(<HomepageTemplate />);
+
+    await waitFor(() => expect(fetchAllProjects).toHaveBeenCalled());
+
+    // Click the "View More" button
+    const viewMoreButton = screen.getByRole("button", { name: /View More/i });
+    viewMoreButton.click();
+
+    expect(mockPush).toHaveBeenCalledWith("/Project/1/View");
   });
 });

@@ -1,1 +1,1 @@
-export { default } from './ProjectViewTemplate'
+export { default } from "./ProjectViewTemplate";

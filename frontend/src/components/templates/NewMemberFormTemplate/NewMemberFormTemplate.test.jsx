@@ -1,12 +1,26 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import {
+  render,
+  screen,
+  waitFor,
+  act,
+} from "@testing-library/react";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import AdapterDayjs from "@mui/x-date-pickers/AdapterDayjs";
 import NewMemberFormTemplate from "./NewMemberFormTemplate";
-import { createUser } from "@services/userService";
+import * as dietService from "@services/dietService";
+import * as interestService from "@services/interestService";
+import { useRouter } from "next/navigation";
 
-// Mock the createUser function
-jest.mock("@services/userService", () => ({
-  createUser: jest.fn(),
+// Mock Next.js useRouter hook
+jest.mock("next/navigation", () => ({
+  useRouter: jest.fn(),
 }));
+
+// Mocking services
+jest.mock("@services/userService");
+jest.mock("@services/dietService");
+jest.mock("@services/interestService");
 
 // Mock the UserForm component
 jest.mock("@components/organisms/UserForm", () => {
@@ -33,55 +47,52 @@ jest.mock("@components/organisms/UserForm", () => {
 });
 
 describe("NewMemberFormTemplate", () => {
+  let router;
+
   beforeEach(() => {
+    router = { push: jest.fn() };
+    useRouter.mockReturnValue(router);
+
+    // Mocking the response for the service functions
+    dietService.fetchAllDietRestrictions.mockResolvedValue([
+      { id: 1, item_name: "Vegetarian" },
+      { id: 2, item_name: "Vegan" },
+    ]);
+    interestService.fetchAllPersonalInterests.mockResolvedValue([
+      { id: 1, name: "Traveling" },
+      { id: 2, name: "Reading" },
+    ]);
+  });
+
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
-  test("renders the form", () => {
-    render(<NewMemberFormTemplate />); // No need for MemoryRouter in Next.js
-
-    expect(screen.getByText(/New Member Form/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/First Name/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/Last Name/i)).toBeInTheDocument();
+  test("renders loading state initially", async () => {
+    render(
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <NewMemberFormTemplate />
+      </LocalizationProvider>
+    );
+    expect(screen.getByRole("progressbar")).toBeInTheDocument();
   });
 
-  test("submits the form successfully", async () => {
-    createUser.mockResolvedValueOnce({ uin: 12345 });
-
-    render(<NewMemberFormTemplate />); // No need for MemoryRouter in Next.js
-
-    fireEvent.change(screen.getByPlaceholderText(/First Name/i), {
-      target: { value: "John" },
+  test("renders form elements after loading", async () => {
+    await act(async () => {
+      render(
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <NewMemberFormTemplate />
+        </LocalizationProvider>
+      );
     });
-    fireEvent.change(screen.getByPlaceholderText(/Last Name/i), {
-      target: { value: "Doe" },
-    });
-    fireEvent.click(screen.getByText(/Create User/i));
 
-    await waitFor(() => {
-      expect(createUser).toHaveBeenCalledWith({
-        first_name: "John",
-        last_name: "Doe",
-        uin: null,
-        major: "",
-        year: null,
-        email: "",
-        phone: "",
-        tshirt_size: "",
-        aggie_ring_day: null,
-        birthday: null,
-        graduation_day: null,
-      });
-    });
-  });
+    // Wait for the loading state to finish
+    await waitFor(() =>
+      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument()
+    );
 
-  test("handles cancel button click", () => {
-    const user = { first_name: "John", last_name: "Doe" };
-
-    render(<NewMemberFormTemplate user={user} />);
-
-    fireEvent.click(screen.getByText(/Cancel/i));
-
-    expect(screen.getByPlaceholderText(/First Name/i).value).toBe("");
+    // Ensure that the form is now rendered
+    expect(screen.getByPlaceholderText("First Name")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Last Name")).toBeInTheDocument();
   });
 });

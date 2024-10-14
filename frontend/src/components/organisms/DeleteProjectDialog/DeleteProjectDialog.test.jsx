@@ -1,110 +1,109 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import DeleteProjectDialog from "./DeleteProjectDialog";
+import { render, fireEvent, screen } from "@testing-library/react";
+import DeleteProjectDialog from "./DeleteProjectDialog"; // Ensure this import is correct
 import { deleteProject } from "@services/projectService";
-import { useRouter } from "next/navigation";
 
 // Mock the deleteProject function
 jest.mock("@services/projectService", () => ({
   deleteProject: jest.fn(),
 }));
 
-// Mock the useRouter hook
-jest.mock("next/navigation", () => ({
-  useRouter: jest.fn(),
-}));
-
 describe("DeleteProjectDialog", () => {
-  const mockHandleCloseDialog = jest.fn();
+  const mockProject = { title: "Sample Project" };
+  const mockHandleClose = jest.fn();
   const mockSetError = jest.fn();
-  const project = { title: "My Project" };
-  const id = "67890";
-  const mockPush = jest.fn();
+  const mockOnDelete = jest.fn();
 
   beforeEach(() => {
-    jest.clearAllMocks(); // Clear mocks before each test
-    useRouter.mockReturnValue({ push: mockPush }); // Mock the push function from useRouter
+    jest.clearAllMocks();
   });
 
-  test("renders dialog with project information", () => {
+  it("renders the dialog and displays the project title", () => {
     render(
       <DeleteProjectDialog
-        project={project}
+        project={mockProject}
         openDialog={true}
-        handleCloseDialog={mockHandleCloseDialog}
-        id={id}
+        handleCloseDialog={mockHandleClose}
+        id="1"
         setError={mockSetError}
+        onDelete={mockOnDelete}
       />
     );
 
-    expect(screen.getByText(/Confirm Delete Project/i)).toBeInTheDocument();
+    expect(screen.getByRole("dialog")).toBeInTheDocument(); // Ensure dialog is rendered
+    expect(screen.getByText(/confirm delete project/i)).toBeInTheDocument();
     expect(
-      screen.getByText(
-        /Are you sure you want to delete the My Project project\? This action cannot be undone\./i
-      )
-    ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Cancel/i })).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /Delete Project/i })
+      screen.getByText(/are you sure you want to delete the sample project/i)
     ).toBeInTheDocument();
   });
 
-  test("calls handleCloseDialog when Cancel button is clicked", () => {
+  it("calls handleCloseDialog when Cancel button is clicked", () => {
     render(
       <DeleteProjectDialog
-        project={project}
+        project={mockProject}
         openDialog={true}
-        handleCloseDialog={mockHandleCloseDialog}
-        id={id}
+        handleCloseDialog={mockHandleClose}
+        id="1"
         setError={mockSetError}
+        onDelete={mockOnDelete}
       />
     );
 
-    fireEvent.click(screen.getByRole("button", { name: /Cancel/i }));
-    expect(mockHandleCloseDialog).toHaveBeenCalled();
+    const cancelButton = screen.getByRole("button", { name: /cancel/i });
+    fireEvent.click(cancelButton);
+    expect(mockHandleClose).toHaveBeenCalled();
   });
 
-  test("calls deleteProject and navigates on Delete Project button click", async () => {
-    deleteProject.mockResolvedValueOnce(); // Mock the resolved value for deleteProject
+  it("calls deleteProject and onDelete when Delete button is clicked", async () => {
+    // Mock successful deletion
+    deleteProject.mockResolvedValueOnce();
 
     render(
       <DeleteProjectDialog
-        project={project}
+        project={mockProject}
         openDialog={true}
-        handleCloseDialog={mockHandleCloseDialog}
-        id={id}
+        handleCloseDialog={mockHandleClose}
+        id="1"
         setError={mockSetError}
+        onDelete={mockOnDelete}
       />
     );
 
-    fireEvent.click(screen.getByRole("button", { name: /Delete Project/i }));
-
-    await waitFor(() => {
-      expect(deleteProject).toHaveBeenCalledWith(id); // Check if deleteProject is called with the correct ID
-      expect(mockPush).toHaveBeenCalledWith("/Project"); // Check if router.push is called with the correct path
-      expect(mockHandleCloseDialog).toHaveBeenCalled(); // Ensure the dialog closes
+    const deleteButton = screen.getByRole("button", {
+      name: /delete project/i,
     });
+
+    // Await the click event
+    await fireEvent.click(deleteButton);
+
+    // Check if deleteProject is called with the correct ID
+    expect(deleteProject).toHaveBeenCalledWith("1");
+    // Check if onDelete is called
+    expect(mockOnDelete).toHaveBeenCalled();
+    // Ensure the dialog is closed
+    expect(mockHandleClose).toHaveBeenCalled();
   });
 
-  test("calls setError when deleteProject fails", async () => {
-    const errorMessage = "Error deleting project";
-    deleteProject.mockRejectedValueOnce(new Error(errorMessage)); // Mock the rejection
+  it("sets error when deleteProject fails", async () => {
+    const errorMessage = "Failed to delete project";
+    deleteProject.mockRejectedValueOnce(new Error(errorMessage)); // Mock deletion failure
 
     render(
       <DeleteProjectDialog
-        project={project}
+        project={mockProject}
         openDialog={true}
-        handleCloseDialog={mockHandleCloseDialog}
-        id={id}
+        handleCloseDialog={mockHandleClose}
+        id="1"
         setError={mockSetError}
+        onDelete={mockOnDelete}
       />
     );
 
-    fireEvent.click(screen.getByRole("button", { name: /Delete Project/i }));
-
-    await waitFor(() => {
-      expect(mockSetError).toHaveBeenCalledWith(new Error(errorMessage)); // Check if setError is called with the error
-      expect(mockHandleCloseDialog).toHaveBeenCalled(); // Ensure the dialog closes
+    const deleteButton = screen.getByRole("button", {
+      name: /delete project/i,
     });
+    await fireEvent.click(deleteButton);
+
+    expect(mockSetError).toHaveBeenCalledWith(new Error(errorMessage)); // Check if error state is set
   });
 });

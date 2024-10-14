@@ -22,8 +22,7 @@ import ProgressLoading from "@components/organisms/ProgressLoading";
 /**
  * HomepageTemplate Component
  *
- * @component
- * @description Renders the homepage with details about Engineers Without Borders (EWB) and a list of ongoing projects.
+ * Renders the homepage with details about Engineers Without Borders (EWB) and a list of ongoing projects.
  * The component fetches project data from an external service and displays each project with its associated images.
  * It includes loading and error states to manage the UI based on the request status.
  *
@@ -59,7 +58,7 @@ const HomepageTemplate = () => {
 
   // If data is still loading, show a circular progress indicator.
   if (loading) {
-    return <ProgressLoading />;
+    return <ProgressLoading role="progressbar" />;
   }
 
   // If an error occurred during data fetching, display an alert with the error message.
@@ -135,8 +134,6 @@ const HomepageTemplate = () => {
               <Box
                 sx={{
                   display: "flex",
-                  // flexDirection: "row",
-                  // justifyContent: "space-between",
                   width: "100%",
                   gap: "20px",
                 }}
