@@ -7,6 +7,7 @@ module Authentication
     def authenticate_request
         token = request.headers["Authentication"]
         if token.present?
+            puts token
             begin
                 decrypted_payload, headers = JOSE::JWE.block_decrypt(JWK_OCT512, token)
                 decoded_token = JSON.parse(decrypted_payload)

@@ -1,5 +1,5 @@
 "use server";
-import { API_URL } from "../constants";
+import { API_URL, TOKEN_NAME } from "../constants";
 import { cookies } from "next/headers";
 
 /**
@@ -9,7 +9,7 @@ import { cookies } from "next/headers";
  * @throws {Error} Throws an error if the response is not ok.
  */
 async function fetchAllUsers() {
-  const token = cookies().get("next-auth.session-token")?.value;
+  const token = cookies().get(TOKEN_NAME)?.value;
   const response = await fetch(`${API_URL}/members`, {
     method: "GET",
     headers: {
@@ -32,7 +32,7 @@ async function fetchAllUsers() {
  * @throws {Error} Throws an error if the response is not ok.
  */
 async function fetchUser(id) {
-  const token = cookies().get("next-auth.session-token")?.value;
+  const token = cookies().get(TOKEN_NAME)?.value;
   const response = await fetch(`${API_URL}/members/${id}`, {
     method: "GET",
     headers: {
@@ -78,7 +78,7 @@ async function createUser(userData) {
  * @throws {Error} Throws an error if the response is not ok.
  */
 async function updateUser(id, userData) {
-  const token = cookies().get("next-auth.session-token")?.value;
+  const token = cookies().get(TOKEN_NAME)?.value;
   const response = await fetch(`${API_URL}/members/${id}`, {
     method: "PUT",
     headers: {
@@ -104,7 +104,7 @@ async function updateUser(id, userData) {
  *
  */
 async function updateUserPresident(id, postData) {
-  const token = cookies().get("next-auth.session-token")?.value;
+  const token = cookies().get(TOKEN_NAME)?.value;
   const response = await fetch(`${API_URL}/members/${id}`, {
     method: "PUT",
     headers: {
@@ -129,7 +129,7 @@ async function updateUserPresident(id, postData) {
  * @throws {Error} Throws an error if the response is not ok.
  */
 async function deleteUser(id) {
-  const token = cookies().get("next-auth.session-token")?.value;
+  const token = cookies().get(TOKEN_NAME)?.value;
   const response = await fetch(`${API_URL}/members/${id}`, {
     method: "DELETE",
     headers: {

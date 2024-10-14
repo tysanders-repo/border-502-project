@@ -1,15 +1,14 @@
 "use server";
 
-import { API_URL } from "../constants"
+import { API_URL, TOKEN_NAME } from "../constants"
 import { cookies } from "next/headers"
-
 /**
  * Check if the user is signed in by checking for the session token cookie.
  *
  * @returns {Promise<boolean>} A promise that resolves to true if the user is signed in, otherwise false.
  */
 export async function signedIn() {
-  return cookies().get("next-auth.session-token")?.value !== undefined;
+  return cookies().get(TOKEN_NAME)?.value !== undefined;
 }
 
 /**
@@ -21,7 +20,7 @@ export async function signedIn() {
  * @returns {Promise<void>} A promise that resolves when the user info is set.
  */
 export async function setUserInfo() {
-  const token = cookies().get("next-auth.session-token")?.value;
+  const token = cookies().get(TOKEN_NAME)?.value;
   const response = await fetch(`${API_URL}/member/role`, {
     method: "GET",
     headers: {
