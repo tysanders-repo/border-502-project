@@ -130,6 +130,7 @@ export default function Navbar() {
   }, []);
   console.log(process.env.NEXTAUTH_URL);
   console.log(process.env.REACT_APP_API_URL);
+  console.log(process.env.NEXT_PUBLIC_AUTHJS_LOCAL_SESSION_COOKIE);
   console.log("Next line");
   return (
     <AppBar
