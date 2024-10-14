@@ -46,7 +46,6 @@ class MembersController < ApplicationController
 
   # GET /member/role
   def role
-    # puts @current_member.email
     render json: @current_member
   end
 

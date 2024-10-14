@@ -16,6 +16,7 @@ import { fetchAllDietRestrictions, createDietaryRestriction } from '@services/di
 import { createMemberDiet, checkMemberDietExists } from '@services/memberDietService'; 
 import { fetchAllCareerInterests, fetchAllCompanyInterests, fetchAllPersonalInterests, createInterest } from "@services/interestService";
 import { createMemberInterest, checkMemberInterestExists } from "@services/memberInterestService";
+import { signedIn, setUserInfo, getUserRole, getUserUIN } from "@services/authService";
 
 /**
  * NewMemberFormTemplate Component
@@ -154,6 +155,16 @@ function NewMemberFormTemplate() {
     e.preventDefault(); // Prevent the default form submission behavior.
     setLoading(true); // Set loading state to true.
     setError(null); // Reset error state.
+
+    // Sets up user info in case they signed in before filling out the form
+    const signedin = await signedIn()
+    if(signedin){
+      const role = await getUserRole()
+      const uin = await getUserUIN()
+      if(role == "none" && uin == "none") {
+        setUserInfo()
+      }
+    }
 
     if (validateForm()) {
       try {

@@ -1,5 +1,5 @@
 "use server";
-const API_URL = "http://localhost:3000";
+import { API_URL } from "../constants"
 import { cookies } from "next/headers"
 
 
@@ -46,11 +46,11 @@ export async function deleteUserInfo() {
   cookies().delete('uin');
   cookies().delete('role');
 }
-
+// Returns the users role, none if they are not a member, undefined if not signed in.
 export async function getUserRole() {
-    return cookies().get('role')?.value
+  return cookies().get('role')?.value
 }
-
+// Returns the users uin, none if they are not a member, undefined if not signed in.
 export async function getUserUIN() {
-    return cookies().get('uin')?.value
+  return cookies().get('uin')?.value
 }

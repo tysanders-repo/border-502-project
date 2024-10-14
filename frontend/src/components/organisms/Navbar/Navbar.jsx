@@ -66,8 +66,8 @@ export default function Navbar() {
         if(signedin)
           await deleteUserInfo()
         signedin ? 
-        signOut('google') : 
-        signIn('google', { redirectTo: "/" });
+        signOut({callbackUrl: '/'}) : 
+        signIn('google', { callbackUrl: '/Member' }); // temporarily redirects to Member, until Profile is set up
     } catch (error) {
         console.error('Google error:', error);
     } finally {
