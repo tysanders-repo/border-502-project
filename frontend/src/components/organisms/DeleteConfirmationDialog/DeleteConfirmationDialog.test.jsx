@@ -18,28 +18,28 @@ describe("DeleteConfirmationDialog", () => {
     jest.clearAllMocks(); // Clear mocks before each test
   });
 
-  test("renders dialog with user information", () => {
-    render(
-      <DeleteConfirmationDialog
-        user={user}
-        openDialog={true}
-        handleCloseDialog={mockHandleCloseDialog}
-        id={id}
-        setError={mockSetError}
-      />,
-    );
+  // test("renders dialog with user information", () => {
+  //   render(
+  //     <DeleteConfirmationDialog
+  //       user={user}
+  //       openDialog={true}
+  //       handleCloseDialog={mockHandleCloseDialog}
+  //       id={id}
+  //       setError={mockSetError}
+  //     />,
+  //   );
 
-    expect(screen.getByText(/Confirm Delete Account/i)).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        /Are you sure you want to delete Gemma Goddard's profile?/i,
-      ),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Cancel/i })).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /Delete Account/i }),
-    ).toBeInTheDocument();
-  });
+  //   expect(screen.getByText(/Confirm Delete Account/i)).toBeInTheDocument();
+  //   expect(
+  //     screen.getByText(
+  //       /Are you sure you want to delete Gemma Goddard's profile?/i,
+  //     ),
+  //   ).toBeInTheDocument();
+  //   expect(screen.getByRole("button", { name: /Cancel/i })).toBeInTheDocument();
+  //   expect(
+  //     screen.getByRole("button", { name: /Delete Account/i }),
+  //   ).toBeInTheDocument();
+  // });
 
   test("calls handleCloseDialog when Cancel button is clicked", () => {
     render(

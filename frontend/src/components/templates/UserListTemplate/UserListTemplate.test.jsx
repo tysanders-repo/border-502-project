@@ -9,7 +9,7 @@ jest.mock("@services/userService", () => ({
   fetchAllUsers: jest.fn(),
   updateUserPresident: jest.fn(),
 }));
-
+// eslint-disable-next-line
 jest.mock("@components/organisms/DeleteConfirmationDialog", () => () => (
   <div>Delete Confirmation Dialog</div>
 ));
