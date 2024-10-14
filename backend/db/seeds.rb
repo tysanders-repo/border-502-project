@@ -182,3 +182,45 @@ Interest.create!(interest_type: "personal", name: "running")
 Interest.create!(interest_type: "personal", name: "skiing")
 Interest.create!(interest_type: "personal", name: "fitness")
 Interest.create!(interest_type: "personal", name: "volunteering")
+
+projects = [
+  {
+    title: "Clean Water Initiative",
+    description: "A project aimed at providing access to clean and safe drinking water in underserved communities.",
+    date: DateTime.new(2024, 10, 1),
+    pictures: {},
+    timeline: {}
+  },
+  {
+    title: "Sustainable Housing Project",
+    description: "Development of sustainable housing solutions for families in need, utilizing eco-friendly materials.",
+    date: DateTime.new(2024, 11, 15),
+    pictures: {},
+    timeline: {}
+  },
+  {
+    title: "Renewable Energy for Rural Areas",
+    description: "Implementation of solar energy systems to reduce dependence on non-renewable energy sources.",
+    date: DateTime.new(2024, 12, 20),
+    pictures: {},
+    timeline: {}
+  },
+  {
+    title: "Education and Empowerment Program",
+    description: "Creating educational resources and training programs to empower local communities.",
+    date: DateTime.new(2025, 1, 10),
+    pictures: {},
+    timeline: {}
+  },
+  {
+    title: "Food Security Initiative",
+    description: "A project focused on improving food security through sustainable agricultural practices.",
+    date: DateTime.new(2025, 2, 5),
+    pictures: {},
+    timeline: {}
+  }
+]
+
+projects.each do |project|
+  Project.create!(project)
+end
