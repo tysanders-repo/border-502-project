@@ -64,7 +64,6 @@ export async function deleteUserInfo() {
   cookies().delete("role");
 }
 
-
 /**
  * Get the user's role from cookies.
  *
@@ -82,4 +81,3 @@ export async function getUserRole() {
 export async function getUserUIN() {
   return cookies().get("uin")?.value;
 }
-

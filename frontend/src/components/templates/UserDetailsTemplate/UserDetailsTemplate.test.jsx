@@ -67,7 +67,7 @@ describe("UserDetailsTemplate", () => {
     expect(screen.getByText("Gemma Goddard's Information")).toBeInTheDocument();
     expect(screen.getByText("UIN: 4123")).toBeInTheDocument();
     expect(
-      screen.getByText("Major: Aerospace Engineering")
+      screen.getByText("Major: Aerospace Engineering"),
     ).toBeInTheDocument();
     expect(screen.getByText("Year: 2024")).toBeInTheDocument();
     expect(screen.getByText("Email: gemgoddard@yahoo.com")).toBeInTheDocument();
@@ -85,7 +85,7 @@ describe("UserDetailsTemplate", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText("Error fetching user: Failed to fetch")
+        screen.getByText("Error fetching user: Failed to fetch"),
       ).toBeInTheDocument();
     });
   });
@@ -144,7 +144,7 @@ describe("UserDetailsTemplate", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText("Gemma Goddard's Information")
+        screen.getByText("Gemma Goddard's Information"),
       ).toBeInTheDocument();
     });
 

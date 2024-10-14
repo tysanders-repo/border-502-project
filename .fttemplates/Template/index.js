@@ -1,1 +1,1 @@
-export { default } from './[FTName]'
+export { default } from "./[FTName]";

@@ -27,13 +27,13 @@ describe("DeleteProjectDialog", () => {
         id="1"
         setError={mockSetError}
         onDelete={mockOnDelete}
-      />
+      />,
     );
 
     expect(screen.getByRole("dialog")).toBeInTheDocument(); // Ensure dialog is rendered
     expect(screen.getByText(/confirm delete project/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/are you sure you want to delete the sample project/i)
+      screen.getByText(/are you sure you want to delete the sample project/i),
     ).toBeInTheDocument();
   });
 
@@ -46,7 +46,7 @@ describe("DeleteProjectDialog", () => {
         id="1"
         setError={mockSetError}
         onDelete={mockOnDelete}
-      />
+      />,
     );
 
     const cancelButton = screen.getByRole("button", { name: /cancel/i });
@@ -66,7 +66,7 @@ describe("DeleteProjectDialog", () => {
         id="1"
         setError={mockSetError}
         onDelete={mockOnDelete}
-      />
+      />,
     );
 
     const deleteButton = screen.getByRole("button", {
@@ -96,7 +96,7 @@ describe("DeleteProjectDialog", () => {
         id="1"
         setError={mockSetError}
         onDelete={mockOnDelete}
-      />
+      />,
     );
 
     const deleteButton = screen.getByRole("button", {

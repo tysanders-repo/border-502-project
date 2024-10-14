@@ -36,7 +36,7 @@ describe("ProjectForm", () => {
           handleCancel={mockHandleCancel}
           handleImageChange={mockHandleImageChange}
         />
-      </LocalizationProvider>
+      </LocalizationProvider>,
     );
   };
 

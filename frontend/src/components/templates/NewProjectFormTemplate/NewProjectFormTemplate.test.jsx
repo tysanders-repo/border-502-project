@@ -29,7 +29,7 @@ describe("NewProjectFormTemplate", () => {
     jest.clearAllMocks();
   });
 
-  // Placeholder while fixing versions 
+  // Placeholder while fixing versions
   test("renders loading state initially", async () => {
     true;
   });
