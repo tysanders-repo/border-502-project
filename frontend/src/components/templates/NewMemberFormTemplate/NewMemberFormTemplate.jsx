@@ -17,6 +17,7 @@ import { createMemberDiet, checkMemberDietExists } from '@services/memberDietSer
 import { fetchAllCareerInterests, fetchAllCompanyInterests, fetchAllPersonalInterests, createInterest } from "@services/interestService";
 import { createMemberInterest, checkMemberInterestExists } from "@services/memberInterestService";
 import { signedIn, setUserInfo, getUserRole, getUserUIN } from "@services/authService";
+import { signIn } from "next-auth/react";
 
 /**
  * NewMemberFormTemplate Component
@@ -162,7 +163,7 @@ function NewMemberFormTemplate() {
       const role = await getUserRole()
       const uin = await getUserUIN()
       if(role == "none" && uin == "none") {
-        setUserInfo()
+        await setUserInfo()
       }
     }
 
@@ -282,7 +283,11 @@ function NewMemberFormTemplate() {
         catch (e){
           setError("failed to add company interests");
         }
-        router.push(`/Member/${newUser.uin}`);
+        if(!signedin){
+          signIn('google', { callbackUrl: `/Member/${newUser.uin}` })
+        }else{
+          router.push(`/Member/${newUser.uin}`);
+        }
       } catch (e) {
         setError("Failed to submit form")
       } finally {
