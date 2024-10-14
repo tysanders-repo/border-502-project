@@ -7,6 +7,7 @@ const hostName = new URL(process.env.NEXT_PUBLIC_NEXTAUTH_URL).hostname;
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [Google],
+  secret: "secret",
   cookies: {
     sessionToken: {
       name: `${cookiePrefix}next-auth.session-token`,
