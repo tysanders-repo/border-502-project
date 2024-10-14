@@ -1,104 +1,186 @@
-import React, { useEffect, useState } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
-import { fetchProject } from 'services/projectService'
-import DeleteProjectDialog from 'components/organisms/DeleteProjectDialog'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import { format } from 'date-fns'
+"use client"; // Marks this component for client-side rendering in Next.js
+
+/**
+ * @file ProjectDetailsTemplate.jsx
+ * @description This component displays the details of a specific project, including title, description, images, and options to edit or delete the project.
+ * It fetches the project data based on the provided ID, handles loading and error states, and manages the delete dialog state.
+ */
+
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation"; // Next.js router for navigation
+import { fetchProject } from "@services/projectService"; // Service function to fetch a project by ID
+import DeleteProjectDialog from "@components/organisms/DeleteProjectDialog"; // Dialog component for confirming project deletion
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { format } from "date-fns";
+import ImageList from "@mui/material/ImageList";
+import ImageListItem from "@mui/material/ImageListItem";
+import ProgressLoading from "@components/organisms/ProgressLoading";
 
 import {
   Button,
   Container,
   Typography,
-  CircularProgress,
   Alert,
   Box,
   IconButton,
-} from '@mui/material'
+} from "@mui/material";
 
-function ProjectDetailsTemplate() {
+/**
+ * ProjectDetailsTemplate Component
+ *
+ * This component displays the details of a selected project, including project title, description, and images.
+ * The component allows users to edit or delete the project and handles navigation and dialog visibility.
+ *
+ * @param {Object} props - The route parameters containing the project ID.
+ * @returns {JSX.Element} A detailed view of the selected project.
+ */
+function ProjectDetailsTemplate({ params }) {
+  // State variables to manage project data, loading state, error messages, and dialog visibility.
   const [project, setProject] = useState({
-    title: '',
-    description: '',
+    title: "",
+    description: "",
     date: null,
     pictures: null,
     timeline: null,
-  })
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [openDialog, setOpenDialog] = useState(false)
-  const navigate = useNavigate()
+    images: [],
+  });
+  const [loading, setLoading] = useState(true); // Tracks the loading state during data fetch.
+  const [error, setError] = useState(null); // Stores error messages, if any.
+  const [openDialog, setOpenDialog] = useState(false); // Tracks visibility of the delete confirmation dialog.
 
-  const { id } = useParams()
+  const router = useRouter(); // Next.js router for handling navigation.
+  const { id } = params; // Destructure `id` from the route parameters.
 
+  /**
+   * useEffect Hook
+   *
+   * Fetches the project details from the server when the component is mounted or when the `id` changes.
+   * It sets the project data or handles errors if the fetch fails.
+   */
   useEffect(() => {
     const fetchCurrentProject = async () => {
       try {
-        const json = await fetchProject(id)
-        setProject(json)
-        setLoading(false)
+        const json = await fetchProject(id); // Fetch project data using the provided ID.
+        setProject(json); // Update project state with fetched data.
+        setLoading(false); // Set loading state to false.
       } catch (error) {
-        // console.error('Failed to fetch project:', error)
-        setError(error)
-        setLoading(false)
+        setError(error); // Set error state if the request fails.
+        setLoading(false); // Set loading state to false.
       }
-    }
+    };
 
-    fetchCurrentProject()
-  }, [id])
+    fetchCurrentProject();
+  }, [id]);
 
+  /**
+   * handleOpenDialog Function
+   *
+   * Opens the delete confirmation dialog.
+   */
   const handleOpenDialog = () => {
-    setOpenDialog(true)
-  }
+    setOpenDialog(true);
+  };
 
+  /**
+   * handleCloseDialog Function
+   *
+   * Closes the delete confirmation dialog.
+   */
   const handleCloseDialog = () => {
-    setOpenDialog(false)
-  }
+    setOpenDialog(false);
+  };
 
-  if (loading) return <CircularProgress />
+  // If the data is still loading, show a loading spinner.
+  if (loading) return <ProgressLoading />;
 
+  // If an error occurred while fetching data, display an error message.
   if (error)
-    return <Alert severity="error">Error fetching user: {error.message}</Alert>
+    return (
+      <Alert severity="error">Error fetching project: {error.message}</Alert>
+    );
 
   return (
-    <Container maxWidth="sm" sx={{ marginTop: 4 }}>
+    <Container maxWidth="md" sx={{ marginTop: 4 }}>
       {project ? (
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-          <IconButton onClick={() => navigate('/projects')}>
+        // Main container for project details and actions.
+        <Box sx={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+          {/* Back button to navigate to the Projects list page */}
+          <IconButton onClick={() => router.push("/Project")} aria-label="back">
             <ArrowBackIcon />
           </IconButton>
 
-          <Box>
-            <Typography variant="h4" gutterBottom>
+          {/* Project details container */}
+          <Box sx={{ width: "100%" }}>
+            {/* Project title */}
+            <Typography variant="h4" gutterBottom aria-label="title">
               {project.title}
             </Typography>
-            <Typography variant="h6">
-              Start Date: {format(new Date(project.date), 'MMMM d, yyyy')}
+
+            {/* Image gallery */}
+            <ImageList
+              sx={{ width: "100%", height: "100%" }}
+              cols={2}
+              rowHeight={200}
+            >
+              {project.image_urls?.map((image, index) => (
+                <ImageListItem key={index}>
+                  <img
+                    src={image.url}
+                    alt={`preview ${index}`}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </ImageListItem>
+              ))}
+            </ImageList>
+
+            {/* Project start date */}
+            <Typography variant="h6" aria-label="start">
+              Start Date: {format(new Date(project.date), "MMMM d, yyyy")}
             </Typography>
-            <Typography variant="h6">
+
+            {/* Project description */}
+            <Typography variant="h6" aria-label="description">
               Description: {project.description}
             </Typography>
 
+            {/* Action buttons for editing and deleting the project */}
             <Box
               mt={3}
-              sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}
+              sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}
             >
               <Button
                 variant="outlined"
                 color="error"
                 onClick={handleOpenDialog}
+                sx={{ minWidth: "100px" }}
               >
                 Delete
               </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                component={Link}
-                to={`/projects/${id}/edit`}
-              >
-                Edit Project
-              </Button>
+              <Box sx={{ display: "flex", gap: "10px" }}>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => router.push(`/Project/${id}/Edit`)}
+                  sx={{ minWidth: "100px" }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => router.push(`/Project/${id}/View`)}
+                  sx={{ minWidth: "100px" }}
+                >
+                  View
+                </Button>
+              </Box>
             </Box>
 
+            {/* Delete confirmation dialog */}
             <DeleteProjectDialog
               project={project}
               openDialog={openDialog}
@@ -112,7 +194,7 @@ function ProjectDetailsTemplate() {
         <Typography variant="h6">Project not found</Typography>
       )}
     </Container>
-  )
+  );
 }
 
-export default ProjectDetailsTemplate
+export default ProjectDetailsTemplate;

@@ -130,4 +130,3 @@ RSpec.describe Member, type: :model do
     }
   end
 end
-

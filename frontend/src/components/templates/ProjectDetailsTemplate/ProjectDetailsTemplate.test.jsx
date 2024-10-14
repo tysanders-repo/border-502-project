@@ -1,108 +1,128 @@
-import React from 'react'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { MemoryRouter, Route, Routes } from 'react-router-dom'
-import ProjectDetailsTemplate from './ProjectDetailsTemplate'
-import { fetchProject } from 'services/projectService'
-import { act } from '@testing-library/react'
+"use client"; // Marks this component for client-side rendering in Next.js
 
-jest.mock('services/projectService', () => ({
+import React from "react";
+import { render, screen, waitFor } from "@testing-library/react";
+import { useRouter } from "next/navigation";
+import ProjectDetailsTemplate from "./ProjectDetailsTemplate";
+import { fetchProject } from "@services/projectService";
+import DeleteProjectDialog from "@components/organisms/DeleteProjectDialog";
+
+// Mock Next.js useRouter hook
+jest.mock("next/navigation", () => ({
+  useRouter: jest.fn(),
+}));
+
+// Mock the projectService function
+jest.mock("@services/projectService", () => ({
   fetchProject: jest.fn(),
-}))
+}));
 
-describe('ProjectDetailsTemplate', () => {
-  const project = {
-    title: 'Project Apollo',
-    description: 'A mission to the moon',
-    date: '2024-09-25',
-    pictures: null,
-    timeline: null,
-  }
+// Mock the DeleteProjectDialog component
+jest.mock("@components/organisms/DeleteProjectDialog", () => () => (
+  <div>Mocked DeleteProjectDialog</div>
+));
+
+describe("ProjectDetailsTemplate", () => {
+  const params = { id: "123" };
 
   beforeEach(() => {
-    jest.clearAllMocks()
-  })
+    // Clear all mocks before each test
+    jest.clearAllMocks();
+    useRouter.mockReturnValue({
+      push: jest.fn(),
+    });
+  });
 
-  test('renders loading state initially', () => {
-    fetchProject.mockImplementation(() => new Promise(() => {}))
+  test("renders loading state initially", () => {
+    // Mock the fetchProject function to not resolve immediately
+    fetchProject.mockImplementation(() => new Promise(() => {}));
 
-    render(
-      <MemoryRouter initialEntries={['/projects/1']}>
-        <ProjectDetailsTemplate />
-      </MemoryRouter>
-    )
+    render(<ProjectDetailsTemplate params={params} />);
+    expect(screen.getByRole("progressbar")).toBeInTheDocument();
+  });
 
-    expect(screen.getByRole('progressbar')).toBeInTheDocument()
-  })
+  test("renders error message on fetch failure", async () => {
+    const errorMessage = "Failed to fetch project";
+    fetchProject.mockRejectedValue(new Error(errorMessage));
 
-  test('calls fetchProject with the correct id and renders project details', async () => {
-    fetchProject.mockResolvedValueOnce(project)
+    render(<ProjectDetailsTemplate params={params} />);
 
-    render(
-      <MemoryRouter initialEntries={['/projects/1']}>
-        <ProjectDetailsTemplate />
-      </MemoryRouter>
-    )
-
-    // Wait for fetchProject to be called
+    // Wait for the error message to appear
     await waitFor(() => {
-      expect(fetchProject).toHaveBeenCalledTimes(1)
-    })
+      expect(
+        screen.getByText(`Error fetching project: ${errorMessage}`)
+      ).toBeInTheDocument();
+    });
+  });
 
-    // Assert project details are rendered correctly
-    expect(screen.getByText(/Project Apollo/i)).toBeInTheDocument()
-  })
+  test("renders project details", async () => {
+    const mockProject = {
+      title: "Test Project",
+      description: "This is a test project description.",
+      date: "2023-01-01",
+      image_urls: [{ url: "http://example.com/image1.jpg" }],
+    };
 
-  test('renders error state when fetch fails', async () => {
-    fetchProject.mockRejectedValueOnce(new Error('Failed to fetch project'))
+    fetchProject.mockResolvedValue(mockProject);
 
-    await act(async () => {
-      render(
-        <MemoryRouter initialEntries={['/projects/1']}>
-          <ProjectDetailsTemplate />
-        </MemoryRouter>
-      )
-    })
+    render(<ProjectDetailsTemplate params={params} />);
+
+    // Wait for the loading state to finish
+    await waitFor(() =>
+      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument()
+    );
+
+    expect(await screen.findByText(/Start Date:/)).toBeInTheDocument();
 
     expect(
-      screen.getByText(/Error fetching user: Failed to fetch project/i)
-    ).toBeInTheDocument()
-  })
+      await screen.findByText(/This is a test project description/)
+    ).toBeInTheDocument();
+  });
 
-  test('opens DeleteProjectDialog on button click', async () => {
-    fetchProject.mockResolvedValueOnce(project)
+  test("handles back button navigation", async () => {
+    const mockPush = jest.fn();
+    useRouter.mockReturnValue({ push: mockPush });
 
-    render(
-      <MemoryRouter initialEntries={['/projects/1']}>
-        <ProjectDetailsTemplate />
-      </MemoryRouter>
-    )
+    const mockProject = {
+      title: "Test Project",
+      description: "This is a test project description.",
+      date: "2023-01-01",
+      image_urls: [{ url: "http://example.com/image1.jpg" }],
+    };
 
-    await waitFor(() => {
-      expect(screen.queryByRole('progressbar')).not.toBeInTheDocument()
-    })
+    fetchProject.mockResolvedValue(mockProject);
 
-    fireEvent.click(screen.getByRole('button', { name: /Delete/i }))
+    render(<ProjectDetailsTemplate params={params} />);
 
-    await waitFor(() => {
-      expect(screen.getByText(/Confirm Delete Project/i)).toBeInTheDocument()
-    })
-  })
+    await waitFor(() =>
+      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument()
+    );
 
-  test('navigates to edit project page', async () => {
-    fetchProject.mockResolvedValueOnce(project)
+    const backButton = screen.getByRole("button", { name: /back/i });
+    backButton.click();
 
-    render(
-      <MemoryRouter initialEntries={['/projects/1']}>
-        <ProjectDetailsTemplate />
-      </MemoryRouter>
-    )
+    expect(mockPush).toHaveBeenCalledWith("/Project");
+  });
 
-    // Wait for project data to load
-    await waitFor(() => {
-      expect(screen.queryByRole('progressbar')).not.toBeInTheDocument()
-    })
+  test("opens delete dialog on delete button click", async () => {
+    const mockProject = {
+      title: "Test Project",
+      description: "This is a test project description.",
+      date: "2023-01-01",
+      image_urls: [{ url: "http://example.com/image1.jpg" }],
+    };
 
-    // Check if the "Edit Project" button is rendered
-    expect(screen.getByText(/Edit Project/i)).toBeInTheDocument()
-  })
-})
+    fetchProject.mockResolvedValue(mockProject);
+
+    render(<ProjectDetailsTemplate params={params} />);
+
+    await waitFor(() =>
+      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument()
+    );
+
+    const deleteButton = screen.getByRole("button", { name: /delete/i });
+    deleteButton.click();
+
+    expect(screen.getByText("Mocked DeleteProjectDialog")).toBeInTheDocument();
+  });
+});

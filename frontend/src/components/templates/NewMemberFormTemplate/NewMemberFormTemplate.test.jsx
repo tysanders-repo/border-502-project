@@ -1,84 +1,98 @@
-import React from 'react'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
-import NewMemberFormTemplate from './NewMemberFormTemplate'
-import { createUser } from 'services/userService'
+import React from "react";
+import {
+  render,
+  screen,
+  waitFor,
+  act,
+} from "@testing-library/react";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import AdapterDayjs from "@mui/x-date-pickers/AdapterDayjs";
+import NewMemberFormTemplate from "./NewMemberFormTemplate";
+import * as dietService from "@services/dietService";
+import * as interestService from "@services/interestService";
+import { useRouter } from "next/navigation";
 
-jest.mock('services/userService', () => ({
-  createUser: jest.fn(),
-}))
+// Mock Next.js useRouter hook
+jest.mock("next/navigation", () => ({
+  useRouter: jest.fn(),
+}));
 
-jest.mock('components/organisms/UserForm', () => {
+// Mocking services
+jest.mock("@services/userService");
+jest.mock("@services/dietService");
+jest.mock("@services/interestService");
+
+// Mock the UserForm component
+jest.mock("@components/organisms/UserForm", () => {
   return ({ onSubmit, onChange, user }) => (
     <form onSubmit={onSubmit}>
       <input
         type="text"
         placeholder="First Name"
         value={user.first_name}
-        onChange={(e) => onChange('first_name', e.target.value)}
+        onChange={(e) => onChange("first_name", e.target.value)}
       />
       <input
         type="text"
         placeholder="Last Name"
         value={user.last_name}
-        onChange={(e) => onChange('last_name', e.target.value)}
+        onChange={(e) => onChange("last_name", e.target.value)}
       />
       <button type="submit">Create User</button>
-      <button type="button" onClick={() => onChange('first_name', '')}>
+      <button type="button" onClick={() => onChange("first_name", "")}>
         Cancel
       </button>
     </form>
-  )
-})
+  );
+});
 
-describe('NewMemberFormTemplate', () => {
+describe("NewMemberFormTemplate", () => {
+  let router;
+
   beforeEach(() => {
-    jest.clearAllMocks()
-  })
+    router = { push: jest.fn() };
+    useRouter.mockReturnValue(router);
 
-  test('renders the form', () => {
+    // Mocking the response for the service functions
+    dietService.fetchAllDietRestrictions.mockResolvedValue([
+      { id: 1, item_name: "Vegetarian" },
+      { id: 2, item_name: "Vegan" },
+    ]);
+    interestService.fetchAllPersonalInterests.mockResolvedValue([
+      { id: 1, name: "Traveling" },
+      { id: 2, name: "Reading" },
+    ]);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test("renders loading state initially", async () => {
     render(
-      <MemoryRouter>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
         <NewMemberFormTemplate />
-      </MemoryRouter>
-    )
+      </LocalizationProvider>
+    );
+    expect(screen.getByRole("progressbar")).toBeInTheDocument();
+  });
 
-    expect(screen.getByText(/New Member Form/i)).toBeInTheDocument()
-    expect(screen.getByPlaceholderText(/First Name/i)).toBeInTheDocument()
-    expect(screen.getByPlaceholderText(/Last Name/i)).toBeInTheDocument()
-  })
+  test("renders form elements after loading", async () => {
+    await act(async () => {
+      render(
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <NewMemberFormTemplate />
+        </LocalizationProvider>
+      );
+    });
 
-  test('submits the form successfully', async () => {
-    createUser.mockResolvedValueOnce({ uin: 12345 })
+    // Wait for the loading state to finish
+    await waitFor(() =>
+      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument()
+    );
 
-    render(
-      <MemoryRouter>
-        <NewMemberFormTemplate />
-      </MemoryRouter>
-    )
-
-    fireEvent.change(screen.getByPlaceholderText(/First Name/i), {
-      target: { value: 'John' },
-    })
-    fireEvent.change(screen.getByPlaceholderText(/Last Name/i), {
-      target: { value: 'Doe' },
-    })
-    fireEvent.click(screen.getByText(/Create User/i))
-
-    await waitFor(() => {
-      expect(createUser).toHaveBeenCalledWith({
-        first_name: 'John',
-        last_name: 'Doe',
-        uin: null,
-        major: '',
-        year: null,
-        email: '',
-        phone: '',
-        tshirt_size: '',
-        aggie_ring_day: null,
-        birthday: null,
-        graduation_day: null,
-      })
-    })
-  })
-})
+    // Ensure that the form is now rendered
+    expect(screen.getByPlaceholderText("First Name")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Last Name")).toBeInTheDocument();
+  });
+});

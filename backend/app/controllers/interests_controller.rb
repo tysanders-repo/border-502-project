@@ -1,11 +1,26 @@
 class InterestsController < ApplicationController
   before_action :set_interest, only: %i[ show update destroy ]
-
+  skip_before_action :authenticate_request
   # GET /interests
   def index
     @interests = Interest.all
 
     render json: @interests
+  end
+
+  def career_interests
+    @career_interests = Interest.where(interest_type: "career")
+    render json: @career_interests
+  end
+
+  def company_interests
+    @company_interests = Interest.where(interest_type: "company")
+    render json: @company_interests
+  end
+
+  def personal_interests
+    @personal_interests = Interest.where(interest_type: "personal")
+    render json: @personal_interests
   end
 
   # GET /interests/1

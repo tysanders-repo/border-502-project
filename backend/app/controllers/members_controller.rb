@@ -1,6 +1,6 @@
 class MembersController < ApplicationController
   before_action :set_member, only: %i[ show update destroy ]
-
+  # skip_before_action :authenticate_request
   # GET /members
   def index
     @members = Member.all
@@ -43,7 +43,11 @@ class MembersController < ApplicationController
       @member.update!(archived: true)
     end
   end
-  
+
+  # GET /member/role
+  def role
+    render json: @current_member
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -57,18 +61,17 @@ class MembersController < ApplicationController
     end
 
     def update_params
-      case request.headers['Role']
-      when 'president'
+      case request.headers["Role"]
+      when "president"
         params.require(:member).permit(:role, :archived, :accepted, :accomplishments)
-      when 'vice_president'
+      when "vice_president"
         params.require(:member).permit(:role, :accepted, :accomplishments)
-      when 'treasurer'
+      when "treasurer"
         params.require(:member).permit(:paid_dues)
-      when 'internal_relations'
+      when "internal_relations"
         params.require(:member).permit(:archived, :accepted)
       else
         params.require(:member).permit(:uin, :first_name, :last_name, :major, :year, :email, :phone, :tshirt_size, :aggie_ring_day, :birthday, :graduation_day)
       end
     end
-    
 end

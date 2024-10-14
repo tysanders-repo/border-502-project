@@ -1,5 +1,3 @@
-import { styled } from '@mui/material/styles' 
+import { styled } from "@mui/material/styles";
 
-export const StyledUserEditTemplate = styled('div')(({theme}) => ({
-
-}))
+export const StyledUserEditTemplate = styled("div")(({ theme }) => ({}));

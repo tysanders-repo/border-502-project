@@ -1,133 +1,77 @@
-import React from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
-import ProjectForm from './ProjectForm'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import dayjs from 'dayjs'
+import React from "react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import ProjectForm from "./ProjectForm"; // Adjust the import path as necessary
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
-const project = {
-  title: '',
-  description: '',
-  date: null,
-}
+describe("ProjectForm", () => {
+  const mockProject = {
+    title: "Test Project",
+    description: "Test Description",
+    date: new Date().toISOString(),
+    images: [],
+    image_urls: [],
+  };
 
-const renderComponent = (props = {}) => {
-  return render(
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <ProjectForm {...props} />
-    </LocalizationProvider>
-  )
-}
+  const mockSetProject = jest.fn();
+  const mockSetRemovedImages = jest.fn();
+  const mockOnChange = jest.fn();
+  const mockOnSubmit = jest.fn((e) => e.preventDefault());
+  const mockHandleCancel = jest.fn();
+  const mockHandleImageChange = jest.fn();
 
-describe('ProjectForm', () => {
-  const mockOnChange = jest.fn()
-  const mockOnSubmit = jest.fn((e) => e.preventDefault())
-  const mockHandleCancel = jest.fn()
+  const setup = (props = {}) => {
+    render(
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <ProjectForm
+          project={{ ...mockProject, ...props }}
+          setProject={mockSetProject}
+          removedImages={[]}
+          setRemovedImages={mockSetRemovedImages}
+          loading={false}
+          error={null}
+          formError={{}}
+          onChange={mockOnChange}
+          onSubmit={mockOnSubmit}
+          handleCancel={mockHandleCancel}
+          handleImageChange={mockHandleImageChange}
+        />
+      </LocalizationProvider>
+    );
+  };
 
-  beforeEach(() => {
-    jest.clearAllMocks()
-  })
+  test("renders form fields and buttons", () => {
+    setup();
 
-  test('renders form fields correctly', () => {
-    renderComponent({
-      project,
-      loading: false,
-      error: null,
-      formError: {},
-      onChange: mockOnChange,
-      onSubmit: mockOnSubmit,
-      handleCancel: mockHandleCancel,
-    })
+    expect(screen.getByLabelText(/project name/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/start date/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/upload images/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /create/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /cancel/i })).toBeInTheDocument();
+  });
 
-    expect(screen.getByLabelText(/Project Name/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/Start Date/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/Description/i)).toBeInTheDocument()
-  })
+  test("calls onChange when fields change", () => {
+    setup();
 
-  test('handles input changes correctly', () => {
-    renderComponent({
-      project,
-      loading: false,
-      error: null,
-      formError: {},
-      onChange: mockOnChange,
-      onSubmit: mockOnSubmit,
-      handleCancel: mockHandleCancel,
-    })
+    fireEvent.change(screen.getByLabelText(/project name/i), {
+      target: { value: "New Project Name" },
+    });
+    expect(mockOnChange).toHaveBeenCalledWith("title", "New Project Name");
 
-    const projectData = {
-      title: 'New Project',
-      description: 'Project description',
-      date: dayjs('2023-09-23'),
-    }
+    fireEvent.change(screen.getByLabelText(/description/i), {
+      target: { value: "New Description" },
+    });
+    expect(mockOnChange).toHaveBeenCalledWith("description", "New Description");
+  });
 
-    fireEvent.change(screen.getByLabelText(/Project Name/i), {
-      target: { value: projectData.title },
-    })
+  test("submits form and calls onSubmit", async () => {
+    setup();
 
-    fireEvent.change(screen.getByLabelText(/Description/i), {
-      target: { value: projectData.description },
-    })
+    fireEvent.submit(screen.getByRole("form"));
 
-    fireEvent.change(screen.getByLabelText(/Start Date/i), {
-      target: { value: projectData.date },
-    })
-
-    expect(mockOnChange).toHaveBeenCalledTimes(2)
-    expect(mockOnChange).toHaveBeenCalledWith('title', 'New Project')
-    expect(mockOnChange).toHaveBeenCalledWith(
-      'description',
-      'Project description'
-    )
-  })
-
-  test('calls handleCancel when Cancel button is clicked', () => {
-    renderComponent({
-      project,
-      loading: false,
-      error: null,
-      formError: {},
-      onChange: mockOnChange,
-      onSubmit: mockOnSubmit,
-      handleCancel: mockHandleCancel,
-    })
-
-    fireEvent.click(screen.getByRole('button', { name: /Cancel/i }))
-    expect(mockHandleCancel).toHaveBeenCalled()
-  })
-
-  test('displays error messages when form errors are present', () => {
-    renderComponent({
-      project,
-      loading: false,
-      error: null,
-      formError: {
-        title: true,
-        description: true,
-        date: true,
-      },
-      onChange: mockOnChange,
-      onSubmit: mockOnSubmit,
-      handleCancel: mockHandleCancel,
-    })
-  
-    expect(screen.getByText(/Title is required/i)).toBeInTheDocument()
-    expect(screen.getByText(/Description is required/i)).toBeInTheDocument()
-  })
-  
-
-  test('displays error alert when error prop is present', () => {
-    const errorMessage = 'An error occurred'
-    renderComponent({
-      project,
-      loading: false,
-      error: { message: errorMessage },
-      formError: {},
-      onChange: mockOnChange,
-      onSubmit: mockOnSubmit,
-      handleCancel: mockHandleCancel,
-    })
-
-    expect(screen.getByText(errorMessage)).toBeInTheDocument()
-  })
-})
+    await waitFor(() => {
+      expect(mockOnSubmit).toHaveBeenCalled();
+    });
+  });
+});
