@@ -72,8 +72,7 @@ export async function deleteUserInfo() {
  * @returns {Promise<string|null>} A promise that resolves to the user's role or null if not found.
  */
 export async function getUserRole() {
-  // return cookies().get("role")?.value;
-  return "president";
+  return cookies().get("role")?.value;
 }
 
 /**
@@ -82,7 +81,6 @@ export async function getUserRole() {
  * @returns {Promise<string|null>} A promise that resolves to the user's UIN or null if not found.
  */
 export async function getUserUIN() {
-  return "331005076";
-  // return cookies().get("uin")?.value;
+  return cookies().get("uin")?.value;
 }
 
