@@ -8,7 +8,7 @@ class Project < ApplicationRecord
         images.map do |image|
           {
             id: image.id,
-            url: Rails.application.routes.url_helpers.rails_blob_url(image, only_path: false)
+            url: Rails.application.routes.url_helpers.rails_blob_url(image, only_path: true)
           }
         end
       end
