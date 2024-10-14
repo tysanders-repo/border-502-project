@@ -5,8 +5,8 @@ module Authentication
     end
     private
     def authenticate_request
-        token = request.headers["Authentication"]
-        puts token
+
+        token = request.headers['Authentication']
         if token.present?
             begin
                 decrypted_payload, headers = JOSE::JWE.block_decrypt(JWK_OCT512, token)
@@ -23,15 +23,17 @@ module Authentication
                 # puts @current_member.email
                 unless @current_member
                     puts "Not a user"
-                  # render json: { error: 'Unable to authenticate user' }, status: :unauthorized
+
+                    # render json: { error: 'Unable to authenticate user' }, status: :unauthorized
                 end
 
                 rescue ActiveRecord::RecordInvalid => e
                     puts "Invalid data"
-                # render json: { error: 'Invalid user data', message: e.message }, status: :unprocessable_entity
+
+                    # render json: { error: 'Invalid user data', message: e.message }, status: :unprocessable_entity
                 rescue StandardError => e
                     puts e.message
-              # render json: { error: 'Authentication failed', message: e.message }, status: :unauthorized
+                    # render json: { error: 'Authentication failed', message: e.message }, status: :unauthorized
             end
         end
     end

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { fetchAllUsers, updateUserPresident } from "@services/userService";
 import DeleteConfirmationDialog from "@components/organisms/DeleteConfirmationDialog";
 import {
-  CircularProgress,
   Alert,
   Typography,
   IconButton,
@@ -32,6 +31,7 @@ import ArchiveIcon from "@mui/icons-material/Archive";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import { getUserRole } from "@services/authService";
 import { UserRoles } from "@utils/arrays/roles";
+import ProgressLoading from "@components/organisms/ProgressLoading";
 
 /**
  * UserListTemplate component
@@ -72,10 +72,8 @@ const UserListTemplate = () => {
       await updateUserPresident(selectedUser.uin, { role: selectedRole });
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uin === selectedUser.uin
-            ? { ...user, role: selectedRole }
-            : user,
-        ),
+          user.uin === selectedUser.uin ? { ...user, role: selectedRole } : user
+        )
       );
       handleCloseRoleDialog();
     } catch (err) {
@@ -161,7 +159,7 @@ const UserListTemplate = () => {
       field: "paid_dues",
       headerName: "Dues Paid",
       flex: 1,
-      valueGetter: (params) => (params.value ? "Yes" : "No"),
+      valueGetter: (params) => (params?.value ? "Yes" : "No"),
     },
     { field: "join_date", headerName: "Join Date", flex: 1 },
     { field: "aggie_ring_day", headerName: "Ring Date", flex: 1 },
@@ -293,8 +291,8 @@ const UserListTemplate = () => {
       await updateUserPresident(uin, { accepted: true });
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uin === uin ? { ...user, accepted: true } : user,
-        ),
+          user.uin === uin ? { ...user, accepted: true } : user
+        )
       );
     } catch (err) {
       setError(err);
@@ -306,8 +304,8 @@ const UserListTemplate = () => {
       await updateUserPresident(uin, { archived: true });
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uin === uin ? { ...user, archived: true } : user,
-        ),
+          user.uin === uin ? { ...user, archived: true } : user
+        )
       );
     } catch (err) {
       setError(err);
@@ -322,7 +320,7 @@ const UserListTemplate = () => {
   });
 
   if (loading) {
-    return <CircularProgress />;
+    return <ProgressLoading />;
   }
 
   if (error) {

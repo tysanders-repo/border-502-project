@@ -58,7 +58,7 @@ const HomepageTemplate = () => {
 
   // If data is still loading, show a circular progress indicator.
   if (loading) {
-    return <ProgressLoading />;
+    return <ProgressLoading role="progressbar" />;
   }
 
   // If an error occurred during data fetching, display an alert with the error message.

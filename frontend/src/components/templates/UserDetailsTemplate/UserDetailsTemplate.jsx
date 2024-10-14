@@ -80,7 +80,7 @@ function UserDetailsTemplate({ params }) {
     <Container maxWidth="sm" sx={{ marginTop: 4 }}>
       {user ? (
         <Box sx={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-          <IconButton onClick={() => router.push("/Member")}>
+          <IconButton onClick={() => router.push("/Member")} role="back">
             <ArrowBackIcon />
           </IconButton>
           <Box>

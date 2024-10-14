@@ -19,7 +19,7 @@ const ProgressLoading = () => {
         alignItems: "center",
       }}
     >
-      <CircularProgress />
+      <CircularProgress role="progressbar" />
     </Box>
   );
 };
