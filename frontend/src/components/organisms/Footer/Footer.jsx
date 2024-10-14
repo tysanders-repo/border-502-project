@@ -3,6 +3,7 @@ import React from "react";
 import { StyledFooter, VeritcalBox } from "./Footer.styles"; // Import styled components for footer layout
 import { Typography } from "@mui/material"; // Import Typography from Material-UI for text styling
 import Link from "next/link"; // Import Link from Next.js for client-side navigation
+// import Image from 'next/image';
 
 /**
  * A functional component that renders the footer of the application.

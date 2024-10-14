@@ -5,7 +5,7 @@
  * @description This component displays the details of a specific project, including title, description, images, and options to edit or delete the project.
  * It fetches the project data based on the provided ID, handles loading and error states, and manages the delete dialog state.
  */
-
+// import Image from 'next/image';
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // Next.js router for navigation
 import { fetchProject } from "@services/projectService"; // Service function to fetch a project by ID

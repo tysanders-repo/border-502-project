@@ -1,5 +1,5 @@
 "use client";
-
+// import Image from 'next/image';
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // Next.js router for navigation.
 import { fetchProject } from "@services/projectService"; // Service function to fetch a project by ID.

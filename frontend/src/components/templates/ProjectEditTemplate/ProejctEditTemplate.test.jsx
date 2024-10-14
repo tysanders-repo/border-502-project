@@ -10,6 +10,7 @@ jest.mock("@services/projectService", () => ({
 }));
 
 jest.mock("@components/organisms/ProjectForm/ProjectForm", () => {
+  // eslint-disable-next-line
   return ({ onSubmit, onChange, project }) => (
     <form onSubmit={onSubmit}>
       <input

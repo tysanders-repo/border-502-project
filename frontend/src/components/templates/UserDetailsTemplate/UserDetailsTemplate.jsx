@@ -85,7 +85,7 @@ function UserDetailsTemplate({ params }) {
           </IconButton>
           <Box>
             <Typography variant="h4" gutterBottom>
-              {user.first_name} {user.last_name}'s Information
+              {user.first_name} {user.last_name}&apos;s Information
             </Typography>
             <Typography variant="h6">UIN: {user.uin}</Typography>
             <Typography variant="h6">Major: {user.major}</Typography>
