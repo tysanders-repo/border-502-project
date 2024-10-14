@@ -1,6 +1,7 @@
 "use server";
-const API_URL = "http://localhost:3000";
-import { cookies } from "next/headers";
+
+import { API_URL } from "../constants"
+import { cookies } from "next/headers"
 
 /**
  * Check if the user is signed in by checking for the session token cookie.
@@ -64,6 +65,7 @@ export async function deleteUserInfo() {
   cookies().delete("role");
 }
 
+
 /**
  * Get the user's role from cookies.
  *
@@ -81,3 +83,4 @@ export async function getUserRole() {
 export async function getUserUIN() {
   return cookies().get("uin")?.value;
 }
+

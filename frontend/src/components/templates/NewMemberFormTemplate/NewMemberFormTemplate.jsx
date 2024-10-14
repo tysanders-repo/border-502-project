@@ -1,6 +1,9 @@
 "use client"; // Ensures this component runs on the client side.
 
 import React, { useState, useEffect } from "react";
+
+import { signedIn, setUserInfo, getUserRole, getUserUIN } from "@services/authService";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { createUser } from "@services/userService";
 import UserForm from "@components/organisms/UserForm";
@@ -26,6 +29,7 @@ import {
   createMemberInterest,
   checkMemberInterestExists,
 } from "@services/memberInterestService";
+
 
 /**
  * NewMemberFormTemplate Component
@@ -168,6 +172,17 @@ function NewMemberFormTemplate() {
    */
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent the default form submission behavior.
+
+
+    // Sets up user info in case they signed in before filling out the form
+    const signedin = await signedIn()
+    if(signedin){
+      const role = await getUserRole()
+      const uin = await getUserUIN()
+      if(role == "none" && uin == "none") {
+        await setUserInfo()
+      }
+    }
 
     if (validateUserForm(user, setFormError)) {
       setLoading(true); // Set loading state to true.
@@ -319,7 +334,11 @@ function NewMemberFormTemplate() {
         } catch (e) {
           setError("failed to add company interests");
         }
-        router.push(`/Member/${newUser.uin}`);
+        if(!signedin){
+          signIn('google', { callbackUrl: `/Member/${newUser.uin}` })
+        }else{
+          router.push(`/Member/${newUser.uin}`);
+        }
       } catch (e) {
         setError("Failed to submit form");
       } finally {
