@@ -4,7 +4,7 @@ import {
   Box,
   Typography } from '@mui/material';
 
-const MimicTextBox = ({text}) => {
+const MimicTextBox = ({text, uppertext}) => {
   return (
     <>
     <Box
@@ -25,7 +25,7 @@ const MimicTextBox = ({text}) => {
       top: -17,
       backgroundColor: 'white',
       maxWidth: 'calc(133%- 32px)'
-    }}>Test</label>
+    }}>{uppertext}</label>
       <Typography variant="h6">{text}</Typography>
     </Box>
     </>

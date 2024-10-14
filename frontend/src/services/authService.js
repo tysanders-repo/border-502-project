@@ -1,5 +1,5 @@
 "use server";
-import { API_URL } from "../constants";
+const API_URL = "http://localhost:3000";
 import { cookies } from "next/headers";
 
 /**
@@ -70,7 +70,8 @@ export async function deleteUserInfo() {
  * @returns {Promise<string|null>} A promise that resolves to the user's role or null if not found.
  */
 export async function getUserRole() {
-  return cookies().get("role")?.value;
+  // return cookies().get("role")?.value;
+  return "president";
 }
 
 /**
@@ -79,5 +80,6 @@ export async function getUserRole() {
  * @returns {Promise<string|null>} A promise that resolves to the user's UIN or null if not found.
  */
 export async function getUserUIN() {
-  return cookies().get("uin")?.value;
+  return "331005076";
+  // return cookies().get("uin")?.value;
 }
