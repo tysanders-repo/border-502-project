@@ -14,6 +14,7 @@ jest.mock("@services/projectService", () => ({
   fetchProject: jest.fn(),
 }));
 
+// eslint-disable-next-line
 jest.mock("@components/organisms/ProgressLoading", () => () => (
   <div>Loading...</div>
 ));
