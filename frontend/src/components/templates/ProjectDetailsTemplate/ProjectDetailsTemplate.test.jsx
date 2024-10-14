@@ -18,6 +18,7 @@ jest.mock("@services/projectService", () => ({
 }));
 
 // Mock the DeleteProjectDialog component
+// eslint-disable-next-line
 jest.mock("@components/organisms/DeleteProjectDialog", () => () => (
   <div>Mocked DeleteProjectDialog</div>
 ));
