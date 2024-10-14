@@ -5,7 +5,7 @@
  * information about Engineers Without Borders (EWB) and listing various projects.
  * It includes information about the EWB organization, its mission, and project details.
  */
-
+// import Image from 'next/image';
 import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
@@ -58,7 +58,7 @@ const HomepageTemplate = () => {
 
   // If data is still loading, show a circular progress indicator.
   if (loading) {
-    return <ProgressLoading />;
+    return <ProgressLoading role="progressbar" />;
   }
 
   // If an error occurred during data fetching, display an alert with the error message.

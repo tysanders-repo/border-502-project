@@ -80,12 +80,12 @@ function UserDetailsTemplate({ params }) {
     <Container maxWidth="sm" sx={{ marginTop: 4 }}>
       {user ? (
         <Box sx={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-          <IconButton onClick={() => router.push("/Member")}>
+          <IconButton onClick={() => router.push("/Member")} role="back">
             <ArrowBackIcon />
           </IconButton>
           <Box>
             <Typography variant="h4" gutterBottom>
-              {user.first_name} {user.last_name}'s Information
+              {user.first_name} {user.last_name}&apos;s Information
             </Typography>
             <Typography variant="h6">UIN: {user.uin}</Typography>
             <Typography variant="h6">Major: {user.major}</Typography>

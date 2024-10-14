@@ -5,7 +5,7 @@
  * @description This component displays the details of a specific project, including title, description, images, and options to edit or delete the project.
  * It fetches the project data based on the provided ID, handles loading and error states, and manages the delete dialog state.
  */
-
+// import Image from 'next/image';
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // Next.js router for navigation
 import { fetchProject } from "@services/projectService"; // Service function to fetch a project by ID
@@ -105,14 +105,14 @@ function ProjectDetailsTemplate({ params }) {
         // Main container for project details and actions.
         <Box sx={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
           {/* Back button to navigate to the Projects list page */}
-          <IconButton onClick={() => router.push("/Project")}>
+          <IconButton onClick={() => router.push("/Project")} aria-label="back">
             <ArrowBackIcon />
           </IconButton>
 
           {/* Project details container */}
           <Box sx={{ width: "100%" }}>
             {/* Project title */}
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" gutterBottom aria-label="title">
               {project.title}
             </Typography>
 
@@ -138,12 +138,12 @@ function ProjectDetailsTemplate({ params }) {
             </ImageList>
 
             {/* Project start date */}
-            <Typography variant="h6">
+            <Typography variant="h6" aria-label="start">
               Start Date: {format(new Date(project.date), "MMMM d, yyyy")}
             </Typography>
 
             {/* Project description */}
-            <Typography variant="h6">
+            <Typography variant="h6" aria-label="description">
               Description: {project.description}
             </Typography>
 

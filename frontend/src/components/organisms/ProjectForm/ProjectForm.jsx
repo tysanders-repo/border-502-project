@@ -21,6 +21,7 @@ import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
 import UploadIcon from "@mui/icons-material/Upload";
 import { useTheme } from "@emotion/react";
 
+
 /**
  * ProjectForm Component
  *
@@ -59,8 +60,6 @@ const ProjectForm = ({
   const projectCurrent = project.image_urls; // Contains existing image URLs fetched from the database
   const [projectPreview, setProjectPreview] = useState([]); // Local preview state for newly uploaded images
 
-  const theme = useTheme();
-
   /**
    * Handles the addition of existing images to the removal list.
    * Toggles the image ID in the `removedImages` array.
@@ -72,7 +71,7 @@ const ProjectForm = ({
       (prevRemoved) =>
         prevRemoved.includes(image)
           ? prevRemoved.filter((img) => img !== image) // Remove from the list
-          : [...prevRemoved, image], // Add to the list
+          : [...prevRemoved, image] // Add to the list
     );
   };
 
@@ -86,7 +85,7 @@ const ProjectForm = ({
     const imageIndex = projectPreview.indexOf(image); // Get the index of the clicked image
 
     setProjectPreview(
-      (prevPreview) => prevPreview.filter((_, index) => index !== imageIndex), // Remove the clicked image from the preview
+      (prevPreview) => prevPreview.filter((_, index) => index !== imageIndex) // Remove the clicked image from the preview
     );
 
     setProject((prevProject) => ({
@@ -104,14 +103,14 @@ const ProjectForm = ({
    */
   const handleImageListChange = (name, files) => {
     const newImages = Array.from(files).map(
-      (file) => URL.createObjectURL(file), // Convert FileList to an array and create URLs
+      (file) => URL.createObjectURL(file) // Convert FileList to an array and create URLs
     );
     setProjectPreview((prevList) => [...prevList, ...newImages]); // Update the preview list
     handleImageChange(name, files); // Call the parent function to handle the file changes
   };
 
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit} role="form">
       {/* Form container using Material-UI's Box component for layout and spacing */}
       <Box
         sx={{
@@ -167,7 +166,7 @@ const ProjectForm = ({
         />
 
         {/* Image preview list */}
-        {(projectCurrent.length > 0 || projectPreview.length > 0) && (
+        {(projectCurrent?.length > 0 || projectPreview?.length > 0) && (
           <ImageList
             sx={{ width: "100%", height: "100%" }}
             cols={3}
@@ -206,7 +205,6 @@ const ProjectForm = ({
                       </Typography>
                     </Box>
                   </DeleteBox>
-
                   <img
                     src={imageUrl.url}
                     alt="Project"

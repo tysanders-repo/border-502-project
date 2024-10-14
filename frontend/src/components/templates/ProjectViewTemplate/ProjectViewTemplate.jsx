@@ -1,5 +1,5 @@
 "use client";
-
+// import Image from 'next/image';
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // Next.js router for navigation.
 import { fetchProject } from "@services/projectService"; // Service function to fetch a project by ID.
@@ -75,7 +75,7 @@ function ProjectViewTemplate({ params }) {
 
           <Box sx={{ width: "100%" }}>
             {/* Project title */}
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" gutterBottom role="title">
               {project.title}
             </Typography>
 
@@ -87,7 +87,7 @@ function ProjectViewTemplate({ params }) {
               slotProps={{
                 root: {
                   sx: {
-                    border: "1px solid #e0e0e0", // Optional styling
+                    border: "1px solid #e0e0e0",
                   },
                 },
               }}
@@ -108,15 +108,15 @@ function ProjectViewTemplate({ params }) {
             </ImageList>
 
             {/* Project start date */}
-            <Typography variant="h6">
-              Start Date:{" "}
+            <Typography variant="h6" role="start">
+              Start Date:
               {project.date
                 ? format(new Date(project.date), "MMMM d, yyyy")
                 : "N/A"}
             </Typography>
 
             {/* Project description */}
-            <Typography variant="h6">
+            <Typography variant="h6" role="description">
               Description: {project.description}
             </Typography>
           </Box>

@@ -1,4 +1,5 @@
 "use client";
+// import Image from 'next/image';
 import React, { useState, useEffect } from "react";
 import {
   AppBar,
@@ -11,6 +12,7 @@ import {
   Button,
   useMediaQuery,
   Box,
+  CircularProgress,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
@@ -91,8 +93,12 @@ export default function Navbar() {
     setIsLoading(true);
     const signedin = await signedIn();
     try {
-      if (signedin) await deleteUserInfo();
-      signedin ? signOut("google") : signIn("google", { redirectTo: "/" });
+
+        if(signedin)
+          await deleteUserInfo()
+        signedin ? 
+        signOut({callbackUrl: '/'}) : 
+        signIn('google', { callbackUrl: '/Member' }); // temporarily redirects to Member, until Profile is set up
     } catch (error) {
       console.error("Google error:", error);
     } finally {
@@ -141,6 +147,7 @@ export default function Navbar() {
           }}
         >
           <Link href="/" passHref>
+            {/* <Image src="/logo.png" alt="Logo" height={70} /> */}
             <img src="/logo.png" alt="Logo" style={{ height: "70px" }} />
           </Link>
           {isMobile ? (
@@ -188,7 +195,13 @@ export default function Navbar() {
                 color="inherit"
                 disabled={isLoading}
               >
-                {isLoading ? "Loading..." : isSignedIn ? "Sign out" : "Sign in"}
+                {isLoading ? (
+                  <CircularProgress color="white" />
+                ) : isSignedIn ? (
+                  "Sign out"
+                ) : (
+                  "Sign in"
+                )}
               </Button>
             </Box>
           )}

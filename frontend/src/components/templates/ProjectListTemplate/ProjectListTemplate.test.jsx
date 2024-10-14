@@ -12,6 +12,7 @@ jest.mock("next/navigation", () => ({
 }));
 
 jest.mock("@components/organisms/DeleteProjectDialog", () => {
+  // eslint-disable-next-line
   return ({ project, openDialog, handleCloseDialog }) => (
     <div>
       {openDialog && <div>Delete Project Dialog for {project?.title}</div>}
