@@ -6,6 +6,8 @@ import { createUser } from "@services/userService";
 import UserForm from "@components/organisms/UserForm";
 import { Container, Typography } from "@mui/material";
 import { validateUserForm } from "@components/organisms/UserForm/validateUserForm";
+import ProgressLoading from "@components/organisms/ProgressLoading";
+import dayjs from "dayjs"; // Utility for date parsing and formatting
 import {
   fetchAllDietRestrictions,
   createDietaryRestriction,
@@ -139,12 +141,12 @@ function NewMemberFormTemplate() {
     email: user.email,
     phone: user.phone,
     tshirt_size: user.tshirt_size,
-    aggie_ring_day: user.aggie_ring_day,
-    birthday: user.birthday,
-    graduation_day: user.graduation_day,
+    aggie_ring_day: dayjs(user.aggie_ring_day).format("YYYY-MM-DD"),
+    birthday: dayjs(user.birthday).format("YYYY-MM-DD"),
+    graduation_day: dayjs(user.graduation_day).format("YYYY-MM-DD"),
   };
 
-  const router = useRouter(); // Next.js router for handling navigation.
+  const router = useRouter();
 
   /**
    * handleCancel Function
@@ -340,6 +342,11 @@ function NewMemberFormTemplate() {
       [field]: value,
     }));
   };
+
+  // If data is still loading, show a circular progress indicator.
+  if (loading) {
+    return <ProgressLoading role="progressbar" />;
+  }
 
   return (
     <Container maxWidth="md" sx={{ textAlign: "center" }}>

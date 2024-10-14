@@ -2,7 +2,7 @@
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-export const StyledFooter = styled(Box)(({ theme }) => ({
+export const StyledFooter = styled("footer")(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
   padding: "40px",
   marginTop: "50px",
@@ -12,7 +12,7 @@ export const StyledFooter = styled(Box)(({ theme }) => ({
   justifyContent: "space-between",
 }));
 
-export const VeritcalBox = styled(Box)(({ theme }) => ({
+export const VeritcalBox = styled(Box)(() => ({
   display: "flex",
   flexDirection: "column",
   gap: "10px",

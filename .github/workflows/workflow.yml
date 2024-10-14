@@ -50,20 +50,28 @@ jobs:
           cd backend
           yarn install
 
-      # - name: Set up Node.js
-      #   uses: actions/setup-node@v2
-      #   with:
-      #     node-version: "16"
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
 
-      # - name: Install frontend dependencies
-      #   run: |
-      #     cd frontend
-      #     npm install
+      - name: Cache Node modules
+        uses: actions/cache@v2
+        with:
+          path: frontend/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-      # - name: Run Jest tests
-      #   run: |
-      #     cd frontend
-      #     npm run test
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Run Jest tests
+        run: |
+          cd frontend
+          npm run test
 
       - name: Run Rspec tests
         run: |

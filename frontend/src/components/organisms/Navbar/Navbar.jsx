@@ -11,6 +11,7 @@ import {
   Button,
   useMediaQuery,
   Box,
+  CircularProgress,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
@@ -188,7 +189,13 @@ export default function Navbar() {
                 color="inherit"
                 disabled={isLoading}
               >
-                {isLoading ? "Loading..." : isSignedIn ? "Sign out" : "Sign in"}
+                {isLoading ? (
+                  <CircularProgress color="white" />
+                ) : isSignedIn ? (
+                  "Sign out"
+                ) : (
+                  "Sign in"
+                )}
               </Button>
             </Box>
           )}

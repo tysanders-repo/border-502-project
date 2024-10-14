@@ -61,7 +61,7 @@ const UserForm = ({
   selectedCompanyInterests,
 }) => {
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit} role="form">
       <Box
         sx={{
           display: "flex",
