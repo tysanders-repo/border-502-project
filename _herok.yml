@@ -7,7 +7,7 @@ setup:
 
 build:
   docker:
-    db: Dockerfile.db   # Optional if you have a specific Dockerfile for db
+    db: Dockerfile.db # Optional if you have a specific Dockerfile for db
     frontend: ./frontend/Dockerfile
     backend: ./backend/Dockerfile
   config:
@@ -17,7 +17,7 @@ build:
 
 release:
   command:
-    - ./backend/bin/release_tasks.sh  # Custom release tasks (like migrations)
+    - ./backend/bin/release_tasks.sh # Custom release tasks (like migrations)
 
 run:
   backend: bundle exec puma -C config/puma.rb

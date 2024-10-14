@@ -66,7 +66,7 @@ describe("ProjectViewTemplate", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText("Error fetching project: Failed to fetch")
+        screen.getByText("Error fetching project: Failed to fetch"),
       ).toBeInTheDocument();
     });
   });

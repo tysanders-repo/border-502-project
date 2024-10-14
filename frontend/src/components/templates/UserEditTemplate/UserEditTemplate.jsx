@@ -70,7 +70,7 @@ function UserEditTemplate({ params }) {
     useState([]);
   const [personalInterests, setPersonalInterests] = useState([]);
   const [selectedPersonalInterests, setSelectedPersonalInterests] = useState(
-    []
+    [],
   );
   const [companyInterests, setCompanyInterests] = useState([]);
   const [selectedCompanyInterests, setSelectedCompanyInterests] = useState([]);
@@ -82,25 +82,49 @@ function UserEditTemplate({ params }) {
   const { id } = params;
 
   useEffect(() => {
-    if (!id) return; // Don't run the effect if id is not available
+    if (!id) return; 
+
+    const fetchDietaryRestrictions = async () => {
+      try {
+        const restrictions = await fetchAllDietRestrictions();
+        setDietaryRestrictions(restrictions);
+      } catch (error) {
+        console.error("Error fetching dietary restrictions:", error);
+      }
+    };
+
+    const fetchPersonalInterests = async () => {
+      try {
+        const interests = await fetchAllPersonalInterests();
+        setPersonalInterests(interests);
+      } catch (error) {
+        console.error("Error fetching personal interests:", error);
+      }
+    };
+
+    const fetchCareerInterests = async () => {
+      try {
+        const interests = await fetchAllCareerInterests();
+        setCareerInterests(interests);
+      } catch (error) {
+        console.error("Error fetching career interests:", error);
+      }
+    };
+
+    const fetchCompanyInterests = async () => {
+      try {
+        const interests = await fetchAllCompanyInterests();
+        setCompanyInterests(interests);
+      } catch (error) {
+        console.error("Error fetching company interests:", error);
+      }
+    };
+
     const fetchCurrentUser = async () => {
       try {
         // Fetch user data based on ID
         const userData = await fetchUser(id);
         setUser(userData);
-
-        // Fetch all options for dietary restrictions and interests
-        const restrictions = await fetchAllDietRestrictions();
-        setDietaryRestrictions(restrictions);
-
-        const personalInterests = await fetchAllPersonalInterests();
-        setPersonalInterests(personalInterests);
-
-        const careerInterests = await fetchAllCareerInterests();
-        setCareerInterests(careerInterests);
-
-        const companyInterests = await fetchAllCompanyInterests();
-        setCompanyInterests(companyInterests);
 
         // Fetch current dietary restrictions for the user
         const currentRestrictions = await getMemberDiet(userData.uin);
@@ -114,53 +138,62 @@ function UserEditTemplate({ params }) {
 
         // Fetch current personal interests for the user
         const currentPersonalInterests = await getMemberPersonalInterests(
-          userData.uin
+          userData.uin,
         );
         if (currentPersonalInterests) {
           const mappedPersonalInterests = currentPersonalInterests.map(
             (interests) => ({
               id: interests.interest_id,
               name: interests.name,
-            })
+            }),
           );
           setSelectedPersonalInterests(mappedPersonalInterests);
         }
 
         // Fetch current career interests for the user
         const currentCareerInterests = await getMemberCareerInterests(
-          userData.uin
+          userData.uin,
         );
         if (currentCareerInterests) {
           const mappedCareerInterests = currentCareerInterests.map(
             (interests) => ({
               id: interests.interest_id,
               name: interests.name,
-            })
+            }),
           );
           setSelectedCareerInterests(mappedCareerInterests);
         }
 
         // Fetch current company interests for the user
         const currentCompanyInterests = await getMemberCompanyInterests(
-          userData.uin
+          userData.uin,
         );
         if (currentCompanyInterests) {
           const mappedCompanyInterests = currentCompanyInterests.map(
             (interests) => ({
               id: interests.interest_id,
               name: interests.name,
-            })
+            }),
           );
           setSelectedCompanyInterests(mappedCompanyInterests);
         }
       } catch (e) {
         setError(e); // Set error state if fetching fails
-      } finally {
-        setLoading(false); // Loading is complete
-      }
+      } 
     };
 
-    fetchCurrentUser(); // Fetch user data on component mount
+    const fetchData = async () => {
+      await Promise.all([
+        fetchDietaryRestrictions(),
+        fetchPersonalInterests(),
+        fetchCareerInterests(),
+        fetchCompanyInterests(),
+        fetchCurrentUser(),
+      ]);
+      setLoading(false);
+    };
+
+    fetchData();
   }, [id]);
 
   // Handler for dietary restriction change
@@ -225,7 +258,7 @@ function UserEditTemplate({ params }) {
               const existingRestriction = dietaryRestrictions.find(
                 (restrictions) =>
                   restrictions.item_name.toLowerCase() ===
-                  restriction.toLowerCase()
+                  restriction.toLowerCase(),
               );
               if (!existingRestriction) {
                 restrictionObject = await createDietaryRestriction({
@@ -241,7 +274,7 @@ function UserEditTemplate({ params }) {
             // Only create member diet if it doesn't already exist
             const exist_response = await checkMemberDietExists(
               response.uin,
-              restrictionObject.id
+              restrictionObject.id,
             );
             if (!exist_response) {
               await createMemberDiet({
@@ -261,7 +294,8 @@ function UserEditTemplate({ params }) {
             if (typeof personalInterest === "string") {
               const existingPersonalInterest = personalInterests.find(
                 (persElem) =>
-                  persElem.name.toLowerCase() === personalInterest.toLowerCase()
+                  persElem.name.toLowerCase() ===
+                  personalInterest.toLowerCase(),
               );
               if (!existingPersonalInterest) {
                 persInterestObj = await createInterest({
@@ -297,7 +331,7 @@ function UserEditTemplate({ params }) {
             if (typeof careerInterest === "string") {
               const existingCareerInterest = careerInterests.find(
                 (carElem) =>
-                  carElem.name.toLowerCase() === careerInterest.toLowerCase()
+                  carElem.name.toLowerCase() === careerInterest.toLowerCase(),
               );
               if (!existingCareerInterest) {
                 carInterestObj = await createInterest({
@@ -333,7 +367,7 @@ function UserEditTemplate({ params }) {
             if (typeof companyInterest === "string") {
               const existingCompanyInterest = companyInterests.find(
                 (compElem) =>
-                  compElem.name.toLowerCase() === companyInterest.toLowerCase()
+                  compElem.name.toLowerCase() === companyInterest.toLowerCase(),
               );
               if (!existingCompanyInterest) {
                 compInterestObj = await createInterest({
@@ -398,19 +432,30 @@ function UserEditTemplate({ params }) {
       </Typography>
       <UserForm
         user={user}
-        onChange={handleChange} // Handle user data change
-        onDietaryRestrictionsChange={handleDietaryRestrictionChange} // Handle dietary restrictions change
-        selectedDietaryRestrictions={selectedDietaryRestrictions} // Current dietary restrictions
-        selectedPersonalInterests={selectedPersonalInterests} // Current personal interests
-        selectedCareerInterests={selectedCareerInterests} // Current career interests
-        selectedCompanyInterests={selectedCompanyInterests} // Current company interests
-        onPersonalInterestsChange={handlePersonalInterestRestrictionChange} // Handle personal interests change
-        onCareerInterestsChange={handleCareerInterestRestrictionChange} // Handle career interests change
-        onCompanyInterestsChange={handleCompanyInterestRestrictionChange} // Handle company interests change
-        onSubmit={handleSubmit} // Handle form submission
-        onCancel={handleCancel} // Handle cancellation
-        formError={formError} // Form error state
-        error={error} // Error state
+        loading={loading}
+        error={error}
+        formError={formError}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        handleCancel={handleCancel}
+        dietaryRestrictions={dietaryRestrictions}
+        handleDietaryRestrictionChange={handleDietaryRestrictionChange}
+        selectedDietaryRestrictions={selectedDietaryRestrictions}
+        personalInterests={personalInterests}
+        handlePersonalInterestRestrictionChange={
+          handlePersonalInterestRestrictionChange
+        }
+        selectedPersonalInterests={selectedPersonalInterests}
+        careerInterests={careerInterests}
+        handleCareerInterestRestrictionChange={
+          handleCareerInterestRestrictionChange
+        }
+        selectedCareerInterests={selectedCareerInterests}
+        companyInterests={companyInterests}
+        handleCompanyInterestRestrictionChange={
+          handleCompanyInterestRestrictionChange
+        }
+        selectedCompanyInterests={selectedCompanyInterests}
       />
     </Container>
   );

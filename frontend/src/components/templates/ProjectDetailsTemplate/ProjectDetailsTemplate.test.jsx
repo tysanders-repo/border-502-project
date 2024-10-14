@@ -51,7 +51,7 @@ describe("ProjectDetailsTemplate", () => {
     // Wait for the error message to appear
     await waitFor(() => {
       expect(
-        screen.getByText(`Error fetching project: ${errorMessage}`)
+        screen.getByText(`Error fetching project: ${errorMessage}`),
       ).toBeInTheDocument();
     });
   });
@@ -70,13 +70,13 @@ describe("ProjectDetailsTemplate", () => {
 
     // Wait for the loading state to finish
     await waitFor(() =>
-      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument()
+      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument(),
     );
 
     expect(await screen.findByText(/Start Date:/)).toBeInTheDocument();
 
     expect(
-      await screen.findByText(/This is a test project description/)
+      await screen.findByText(/This is a test project description/),
     ).toBeInTheDocument();
   });
 
@@ -96,7 +96,7 @@ describe("ProjectDetailsTemplate", () => {
     render(<ProjectDetailsTemplate params={params} />);
 
     await waitFor(() =>
-      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument()
+      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument(),
     );
 
     const backButton = screen.getByRole("button", { name: /back/i });
@@ -118,7 +118,7 @@ describe("ProjectDetailsTemplate", () => {
     render(<ProjectDetailsTemplate params={params} />);
 
     await waitFor(() =>
-      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument()
+      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument(),
     );
 
     const deleteButton = screen.getByRole("button", { name: /delete/i });

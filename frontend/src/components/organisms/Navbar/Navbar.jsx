@@ -93,12 +93,10 @@ export default function Navbar() {
     setIsLoading(true);
     const signedin = await signedIn();
     try {
-
-        if(signedin)
-          await deleteUserInfo()
-        signedin ? 
-        signOut({callbackUrl: '/'}) : 
-        signIn('google', { callbackUrl: '/Member' }); // temporarily redirects to Member, until Profile is set up
+      if (signedin) await deleteUserInfo();
+      signedin
+        ? signOut({ callbackUrl: "/" })
+        : signIn("google", { callbackUrl: "/Member" }); // temporarily redirects to Member, until Profile is set up
     } catch (error) {
       console.error("Google error:", error);
     } finally {
@@ -128,7 +126,10 @@ export default function Navbar() {
 
     setup();
   }, []);
-
+  console.log(process.env.NEXTAUTH_URL);
+  console.log(process.env.REACT_APP_API_URL);
+  console.log(process.env.NEXT_PUBLIC_AUTHJS_LOCAL_SESSION_COOKIE);
+  console.log("Next line");
   return (
     <AppBar
       position="static"

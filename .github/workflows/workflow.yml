@@ -8,6 +8,7 @@ env:
   FRONTEND_ORIGIN: localhost:3000
   AUTH_SECRET: "7OxgCPqJVDFlFQTrlJQg49JNIS/vKxQaBdIZCZ2MJ8U="
   NEXT_PUBLIC_AUTHJS_LOCAL_SESSION_COOKIE: "next-auth.session-token"
+  NEXT_PUBLIC_AUTHJS_SESSION_COOKIE: "next-auth.session-token"
 
 name: Rails tests
 on: [push, pull_request]

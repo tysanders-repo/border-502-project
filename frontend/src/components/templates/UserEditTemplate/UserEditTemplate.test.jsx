@@ -72,7 +72,7 @@ describe("UserEditTemplate", () => {
     render(
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <UserEditTemplate params={params} />
-      </LocalizationProvider>
+      </LocalizationProvider>,
     );
     expect(screen.getByRole("progressbar")).toBeInTheDocument();
     expect(screen.queryByPlaceholderText("First Name")).not.toBeInTheDocument();
@@ -84,13 +84,13 @@ describe("UserEditTemplate", () => {
       render(
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <UserEditTemplate params={params} />
-        </LocalizationProvider>
+        </LocalizationProvider>,
       );
     });
 
     // Wait for the loading state to finish
     await waitFor(() =>
-      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument()
+      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument(),
     );
 
     // Ensure that the form is now rendered with user data

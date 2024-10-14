@@ -6,7 +6,9 @@ const cookiePrefix = useSecureCookies ? "__Secure-" : "";
 const hostName = new URL(process.env.NEXTAUTH_URL).hostname;
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  debug: true,
   providers: [Google],
+  trustHost: true,
   cookies: {
     sessionToken: {
       name: `${cookiePrefix}next-auth.session-token`,

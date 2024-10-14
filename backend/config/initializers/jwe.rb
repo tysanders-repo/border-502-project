@@ -20,7 +20,7 @@ unless AUTH_SECRET.present?
 end
 
 
-salt = ENV["NEXT_PUBLIC_AUTHJS_LOCAL_SESSION_COOKIE"]
+salt = ENV["NEXT_PUBLIC_AUTHJS_SESSION_COOKIE"]
 info = "Auth.js Generated Encryption Key (#{salt})"
 length = 64
 
