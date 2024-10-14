@@ -18,6 +18,7 @@ jest.mock("@services/interestService");
 
 // Mock the UserForm component
 jest.mock("@components/organisms/UserForm", () => {
+  // eslint-disable-next-line
   return ({ onSubmit, onChange, user }) => (
     <form onSubmit={onSubmit}>
       <input

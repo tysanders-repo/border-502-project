@@ -16,9 +16,11 @@ jest.mock("next/navigation", () => ({
   useRouter: jest.fn(),
 }));
 
+// eslint-disable-next-line
 jest.mock("@components/organisms/ProgressLoading", () => () => (
   <div>Loading...</div>
 ));
+// eslint-disable-next-line
 jest.mock("@components/organisms/DeleteConfirmationDialog", () => () => (
   <div>Delete Confirmation Dialog</div>
 ));
