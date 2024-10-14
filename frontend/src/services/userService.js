@@ -95,6 +95,34 @@ async function updateUser(id, userData) {
 }
 
 /**
+ * Update user dues in the database.
+ *
+ * @param {string} uin - The UIN of the user to update.
+ * @param {boolean} paidDues - The new dues status for the user.
+ * @returns {Promise<Object>} A promise that resolves to the updated user object.
+ * @throws {Error} Throws an error if the response is not ok.
+ */
+async function updateUserDues(uin, paidDues) {
+  const token = cookies().get("next-auth.session-token")?.value;
+
+  const response = await fetch(`${API_URL}/members/${uin}`, {
+    method: "PUT",
+    headers: {
+      Authentication: `${token}`,
+      "Content-Type": "application/json",
+      Role: "treasurer",
+    },
+    body: JSON.stringify({ paid_dues: paidDues }),
+  });
+
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+
+  return response.json();
+}
+
+/**
  * Update the president role of a user in the API.
  *
  * @param {string} id - The ID of the user to update.
@@ -156,4 +184,5 @@ export {
   fetchUser,
   updateUser,
   updateUserPresident,
+  updateUserDues,
 };

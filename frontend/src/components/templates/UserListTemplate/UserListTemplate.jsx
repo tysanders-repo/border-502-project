@@ -2,7 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { fetchAllUsers, updateUserPresident } from "@services/userService";
+import {
+  fetchAllUsers,
+  updateUserPresident,
+  updateUserDues,
+} from "@services/userService";
 import DeleteConfirmationDialog from "@components/organisms/DeleteConfirmationDialog";
 import { Alert, Typography, IconButton, Box, Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
@@ -18,6 +22,9 @@ import ProgressLoading from "@components/organisms/ProgressLoading";
 import UpdateRoleDialog from "./UpdateRoleDialog";
 import UserMenu from "./UserMenu";
 import { capitalizeAndReplace } from "@utils/functions";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import { Switch } from "@mui/material";
+import ClearIcon from "@mui/icons-material/Clear";
 
 /**
  * UserListTemplate component
@@ -40,13 +47,14 @@ const UserListTemplate = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [openRoleDialog, setOpenRoleDialog] = useState(false);
   const [selectedRole, setSelectedRole] = useState(null);
-  const [firstRender, setFirstRender] = useState(true);
+  const [updateDues, setUpdateDues] = useState(false);
+  const [updatedUsersDues, setUpdatedUsersDues] = useState([]);
 
   const router = useRouter();
 
   const handleUpdateDeleteUser = () => {
     setUsers((prevUsers) =>
-      prevUsers.filter((user) => user.uin !== selectedUser.uin)
+      prevUsers.filter((user) => user.uin !== selectedUser.uin),
     );
     window.location.reload();
   };
@@ -61,12 +69,36 @@ const UserListTemplate = () => {
       await updateUserPresident(selectedUser.uin, { role: selectedRole });
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uin === selectedUser.uin ? { ...user, role: selectedRole } : user
-        )
+          user.uin === selectedUser.uin
+            ? { ...user, role: selectedRole }
+            : user,
+        ),
       );
       handleCloseRoleDialog();
     } catch (err) {
       setError(err);
+    }
+  };
+
+  const handleDuesSubmit = async () => {
+    if (updatedUsersDues.length > 0) {
+      setLoading(true);
+      try {
+        await Promise.all(
+          updatedUsersDues.map((user) =>
+            updateUserDues(user.uin, user.paid_dues),
+          ),
+        );
+        setUpdatedUsersDues([]); // Clear the updates after successful submission
+        setUpdateDues(false);
+      } catch (error) {
+        console.error("Error updating dues:", error);
+        alert("Failed to update dues. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      setUpdateDues(false);
     }
   };
 
@@ -189,7 +221,50 @@ const UserListTemplate = () => {
       field: "paid_dues",
       headerName: "Dues Paid",
       flex: 1,
-      valueGetter: (params) => (params?.value ? "Yes" : "No"),
+      editable: true,
+      renderCell: (params) => (
+        <>
+          {updateDues ? (
+            <Switch
+              checked={params.row.paid_dues} // Set the checked state based on the user's dues status
+              onChange={(event) => {
+                const newValue = event.target.checked; // Get the new boolean value
+                // Update the updated users array
+                setUpdatedUsersDues((prevUsers) => {
+                  const existingUserIndex = prevUsers.findIndex(
+                    (user) => user.uin === params.row.uin,
+                  );
+
+                  if (existingUserIndex > -1) {
+                    // if the user exists, then remove them because set to their original status
+                    return prevUsers.filter(
+                      (user) => user.uin !== params.row.uin,
+                    );
+                  } else {
+                    // If the user is not in the array add them
+                    return [
+                      ...prevUsers,
+                      { ...params.row, paid_dues: newValue },
+                    ];
+                  }
+                });
+
+                // Update the main users array
+                setUsers((prevUsers) =>
+                  prevUsers.map((user) =>
+                    user.uin === params.row.uin
+                      ? { ...user, paid_dues: newValue }
+                      : user,
+                  ),
+                );
+              }}
+              inputProps={{ "aria-label": "controlled" }}
+            />
+          ) : (
+            <div>{params.row.paid_dues ? "Yes" : "No"}</div> // Show Yes or No based on the dues status
+          )}
+        </>
+      ),
     },
     { field: "join_date", headerName: "Join Date", flex: 1 },
     { field: "aggie_ring_day", headerName: "Ring Date", flex: 1 },
@@ -228,38 +303,38 @@ const UserListTemplate = () => {
     },
   ];
 
-useEffect(() => {
-  setLoading(true); // Start loading state
+  useEffect(() => {
+    setLoading(true); // Start loading state
 
-  // Define functions to load users and role
-  async function loadUsers() {
-    try {
-      const data = await fetchAllUsers();
-      setUsers(data); // Set the fetched users
-    } catch (e) {
-      setError(e); // Set the error if fetching users fails
-      setLoading(false); // Stop loading on error
+    // Define functions to load users and role
+    async function loadUsers() {
+      try {
+        const data = await fetchAllUsers();
+        setUsers(data); // Set the fetched users
+      } catch (e) {
+        setError(e); // Set the error if fetching users fails
+        setLoading(false); // Stop loading on error
+      }
     }
-  }
 
-  async function loadRole() {
-    try {
-      const role = await getUserRole();
-      setUserRole(role); // Set the fetched user role
-    } catch (e) {
-      setError(e); // Set the error if fetching the role fails
-      setLoading(false); // Stop loading on error
+    async function loadRole() {
+      try {
+        const role = await getUserRole();
+        setUserRole(role); // Set the fetched user role
+      } catch (e) {
+        setError(e); // Set the error if fetching the role fails
+        setLoading(false); // Stop loading on error
+      }
     }
-  }
 
-  // Load role and users in parallel
-  const fetchData = async () => {
-    await Promise.all([loadUsers(), loadRole()]);
-    setLoading(false); // Set loading to false after both are completed
-  };
+    // Load role and users in parallel
+    const fetchData = async () => {
+      await Promise.all([loadUsers(), loadRole()]);
+      setLoading(false); // Set loading to false after both are completed
+    };
 
-  fetchData();
-}, []);
+    fetchData();
+  }, []);
 
   const handleMenuClick = (event, user) => {
     setAnchorEl(event.currentTarget);
@@ -280,8 +355,8 @@ useEffect(() => {
       await updateUserPresident(uin, { accepted: true });
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uin === uin ? { ...user, accepted: true } : user
-        )
+          user.uin === uin ? { ...user, accepted: true } : user,
+        ),
       );
     } catch (err) {
       setError(err);
@@ -293,8 +368,8 @@ useEffect(() => {
       await updateUserPresident(uin, { archived: status });
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uin === uin ? { ...user, archived: status } : user
-        )
+          user.uin === uin ? { ...user, archived: status } : user,
+        ),
       );
       window.location.reload();
     } catch (err) {
@@ -328,15 +403,29 @@ useEffect(() => {
           gap: "10px",
         }}
       >
-        <Typography variant="h4" gutterBottom>
-          Members
-        </Typography>
-
-        {userRole && (
-          <Typography variant="h6" gutterBottom>
-            ROLE: {userRole.toUpperCase()}
-          </Typography>
-        )}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+            <Typography variant="h4">EWB Members</Typography>
+            {userRole && (
+              <Typography variant="caption" gutterBottom>
+                Current User: {capitalizeAndReplace(userRole)}
+              </Typography>
+            )}
+          </Box>
+          <Button
+            variant="outlined"
+            onClick={() => router.push(`/Project`)}
+            startIcon={<ManageAccountsIcon />}
+          >
+            {isMobile ? "Projects" : "Manage Projects"}
+          </Button>
+        </Box>
 
         {/* Filter buttons */}
         <Box
@@ -443,13 +532,31 @@ useEffect(() => {
               </>
             )}
           </Box>
-          <Button
-            variant="outlined"
-            onClick={() => router.push(`/Project`)}
-            startIcon={<ManageAccountsIcon />}
-          >
-            {isMobile ? "Projects" : "Manage Projects"}
-          </Button>
+          <Box sx={{ display: "flex", gap: "5px" }}>
+            <Button
+              variant={updateDues ? "contained" : "outlined"}
+              onClick={() =>
+                updateDues ? handleDuesSubmit() : setUpdateDues(true)
+              }
+              startIcon={<AttachMoneyIcon />}
+            >
+              {updateDues ? "Submit Dues" : "Update Dues"}
+            </Button>
+            {updateDues && (
+              <Button
+                variant={"outlined"}
+                color="secondary"
+                onClick={() => {
+                  setUpdateDues(false);
+                  setUpdatedUsersDues([]);
+                  window.location.reload();
+                }}
+                startIcon={<ClearIcon />}
+              >
+                Cancel Update
+              </Button>
+            )}
+          </Box>
         </Box>
 
         <DataGrid

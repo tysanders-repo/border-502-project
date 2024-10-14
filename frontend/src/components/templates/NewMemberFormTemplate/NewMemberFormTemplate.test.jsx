@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  render,
-  screen,
-  waitFor,
-  act,
-} from "@testing-library/react";
+import { render, screen, waitFor, act } from "@testing-library/react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import AdapterDayjs from "@mui/x-date-pickers/AdapterDayjs";
 import NewMemberFormTemplate from "./NewMemberFormTemplate";
@@ -73,7 +68,7 @@ describe("NewMemberFormTemplate", () => {
     render(
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <NewMemberFormTemplate />
-      </LocalizationProvider>
+      </LocalizationProvider>,
     );
     expect(screen.getByRole("progressbar")).toBeInTheDocument();
   });
@@ -83,13 +78,13 @@ describe("NewMemberFormTemplate", () => {
       render(
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <NewMemberFormTemplate />
-        </LocalizationProvider>
+        </LocalizationProvider>,
       );
     });
 
     // Wait for the loading state to finish
     await waitFor(() =>
-      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument()
+      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument(),
     );
 
     // Ensure that the form is now rendered

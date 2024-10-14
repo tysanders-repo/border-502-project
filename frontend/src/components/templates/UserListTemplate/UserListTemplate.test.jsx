@@ -78,7 +78,7 @@ describe("UserListTemplate", () => {
     render(<UserListTemplate />);
 
     await waitFor(() =>
-      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument()
+      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument(),
     );
 
     expect(screen.getByText("Active Members")).toBeInTheDocument();

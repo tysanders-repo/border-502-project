@@ -21,7 +21,6 @@ import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
 import UploadIcon from "@mui/icons-material/Upload";
 import { useTheme } from "@emotion/react";
 
-
 /**
  * ProjectForm Component
  *
@@ -71,7 +70,7 @@ const ProjectForm = ({
       (prevRemoved) =>
         prevRemoved.includes(image)
           ? prevRemoved.filter((img) => img !== image) // Remove from the list
-          : [...prevRemoved, image] // Add to the list
+          : [...prevRemoved, image], // Add to the list
     );
   };
 
@@ -85,7 +84,7 @@ const ProjectForm = ({
     const imageIndex = projectPreview.indexOf(image); // Get the index of the clicked image
 
     setProjectPreview(
-      (prevPreview) => prevPreview.filter((_, index) => index !== imageIndex) // Remove the clicked image from the preview
+      (prevPreview) => prevPreview.filter((_, index) => index !== imageIndex), // Remove the clicked image from the preview
     );
 
     setProject((prevProject) => ({
@@ -103,7 +102,7 @@ const ProjectForm = ({
    */
   const handleImageListChange = (name, files) => {
     const newImages = Array.from(files).map(
-      (file) => URL.createObjectURL(file) // Convert FileList to an array and create URLs
+      (file) => URL.createObjectURL(file), // Convert FileList to an array and create URLs
     );
     setProjectPreview((prevList) => [...prevList, ...newImages]); // Update the preview list
     handleImageChange(name, files); // Call the parent function to handle the file changes

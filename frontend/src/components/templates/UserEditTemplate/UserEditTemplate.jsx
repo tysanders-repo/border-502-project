@@ -70,7 +70,7 @@ function UserEditTemplate({ params }) {
     useState([]);
   const [personalInterests, setPersonalInterests] = useState([]);
   const [selectedPersonalInterests, setSelectedPersonalInterests] = useState(
-    []
+    [],
   );
   const [companyInterests, setCompanyInterests] = useState([]);
   const [selectedCompanyInterests, setSelectedCompanyInterests] = useState([]);
@@ -138,42 +138,42 @@ function UserEditTemplate({ params }) {
 
         // Fetch current personal interests for the user
         const currentPersonalInterests = await getMemberPersonalInterests(
-          userData.uin
+          userData.uin,
         );
         if (currentPersonalInterests) {
           const mappedPersonalInterests = currentPersonalInterests.map(
             (interests) => ({
               id: interests.interest_id,
               name: interests.name,
-            })
+            }),
           );
           setSelectedPersonalInterests(mappedPersonalInterests);
         }
 
         // Fetch current career interests for the user
         const currentCareerInterests = await getMemberCareerInterests(
-          userData.uin
+          userData.uin,
         );
         if (currentCareerInterests) {
           const mappedCareerInterests = currentCareerInterests.map(
             (interests) => ({
               id: interests.interest_id,
               name: interests.name,
-            })
+            }),
           );
           setSelectedCareerInterests(mappedCareerInterests);
         }
 
         // Fetch current company interests for the user
         const currentCompanyInterests = await getMemberCompanyInterests(
-          userData.uin
+          userData.uin,
         );
         if (currentCompanyInterests) {
           const mappedCompanyInterests = currentCompanyInterests.map(
             (interests) => ({
               id: interests.interest_id,
               name: interests.name,
-            })
+            }),
           );
           setSelectedCompanyInterests(mappedCompanyInterests);
         }
@@ -258,7 +258,7 @@ function UserEditTemplate({ params }) {
               const existingRestriction = dietaryRestrictions.find(
                 (restrictions) =>
                   restrictions.item_name.toLowerCase() ===
-                  restriction.toLowerCase()
+                  restriction.toLowerCase(),
               );
               if (!existingRestriction) {
                 restrictionObject = await createDietaryRestriction({
@@ -274,7 +274,7 @@ function UserEditTemplate({ params }) {
             // Only create member diet if it doesn't already exist
             const exist_response = await checkMemberDietExists(
               response.uin,
-              restrictionObject.id
+              restrictionObject.id,
             );
             if (!exist_response) {
               await createMemberDiet({
@@ -294,7 +294,8 @@ function UserEditTemplate({ params }) {
             if (typeof personalInterest === "string") {
               const existingPersonalInterest = personalInterests.find(
                 (persElem) =>
-                  persElem.name.toLowerCase() === personalInterest.toLowerCase()
+                  persElem.name.toLowerCase() ===
+                  personalInterest.toLowerCase(),
               );
               if (!existingPersonalInterest) {
                 persInterestObj = await createInterest({
@@ -330,7 +331,7 @@ function UserEditTemplate({ params }) {
             if (typeof careerInterest === "string") {
               const existingCareerInterest = careerInterests.find(
                 (carElem) =>
-                  carElem.name.toLowerCase() === careerInterest.toLowerCase()
+                  carElem.name.toLowerCase() === careerInterest.toLowerCase(),
               );
               if (!existingCareerInterest) {
                 carInterestObj = await createInterest({
@@ -366,7 +367,7 @@ function UserEditTemplate({ params }) {
             if (typeof companyInterest === "string") {
               const existingCompanyInterest = companyInterests.find(
                 (compElem) =>
-                  compElem.name.toLowerCase() === companyInterest.toLowerCase()
+                  compElem.name.toLowerCase() === companyInterest.toLowerCase(),
               );
               if (!existingCompanyInterest) {
                 compInterestObj = await createInterest({

@@ -1,1 +1,1 @@
-export { default } from './UpdateRoleDialog'
+export { default } from "./UpdateRoleDialog";

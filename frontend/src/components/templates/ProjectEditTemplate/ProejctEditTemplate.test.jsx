@@ -16,25 +16,24 @@ jest.mock("@services/projectService");
 jest.mock("@components/organisms/ProjectForm", () => {
   // eslint-disable-next-line
   return ({ onSubmit, onChange, project }) => (
-      <form onSubmit={onSubmit}>
-        <input
-          type="text"
-          placeholder="Project Title"
-          value={project.title}
-          onChange={(e) => onChange("title", e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Project Description"
-          value={project.description}
-          onChange={(e) => onChange("description", e.target.value)}
-        />
-        <button type="submit">Save Project</button>
-        <button type="button" onClick={() => onChange("title", "")}>
-          Cancel
-        </button>
-      </form>
-
+    <form onSubmit={onSubmit}>
+      <input
+        type="text"
+        placeholder="Project Title"
+        value={project.title}
+        onChange={(e) => onChange("title", e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Project Description"
+        value={project.description}
+        onChange={(e) => onChange("description", e.target.value)}
+      />
+      <button type="submit">Save Project</button>
+      <button type="button" onClick={() => onChange("title", "")}>
+        Cancel
+      </button>
+    </form>
   );
 });
 
@@ -59,7 +58,7 @@ describe("ProjectEditTemplate", () => {
     render(
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <ProjectEditTemplate params={params} />
-      </LocalizationProvider>
+      </LocalizationProvider>,
     );
     expect(screen.getByRole("progressbar")).toBeInTheDocument();
   });

@@ -74,7 +74,7 @@ const UserMenu = ({
         {filter === "archived" &&
           (userRole === "president" || userRole === "internal relations") && (
             <MenuItem onClick={() => handleArchive(row.uin, false)}>
-              Unarchive
+              Restore
             </MenuItem>
           )}
 
