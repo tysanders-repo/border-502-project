@@ -1,10 +1,29 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import UserForm from "@components/organisms/UserForm";
-import { Container, Typography } from "@mui/material";
 import { fetchUser, updateUser } from "@services/userService";
+import { createUser } from "@services/userService";
+import UserForm from "@components/organisms/UserForm";
+import MimicTextBox from "@components/atoms/MimicTextBox";
+import dayjs from "dayjs"; // Utility for date parsing and formatting
 import { validateUserForm } from "@components/organisms/UserForm/validateUserForm";
+import {
+  CircularProgress,
+  Container,
+  Grid,
+  Box,
+  Tabs,
+  Tab,
+  Avatar,
+  Typography,
+  Switch
+} from "@mui/material";
+import {
+  signedIn,
+  getUserUIN,
+  getUserRole
+} from "@services/authService";
 import {
   fetchAllDietRestrictions,
   createDietaryRestriction,
@@ -29,22 +48,12 @@ import {
   getMemberCompanyInterests,
   deleteMemberInterestsByUin,
 } from "@services/memberInterestService";
-import ProgressLoading from "@components/organisms/ProgressLoading";
 
-/**
- * UserEditTemplate component
- *
- * This component allows users to edit and update their information.
- * It fetches existing user data based on the provided user ID, handles
- * dietary restrictions and interests, and submits the updated information.
- *
- * @param {Object} props - Component properties.
- * @param {Object} props.params - Parameters containing user ID.
- *
- * @returns {JSX.Element} The rendered component.
- */
-function UserEditTemplate({ params }) {
-  // State to hold user data
+function ProfileTemplate({ params }) {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [formError, setFormError] = useState({ name: false, uin: false });
+  const [tabValue, setTabValue] = useState(0);
   const [user, setUser] = useState({
     first_name: "",
     last_name: "",
@@ -58,74 +67,49 @@ function UserEditTemplate({ params }) {
     birthday: null,
     graduation_day: null,
   });
-
-  // State to manage loading and error states
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [formError, setFormError] = useState({ name: false, uin: false });
-
-  // State for dietary restrictions and interests
+  const [thisIsMe, setThisIsMe] = useState(false);
+  const router = useRouter();
   const [dietaryRestrictions, setDietaryRestrictions] = useState([]);
   const [selectedDietaryRestrictions, setSelectedDietaryRestrictions] =
     useState([]);
   const [personalInterests, setPersonalInterests] = useState([]);
   const [selectedPersonalInterests, setSelectedPersonalInterests] = useState(
-    [],
+    []
   );
   const [companyInterests, setCompanyInterests] = useState([]);
   const [selectedCompanyInterests, setSelectedCompanyInterests] = useState([]);
   const [careerInterests, setCareerInterests] = useState([]);
   const [selectedCareerInterests, setSelectedCareerInterests] = useState([]);
 
-  // Router for navigation
-  const router = useRouter();
-  const { id } = params;
-
+  // Data fetch
   useEffect(() => {
-    if (!id) return; 
+    if (!signedIn()) {
+      console.log("not signed in");
+      router.push(`/`);
+      return;
+    }
 
-    const fetchDietaryRestrictions = async () => {
+    const fetchUserData = async () => {
       try {
+        const isCurrentUser = params.id === undefined;
+        const id = isCurrentUser ? await getUserUIN() : params.id;
+        setThisIsMe(isCurrentUser);
+        const userData = await fetchUser(id);
+        setUser(userData);
+        
+
+        // Fetch all options for dietary restrictions and interests
         const restrictions = await fetchAllDietRestrictions();
         setDietaryRestrictions(restrictions);
-      } catch (error) {
-        console.error("Error fetching dietary restrictions:", error);
-      }
-    };
 
-    const fetchPersonalInterests = async () => {
-      try {
-        const interests = await fetchAllPersonalInterests();
-        setPersonalInterests(interests);
-      } catch (error) {
-        console.error("Error fetching personal interests:", error);
-      }
-    };
+        const personalInterests = await fetchAllPersonalInterests();
+        setPersonalInterests(personalInterests);
 
-    const fetchCareerInterests = async () => {
-      try {
-        const interests = await fetchAllCareerInterests();
-        setCareerInterests(interests);
-      } catch (error) {
-        console.error("Error fetching career interests:", error);
-      }
-    };
+        const careerInterests = await fetchAllCareerInterests();
+        setCareerInterests(careerInterests);
 
-    const fetchCompanyInterests = async () => {
-      try {
-        const interests = await fetchAllCompanyInterests();
-        setCompanyInterests(interests);
-      } catch (error) {
-        console.error("Error fetching company interests:", error);
-      }
-    };
-
-    const fetchCurrentUser = async () => {
-      try {
-        // Fetch user data based on ID
-        const userData = await fetchUser(id);
-
-        setUser(userData);
+        const companyInterests = await fetchAllCompanyInterests();
+        setCompanyInterests(companyInterests);
 
         // Fetch current dietary restrictions for the user
         const currentRestrictions = await getMemberDiet(userData.uin);
@@ -139,96 +123,89 @@ function UserEditTemplate({ params }) {
 
         // Fetch current personal interests for the user
         const currentPersonalInterests = await getMemberPersonalInterests(
-          userData.uin,
+          userData.uin
         );
         if (currentPersonalInterests) {
           const mappedPersonalInterests = currentPersonalInterests.map(
             (interests) => ({
               id: interests.interest_id,
               name: interests.name,
-            }),
+            })
           );
           setSelectedPersonalInterests(mappedPersonalInterests);
         }
 
         // Fetch current career interests for the user
         const currentCareerInterests = await getMemberCareerInterests(
-          userData.uin,
+          userData.uin
         );
         if (currentCareerInterests) {
           const mappedCareerInterests = currentCareerInterests.map(
             (interests) => ({
               id: interests.interest_id,
               name: interests.name,
-            }),
+            })
           );
           setSelectedCareerInterests(mappedCareerInterests);
         }
 
         // Fetch current company interests for the user
         const currentCompanyInterests = await getMemberCompanyInterests(
-          userData.uin,
+          userData.uin
         );
         if (currentCompanyInterests) {
           const mappedCompanyInterests = currentCompanyInterests.map(
             (interests) => ({
               id: interests.interest_id,
               name: interests.name,
-            }),
+            })
           );
           setSelectedCompanyInterests(mappedCompanyInterests);
         }
+
       } catch (e) {
-        setError(e); // Set error state if fetching fails
-      } 
-    };
+        setError(e);
+      } finally {
+        setLoading(false);
+      }
+    }; 
 
-    const fetchData = async () => {
-      await Promise.all([
-        fetchDietaryRestrictions(),
-        fetchPersonalInterests(),
-        fetchCareerInterests(),
-        fetchCompanyInterests(),
-        fetchCurrentUser(),
-      ]);
-      setLoading(false);
-    };
+    fetchUserData();
+  }, [params]);
+  
+  // Run final checks after user is set and loading is complete
+  useEffect(() => {
+    if (!loading && user.first_name === "") {
+      finalChecks();
+    }
+  }, [loading, user]);
 
-    fetchData();
-  }, [id]);
+  function finalChecks() {
+    if (user.first_name === "") {
+      router.push(`/Profile`);
+    }
 
-  // Handler for dietary restriction change
-  const handleDietaryRestrictionChange = (event, newValue) => {
-    setSelectedDietaryRestrictions(newValue);
+    if (user.uin === null) {
+      router.push(`/`);
+    }
+  }
+
+  const handleChange = (field, value) => {
+    setUser((prevUser) => ({
+      ...prevUser,
+      [field]: value,
+    }));
   };
 
-  // Handlers for interest changes
-  const handlePersonalInterestRestrictionChange = async (event, newValue) => {
-    setSelectedPersonalInterests(newValue);
+  const handleCancel = async (e) => {
+    router.push(`/`);
   };
 
-  const handleCareerInterestRestrictionChange = async (event, newValue) => {
-    setSelectedCareerInterests(newValue);
-  };
-
-  const handleCompanyInterestRestrictionChange = async (event, newValue) => {
-    setSelectedCompanyInterests(newValue);
-  };
-
-  // Cancel button handler to navigate back to the Member page
-  const handleCancel = () => {
-    router.push(`/Member`);
-  };
-
-  /**
-   * Handles form submission for updating user data.
-   *
-   * @param {React.FormEvent<HTMLFormElement>} e - The form event.
-   * @returns {Promise<void>}
-   */
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const id = user.uin; // Declare 'id' here before using it
     if (validateUserForm(user, setFormError)) {
+      setLoading(true)
       // Create updated user object
       const updatedUser = {
         first_name: user.first_name,
@@ -259,7 +236,7 @@ function UserEditTemplate({ params }) {
               const existingRestriction = dietaryRestrictions.find(
                 (restrictions) =>
                   restrictions.item_name.toLowerCase() ===
-                  restriction.toLowerCase(),
+                  restriction.toLowerCase()
               );
               if (!existingRestriction) {
                 restrictionObject = await createDietaryRestriction({
@@ -275,7 +252,7 @@ function UserEditTemplate({ params }) {
             // Only create member diet if it doesn't already exist
             const exist_response = await checkMemberDietExists(
               response.uin,
-              restrictionObject.id,
+              restrictionObject.id
             );
             if (!exist_response) {
               await createMemberDiet({
@@ -295,8 +272,7 @@ function UserEditTemplate({ params }) {
             if (typeof personalInterest === "string") {
               const existingPersonalInterest = personalInterests.find(
                 (persElem) =>
-                  persElem.name.toLowerCase() ===
-                  personalInterest.toLowerCase(),
+                  persElem.name.toLowerCase() === personalInterest.toLowerCase()
               );
               if (!existingPersonalInterest) {
                 persInterestObj = await createInterest({
@@ -332,7 +308,7 @@ function UserEditTemplate({ params }) {
             if (typeof careerInterest === "string") {
               const existingCareerInterest = careerInterests.find(
                 (carElem) =>
-                  carElem.name.toLowerCase() === careerInterest.toLowerCase(),
+                  carElem.name.toLowerCase() === careerInterest.toLowerCase()
               );
               if (!existingCareerInterest) {
                 carInterestObj = await createInterest({
@@ -368,7 +344,7 @@ function UserEditTemplate({ params }) {
             if (typeof companyInterest === "string") {
               const existingCompanyInterest = companyInterests.find(
                 (compElem) =>
-                  compElem.name.toLowerCase() === companyInterest.toLowerCase(),
+                  compElem.name.toLowerCase() === companyInterest.toLowerCase()
               );
               if (!existingCompanyInterest) {
                 compInterestObj = await createInterest({
@@ -399,67 +375,131 @@ function UserEditTemplate({ params }) {
 
         // Navigate back to the Member page after successful update
         setUser(updatedUser);
-        router.push(`/Member`);
+        setLoading(false)
+        router.push(`/Profile`);
       } catch (error) {
         console.error("Failed to update user:", error);
         setError("Failed to update user."); // Set error if user update fails
       }
     }
   };
-
-  /**
-   * handleChange Function
-   *
-   * @description Handles changes to form input fields. Updates the corresponding field in the user state.
-   *
-   * @param {string} field - The field name being updated (e.g., `name` or `ddate`).
-   * @param {string|Date} value - The new value for the field.
-   */
-  const handleChange = (field, value) => {
-    setUser((prevProject) => ({
-      ...prevProject,
-      [field]: value, // Update the field in the project state with the new value.
-    }));
+  
+  const handleDietaryRestrictionChange = async (event, newValue) => {
+    setSelectedDietaryRestrictions(newValue);
   };
 
-  // Loading and error states for the UI
-  if (loading) return <ProgressLoading />;
-  if (error) return <div>Error loading user data. {error.message} </div>;
+  const handlePersonalInterestRestrictionChange = async (event, newValue) => {
+    setSelectedPersonalInterests(newValue);
+  };
 
-  return (
-    <Container>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Edit User
-      </Typography>
-      <UserForm
-        user={user}
-        loading={loading}
-        error={error}
-        formError={formError}
-        onChange={handleChange}
-        onSubmit={handleSubmit}
-        handleCancel={handleCancel}
-        dietaryRestrictions={dietaryRestrictions}
-        handleDietaryRestrictionChange={handleDietaryRestrictionChange}
-        selectedDietaryRestrictions={selectedDietaryRestrictions}
-        personalInterests={personalInterests}
-        handlePersonalInterestRestrictionChange={
-          handlePersonalInterestRestrictionChange
-        }
-        selectedPersonalInterests={selectedPersonalInterests}
-        careerInterests={careerInterests}
-        handleCareerInterestRestrictionChange={
-          handleCareerInterestRestrictionChange
-        }
-        selectedCareerInterests={selectedCareerInterests}
-        companyInterests={companyInterests}
-        handleCompanyInterestRestrictionChange={
-          handleCompanyInterestRestrictionChange
-        }
-        selectedCompanyInterests={selectedCompanyInterests}
-      />
-    </Container>
+  const handleCareerInterestRestrictionChange = async (event, newValue) => {
+    setSelectedCareerInterests(newValue);
+  };
+
+  const handleCompanyInterestRestrictionChange = async (event, newValue) => {
+    setSelectedCompanyInterests(newValue);
+  }
+
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
+
+  const profileTab_LoggedIn = (
+    <UserForm
+    user={user}
+    loading={loading}
+    error={error}
+    formError={formError}
+    onChange={handleChange}
+    onSubmit={handleSubmit}
+    handleCancel={handleCancel}
+    dietaryRestrictions={dietaryRestrictions}
+    handleDietaryRestrictionChange={handleDietaryRestrictionChange}
+    selectedDietaryRestrictions={selectedDietaryRestrictions}
+    personalInterests={personalInterests}
+    handlePersonalInterestRestrictionChange={
+      handlePersonalInterestRestrictionChange
+    }
+    selectedPersonalInterests={selectedPersonalInterests}
+    careerInterests={careerInterests}
+    handleCareerInterestRestrictionChange={
+      handleCareerInterestRestrictionChange
+    }
+    selectedCareerInterests={selectedCareerInterests}
+    companyInterests={companyInterests}
+    handleCompanyInterestRestrictionChange={
+      handleCompanyInterestRestrictionChange
+    }
+    selectedCompanyInterests={selectedCompanyInterests}
+    />
+  );
+
+  const profileTab_LoggedOut = (
+    <div style={{ display: "flex", gap: "25px", flexDirection: "column" }}>
+      <div style={{ display: "flex", gap: "15px", flexDirection: "row" }}>
+        <MimicTextBox text={user.first_name} uppertext={"first name"} />
+        <MimicTextBox text={user.last_name} uppertext={"last name"} />
+      </div>
+      <div style={{ display: "flex", gap: "15px", flexDirection: "row" }}>
+        <MimicTextBox text={user.phone} uppertext={"phone"} />
+        <MimicTextBox text={user.email} uppertext={"email"} />
+      </div>
+    </div>
+  );
+
+  const projectsTab = <Container>Projects</Container>;
+
+  if (error) {
+    return <Typography>Error: {error.message}</Typography>;
+  }
+  return loading ? (
+    <CircularProgress />
+  ) : (
+    <Box sx={{ flexGrow: 1, padding: "10px" }}>
+      <Grid container spacing={5}>
+        <Grid item sm={4} xl={2}>
+          <Container
+            style={{
+              background: "#eef",
+              minHeight: "800px",
+              padding: "16px",
+            }}
+          >
+            <Avatar sx={{ bgcolor: "#085eb3" }}>
+              {user.first_name?.[0]?.toUpperCase() || "?"}
+            </Avatar>
+            {/* badges */}
+            {/* join date */}
+            Joined: {user.join_date?.split("T")[0].replace(/-/g, "/")}
+
+          </Container>
+        </Grid>
+
+        <Grid item sm={8} xl={7}>
+          <Container>
+            <Tabs
+              value={tabValue}
+              onChange={handleTabChange}
+              aria-label="profile and projects tabs"
+              style={{ background: "#eef", marginBottom: "24px" }}
+            >
+              <Tab label="Profile" />
+              <Tab label="Projects" />
+            </Tabs>
+
+            <Container px={{ p: "16px" }}>
+              {tabValue === 0
+                ? thisIsMe
+                  ? profileTab_LoggedIn
+                  : profileTab_LoggedOut
+                : null}
+              {tabValue === 1 && projectsTab}
+            </Container>
+          </Container>
+        </Grid>
+      </Grid>
+    </Box>
   );
 }
 
-export default UserEditTemplate;
+export default ProfileTemplate;
