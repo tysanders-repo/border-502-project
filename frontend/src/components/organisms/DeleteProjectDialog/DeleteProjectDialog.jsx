@@ -1,6 +1,4 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-
+import React from "react";
 import {
   Button,
   Dialog,
@@ -8,8 +6,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-} from '@mui/material'
-import { deleteProject } from 'services/projectService'
+} from "@mui/material";
+import { deleteProject } from "@services/projectService";
 
 const DeleteProjectDialog = ({
   project,
@@ -17,17 +15,16 @@ const DeleteProjectDialog = ({
   handleCloseDialog,
   id,
   setError,
+  onDelete, // New prop to handle deletion
 }) => {
-  const navigate = useNavigate()
-
   const deleteProjectHandler = async () => {
     try {
-      await deleteProject(id)
-      navigate('/projects')
+      await deleteProject(id);
+      onDelete(); // Call the onDelete prop to notify parent
     } catch (error) {
-      setError(error)
+      setError(error);
     }
-  }
+  };
 
   return (
     <Dialog
@@ -49,8 +46,8 @@ const DeleteProjectDialog = ({
         </Button>
         <Button
           onClick={() => {
-            deleteProjectHandler()
-            handleCloseDialog()
+            deleteProjectHandler(); // Call delete handler
+            handleCloseDialog(); // Close the dialog after confirming
           }}
           color="error"
           autoFocus
@@ -59,7 +56,7 @@ const DeleteProjectDialog = ({
         </Button>
       </DialogActions>
     </Dialog>
-  )
-}
+  );
+};
 
-export default DeleteProjectDialog
+export default DeleteProjectDialog;

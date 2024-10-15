@@ -13,7 +13,7 @@ require 'rails_helper'
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
 RSpec.describe "/member_diets", type: :request do
-  let(:valid_member_attributes){
+  let(:valid_member_attributes) {
     {
       first_name: "John",
       last_name: "Doe",
@@ -29,7 +29,7 @@ RSpec.describe "/member_diets", type: :request do
     }
   }
 
-  let(:valid_diet_attributes){
+  let(:valid_diet_attributes) {
     {
       item_name: "cheese"
     }
@@ -61,6 +61,60 @@ RSpec.describe "/member_diets", type: :request do
   let(:valid_headers) {
     {}
   }
+
+  let(:uin) { member.uin }
+  let(:item_id) { dietary_restriction.id }
+
+  describe 'GET /member_diets/exists/:uin/:item_id good' do
+    it 'returns the existence of a member diet' do
+      MemberDiet.create! valid_attributes
+      get "/member_diets/exists/#{uin}/#{item_id}"
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'GET /member_diets/exists/:uin/:item_id bad' do
+    it 'returns the existence of a member diet' do
+      get "/member_diets/exists/#{uin}/#{item_id}"
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'GET /member_diets/uin/:uin good' do
+    it 'returns member diets by uin' do
+      MemberDiet.create! valid_attributes
+      get "/member_diets/uin/#{uin}"
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'GET /member_diets/uin/:uin bad' do
+    it 'returns member diets by uin' do
+      get "/member_diets/uin/#{uin}"
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  describe 'DELETE /member_diets/uin/:uin good' do
+    it 'deletes member diets by uin' do
+      MemberDiet.create! valid_attributes
+      delete "/member_diets/uin/#{uin}"
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'DELETE /member_diets/uin/:uin bad' do
+    it 'deletes member diets by uin' do
+      delete "/member_diets/uin/#{uin}"
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
 
   describe "GET /index" do
     it "renders a successful response" do

@@ -1,1 +1,1 @@
-export { default } from './ProjectListTemplate'
+export { default } from "./ProjectListTemplate";

@@ -25,6 +25,7 @@ To set up and run the Rails backend, follow these steps:
    Launch the Rails server with:
    ```bash
    rails server
+   ```
 
 ## Code Formatting
 

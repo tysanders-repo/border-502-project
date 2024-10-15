@@ -16,7 +16,7 @@ RSpec.describe "/project_members", type: :request do
   # This should return the minimal set of attributes required to create a valid
   # ProjectMember. As you add validations to ProjectMember, be sure to
   # adjust the attributes here as well.
-  let(:valid_member_attributes){
+  let(:valid_member_attributes) {
     {
       first_name: "John",
       last_name: "Doe",
@@ -32,7 +32,7 @@ RSpec.describe "/project_members", type: :request do
     }
   }
 
-  let(:valid_project_attributes){
+  let(:valid_project_attributes) {
     {
       title: "Sample Project",
       description: "This is a sample project"

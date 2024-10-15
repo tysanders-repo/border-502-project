@@ -1,1 +1,1 @@
-export { default } from './UserEditTemplate'
+export { default } from "./UserEditTemplate";

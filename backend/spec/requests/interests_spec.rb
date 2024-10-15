@@ -38,6 +38,34 @@ RSpec.describe "/interests", type: :request do
     {}
   }
 
+  let!(:career_interest) { Interest.create(name: 'Career Interest', interest_type: 'career') }
+  let!(:company_interest) { Interest.create(name: 'Company Interest', interest_type: 'company') }
+  let!(:personal_interest) { Interest.create(name: 'Personal Interest', interest_type: 'personal') }
+
+  describe 'GET /interests/career' do
+    it 'returns all career interests' do
+      get '/interests/type/career'
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'GET /interests/company' do
+    it 'returns all company interests' do
+      get '/interests/type/company'
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'GET /interests/personal' do
+    it 'returns all personal interests' do
+      get '/interests/type/personal'
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
   describe "GET /index" do
     it "renders a successful response" do
       Interest.create! valid_attributes

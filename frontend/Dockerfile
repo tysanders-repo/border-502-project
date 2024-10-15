@@ -1,58 +1,23 @@
-# #long term support base image
-# FROM node:lts as base
+# Step 1: Use Node.js as the base image
+FROM node:18-alpine
 
-# #set working directory
-# WORKDIR /usr/src
-# COPY package.json ./
-# COPY package-lock.json ./
+# Step 2: Set the working directory
+WORKDIR /app
 
-# #install dependencies
-# RUN npm install
+# Step 3: Install pnpm globally
+RUN npm install -g pnpm
 
-# ##########################
-# FROM base AS dev
-# COPY . .
-# EXPOSE 3000
-# CMD ["npm", "start"]
+# Step 4: Copy `package.json` and `pnpm-lock.yaml` for installing dependencies
+COPY package.json pnpm-lock.yaml ./
 
+# Step 5: Install dependencies including dev dependencies
+RUN pnpm install
 
-# ##########################
-# FROM base AS build
-# COPY . .
-# RUN pnpm run build
-
-
-# ##########################
-# FROM nginx:1.25.5-alpine as prod
-# COPY --from=build /usr/src/dist /usr/share/nginx/html
-# EXPOSE 80
-# CMD ["nginx", "-g", "daemon off;"]
-
-# Long term support base image
-FROM node:lts as base
-
-# Set working directory
-WORKDIR /usr/src
-COPY package.json ./
-COPY pnpm-lock.yaml ./
-
-# Install dependencies with pnpm
-RUN npm install -g pnpm && pnpm install
-
-##########################
-FROM base AS dev
+# Step 6: Copy the entire project to the container
 COPY . .
+
+# Step 7: Expose port 3000 (Next.js default dev server port)
 EXPOSE 3000
-CMD ["sh", "-c", "pnpm start"]
-# CMD ["pnpm", "start"] # Ensure you're using pnpm here
 
-##########################
-FROM base AS build
-COPY . .
-RUN pnpm run build
-
-##########################
-FROM nginx:1.25.5-alpine as prod
-COPY --from=build /usr/src/dist /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Step 8: Start Next.js in development mode with hot-reloading
+CMD ["pnpm", "dev"]
