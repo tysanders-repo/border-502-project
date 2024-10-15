@@ -24,6 +24,7 @@ Rails.application.routes.draw do
     collection do
       get "project/:project_id", to: "project_members#by_project", as: "by_project"
       get "member/:uin", to: "project_members#by_member", as: "by_member"
+    end
   end
 
   resources :member_diets do
