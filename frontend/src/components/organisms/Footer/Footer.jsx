@@ -22,7 +22,7 @@ const Footer = () => {
         <Link href="/">Home</Link> {/* Link to the home page */}
       </VeritcalBox>
       {/* Logo image */}
-      <img src="/logo.png" alt="Logo" style={{ height: "70px" }} />{" "}
+      <img src="/logo.png" alt="Logo" style={{ height: "70px" }} />
     </StyledFooter>
   );
 };

@@ -83,7 +83,6 @@ const HomepageTemplate = () => {
         projects can be facilitated and maintained by the community well after
         the project is implemented. For more information about EWB-USA, visit:
         <a href="http://ewb-usa.org" target="_blank" rel="noopener noreferrer">
-          {" "}
           http://ewb-usa.org
         </a>
         .
