@@ -59,7 +59,7 @@ describe("UserForm", () => {
           selectedCompanyInterests={selectedCompanyInterests}
           handleCompanyInterestRestrictionChange={jest.fn()}
         />
-      </LocalizationProvider>
+      </LocalizationProvider>,
     );
   });
 

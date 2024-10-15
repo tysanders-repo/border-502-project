@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 // Importing the deleteUser function from the user service
 import { deleteUser } from "@services/userService";
+import { useRouter } from "next/navigation";
 
 /**
  * Props for the DeleteConfirmationDialog component.
@@ -29,6 +30,7 @@ import { deleteUser } from "@services/userService";
  */
 const DeleteConfirmationDialog = ({
   user, // User object containing user details
+  handleUpdateDeleteUser, // function to update users
   openDialog, // Boolean to control dialog visibility
   handleCloseDialog, // Function to close the dialog
   id, // ID of the user to be deleted
@@ -41,11 +43,13 @@ const DeleteConfirmationDialog = ({
    * Handles the user deletion process.
    * @returns {Promise<void>} A promise that resolves when the deletion is complete.
    */
+
+  const router = useRouter();
   const deleteUserHandler = async () => {
     try {
       // Attempt to delete the user with the provided ID
       await deleteUser(id);
-      // Use Next.js router for navigation (if uncommented)
+      handleUpdateDeleteUser();
       router.push("/Member");
     } catch (error) {
       // If an error occurs, set the error state
@@ -63,8 +67,8 @@ const DeleteConfirmationDialog = ({
       <DialogTitle id="alert-dialog-title">Confirm Delete Account</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          Are you sure you want to delete {user?.first_name} {user?.last_name}&apos;t
-          profile? This action cannot be undone.
+          Are you sure you want to delete {user?.first_name} {user?.last_name}
+          &apos;t profile? This action cannot be undone.
         </DialogContentText>
       </DialogContent>
       <DialogActions>

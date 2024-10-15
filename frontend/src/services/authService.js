@@ -1,15 +1,14 @@
 "use server";
 
-import { API_URL } from "../constants"
+import { API_URL, TOKEN_NAME } from "../constants"
 import { cookies } from "next/headers"
-
 /**
  * Check if the user is signed in by checking for the session token cookie.
  *
  * @returns {Promise<boolean>} A promise that resolves to true if the user is signed in, otherwise false.
  */
 export async function signedIn() {
-  return cookies().get("next-auth.session-token")?.value !== undefined;
+  return cookies().get(TOKEN_NAME)?.value !== undefined;
 }
 
 /**
@@ -21,7 +20,7 @@ export async function signedIn() {
  * @returns {Promise<void>} A promise that resolves when the user info is set.
  */
 export async function setUserInfo() {
-  const token = cookies().get("next-auth.session-token")?.value;
+  const token = cookies().get(TOKEN_NAME)?.value;
   const response = await fetch(`${API_URL}/member/role`, {
     method: "GET",
     headers: {
@@ -31,12 +30,12 @@ export async function setUserInfo() {
     cache: "no-cache",
   });
 
-  const isUser = response.ok;
-  const data = isUser ? await response.json() : null;
+  const isOK = response.ok
+  const data = isOK ? await response.json() : null;
 
   cookies().set({
     name: "role",
-    value: isUser ? data?.role : "none",
+    value: data?.role !== undefined ? data?.role : "none",
     httpOnly: true,
     secure: false, // false for now, will be secure once hosted online.
     sameSite: "lax",
@@ -46,7 +45,7 @@ export async function setUserInfo() {
 
   cookies().set({
     name: "uin",
-    value: isUser ? data?.uin : "none",
+    value: data?.uin !== undefined ? data?.uin : "none",
     httpOnly: true,
     secure: false, // false for now, will be secure once hosted online.
     sameSite: "lax",
@@ -65,13 +64,14 @@ export async function deleteUserInfo() {
   cookies().delete("role");
 }
 
-
 /**
  * Get the user's role from cookies.
  *
  * @returns {Promise<string|null>} A promise that resolves to the user's role or null if not found.
  */
 export async function getUserRole() {
+  if(cookies().get("role")?.value === undefined || cookies().get("role")?.value == "none")
+    await setUserInfo();
   return cookies().get("role")?.value;
 }
 
@@ -81,7 +81,7 @@ export async function getUserRole() {
  * @returns {Promise<string|null>} A promise that resolves to the user's UIN or null if not found.
  */
 export async function getUserUIN() {
-  // return cookies().get("uin")?.value;
-  return '331005076';
+  if(cookies().get("uin")?.value === undefined || cookies().get("uin")?.value == "none")
+    await setUserInfo();
+  return cookies().get("uin")?.value;
 }
-

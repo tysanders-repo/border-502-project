@@ -146,8 +146,8 @@ const HomepageTemplate = () => {
                     width: "40%",
                   }}
                 >
-                  <Typography variant="h5">
-                    {project.title} -{" "}
+                  <Typography variant="h5">{project.title}</Typography>
+                  <Typography variant="overline">
                     {format(new Date(project.date), "MMMM d, yyyy")}
                   </Typography>
                   <Typography variant="body1">{project.description}</Typography>

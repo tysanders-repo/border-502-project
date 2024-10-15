@@ -111,6 +111,10 @@ function UserDetailsTemplate({ params }) {
                 ? "N/A"
                 : format(new Date(user.graduation_day), "MMMM d, yyyy")}
             </Typography>
+            <Typography variant="h6">Position:{user.role}</Typography>
+            <Typography variant="h6">
+              Paid Dues?{user.paid_dues ? " Yes" : " No"}
+            </Typography>
 
             <Box
               mt={3}

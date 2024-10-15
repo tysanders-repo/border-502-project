@@ -22,7 +22,6 @@ default: &default
   username: <%= ENV['DATABASE_USER'] %>
   password: <%= ENV['DATABASE_PASSWORD'] %>
 
-
 development:
   <<: *default
   database: backend_development
@@ -86,4 +85,3 @@ production:
   database: backend_production
   username: backend
   password: <%= ENV["BACKEND_DATABASE_PASSWORD"] %>
-
