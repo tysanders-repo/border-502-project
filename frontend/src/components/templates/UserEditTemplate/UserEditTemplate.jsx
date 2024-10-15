@@ -124,6 +124,7 @@ function UserEditTemplate({ params }) {
       try {
         // Fetch user data based on ID
         const userData = await fetchUser(id);
+
         setUser(userData);
 
         // Fetch current dietary restrictions for the user
@@ -423,7 +424,7 @@ function UserEditTemplate({ params }) {
 
   // Loading and error states for the UI
   if (loading) return <ProgressLoading />;
-  // if (error) return <div>Error loading user data.</div>;
+  if (error) return <div>Error loading user data. {error.message} </div>;
 
   return (
     <Container>

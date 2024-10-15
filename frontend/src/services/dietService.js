@@ -10,7 +10,8 @@ async function fetchAllDietRestrictions() {
   const response = await fetch(`${API_URL}/dietary_restrictions`);
   if (!response.ok) {
     throw new Error(response.statusText);
-  }
+    // console.log(response);
+  }  
   return response.json();
 }
 
