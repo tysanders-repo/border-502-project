@@ -94,7 +94,7 @@ Member.find_or_create_by!(uin: 210398211) do |member|
 end
 
 
-dietary_restrictions = ["Peanuts", "Gluten", "Dairy", "Eggs", "Shellfish", "Soy", "Tree Nuts", "Wheat", "Fish", "Sesame", "Corn", "Pork", "Beef", "Chicken", "Vegan", "Vegetarian", "Halal", "Kosher", "Low Sodium"]
+dietary_restrictions = [ "Peanuts", "Gluten", "Dairy", "Eggs", "Shellfish", "Soy", "Tree Nuts", "Wheat", "Fish", "Sesame", "Corn", "Pork", "Beef", "Chicken", "Vegan", "Vegetarian", "Halal", "Kosher", "Low Sodium" ]
 
 dietary_restrictions.each do |item_name|
   DietaryRestriction.find_or_create_by!(item_name: item_name)
