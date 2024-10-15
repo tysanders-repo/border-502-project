@@ -96,7 +96,6 @@ function ProfileTemplate({ params }) {
         setThisIsMe(isCurrentUser);
         const userData = await fetchUser(id);
         setUser(userData);
-
         
 
         // Fetch all options for dietary restrictions and interests
@@ -184,6 +183,10 @@ function ProfileTemplate({ params }) {
   function finalChecks() {
     if (user.first_name === "") {
       router.push(`/Profile`);
+    }
+
+    if (user.uin === null) {
+      router.push(`/`);
     }
   }
 
@@ -369,7 +372,7 @@ function ProfileTemplate({ params }) {
           setError("failed to add company interests"); // Set error if company interest addition fails
         }
 
-        // Navigate back to the Profile page after successful update
+        // Navigate back to the Member page after successful update
         setUser(updatedUser);
         router.push(`/Profile`);
       } catch (error) {
