@@ -17,14 +17,14 @@ class ProjectMembersController < ApplicationController
   def by_member
     member_uin = params[:uin]
     @projects = Project.joins(:project_members).where(project_members: { uin: member_uin })
-    
+
     render json: @projects
   end
 
   def by_project
     project_id = params[:project_id]
     @members = Member.joins(:project_members).where(project_members: { project_id: project_id })
-  
+
     render json: @members
   end
 
