@@ -198,13 +198,14 @@ function ProfileTemplate({ params }) {
   };
 
   const handleCancel = async (e) => {
-    router.push(`/Profile`);
+    router.push(`/`);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const id = user.uin; // Declare 'id' here before using it
     if (validateUserForm(user, setFormError)) {
+      setLoading(true)
       // Create updated user object
       const updatedUser = {
         first_name: user.first_name,
@@ -374,6 +375,7 @@ function ProfileTemplate({ params }) {
 
         // Navigate back to the Member page after successful update
         setUser(updatedUser);
+        setLoading(false)
         router.push(`/Profile`);
       } catch (error) {
         console.error("Failed to update user:", error);
