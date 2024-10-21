@@ -5,18 +5,21 @@ import { useRouter } from "next/navigation";
 import { fetchUser } from "@services/userService";
 import MimicTextBox from "@components/atoms/MimicTextBox";
 import {
-  Container,
   Box,
   Tabs,
   Tab,
   Avatar,
   Typography,
-  Button,
+  useMediaQuery,
+  IconButton,
 } from "@mui/material";
 import { signedIn, getUserUIN } from "@services/authService";
 import UserInfo from "@components/organisms/UserInfo";
 import ProgressLoading from "@components/organisms/ProgressLoading";
 import UserEditTemplate from "../UserEditTemplate";
+import EditIcon from "@mui/icons-material/Edit";
+import { useTheme } from "@mui/material";
+import AccomplishmentBar from "@components/organisms/AccomplishmentBar";
 
 function ProfileTemplate({ params }) {
   const [loading, setLoading] = useState(true);
@@ -35,9 +38,36 @@ function ProfileTemplate({ params }) {
     aggie_ring_day: null,
     birthday: null,
     graduation_day: null,
+    accomplishments: null,
+    interests: null,
+    dietary_restrictions: null,
   });
   const [thisIsMe, setThisIsMe] = useState(false);
   const router = useRouter();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Check if the screen is mobile-sized
+
+  useEffect(() => {
+    if (!isEdit) {
+      fetchUserData();
+    }
+  }, [isEdit]);
+
+  const fetchUserData = async () => {
+    setLoading(true);
+    try {
+      const isCurrentUser = params.id === undefined;
+      const id = isCurrentUser ? await getUserUIN() : params.id;
+      setThisIsMe(isCurrentUser);
+      const userData = await fetchUser(id);
+      console.log(userData);
+      setUser(userData);
+    } catch (e) {
+      setError(e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Data fetch
   useEffect(() => {
@@ -46,20 +76,6 @@ function ProfileTemplate({ params }) {
       router.push(`/`);
       return;
     }
-
-    const fetchUserData = async () => {
-      try {
-        const isCurrentUser = params.id === undefined;
-        const id = isCurrentUser ? await getUserUIN() : params.id;
-        setThisIsMe(isCurrentUser);
-        const userData = await fetchUser(id);
-        setUser(userData);
-      } catch (e) {
-        setError(e);
-      } finally {
-        setLoading(false);
-      }
-    };
 
     fetchUserData();
   }, [params]);
@@ -98,7 +114,9 @@ function ProfileTemplate({ params }) {
     </div>
   );
 
-  const projectsTab = <Container>Projects</Container>;
+  const projectsTab = (
+    <Typography>Associated projects to be displayed soon...</Typography>
+  );
 
   if (error) {
     return <Typography>Error: {error.message}</Typography>;
@@ -109,8 +127,8 @@ function ProfileTemplate({ params }) {
     <Box
       sx={{
         width: "90%",
-        margin: "50px",
         display: "flex",
+        margin: "0px auto",
       }}
     >
       <Box sx={{ flexGrow: 1 }}>
@@ -118,7 +136,7 @@ function ProfileTemplate({ params }) {
           value={tabValue}
           onChange={handleTabChange}
           aria-label="profile and projects tabs"
-          style={{ background: "#f7f7f7" }}
+          style={{ background: "#f7f7f7", padding: "10px" }}
         >
           <Tab label="Profile" />
           <Tab label="Projects" />
@@ -128,38 +146,7 @@ function ProfileTemplate({ params }) {
           {tabValue === 0 ? (
             thisIsMe ? (
               <Box sx={{ display: "flex" }}>
-                <Box
-                  style={{
-                    background: "#f7f7f7",
-                    minHeight: "60vh",
-                    padding: "20px",
-                    minWidth: "200px",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "20px",
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: "10px",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Avatar sx={{ bgcolor: "#085eb3" }}>
-                      {user.first_name?.[0]?.toUpperCase() || "?"}
-                    </Avatar>
-                    <Typography>
-                      {`${user.first_name} ${user.last_name}`}
-                    </Typography>
-                  </Box>
-                  {/* badges */}
-                  <Typography>Accomplishments:</Typography>
-                  {/* join date */}
-                  <Typography>
-                    Joined: {user.join_date?.split("T")[0].replace(/-/g, "/")}
-                  </Typography>
-                </Box>
+                {!isMobile && <AccomplishmentBar user={user} />}
 
                 <Box
                   sx={{
@@ -172,19 +159,34 @@ function ProfileTemplate({ params }) {
                 >
                   {isEdit ? (
                     <>
-                      <UserEditTemplate params={{ id: user.uin }} />
+                      <UserEditTemplate
+                        params={{ id: user.uin }}
+                        isProfile={true}
+                        isEdit={isEdit}
+                        setIsEdit={setIsEdit}
+                      />
                     </>
                   ) : (
-                    <>
-                      <UserInfo user={user} />
-                      <Button
-                        variant="contained"
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                      }}
+                    >
+                      <Box sx={{ width: "100%", flexGrow: 1 }}>
+                        <UserInfo user={user} />
+                      </Box>
+                      <IconButton
+                        variant="outlined"
+                        color="primary"
                         onClick={() => setIsEdit(true)}
-                        sx={{ maxWidth: "200px" }}
+                        sx={{
+                          border: `1px solid ${theme.palette.primary.main}`,
+                        }}
                       >
-                        Edit Profile
-                      </Button>
-                    </>
+                        <EditIcon />
+                      </IconButton>
+                    </Box>
                   )}
                 </Box>
               </Box>

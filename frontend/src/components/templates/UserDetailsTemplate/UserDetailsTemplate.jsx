@@ -5,17 +5,11 @@ import { fetchUser } from "@services/userService";
 import DeleteConfirmationDialog from "@components/organisms/DeleteConfirmationDialog";
 import { format } from "date-fns";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import {
-  Button,
-  Container,
-  Typography,
-  IconButton,
-  Alert,
-  Box,
-} from "@mui/material";
+import { Typography, IconButton, Alert, Box, Avatar } from "@mui/material";
 import { useRouter } from "next/navigation"; // Import useRouter for navigation
 import ProgressLoading from "@components/organisms/ProgressLoading";
 import UserInfo from "@components/organisms/UserInfo";
+import AccomplishmentBar from "@components/organisms/AccomplishmentBar";
 
 /**
  * UserDetailsTemplate Component
@@ -28,9 +22,7 @@ import UserInfo from "@components/organisms/UserInfo";
  */
 function UserDetailsTemplate({ params }) {
   const router = useRouter();
-  console.log("USER PARAMS", params);
   const { id } = params;
-
   const [user, setUser] = useState({
     first_name: "",
     last_name: "",
@@ -46,7 +38,6 @@ function UserDetailsTemplate({ params }) {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -65,14 +56,6 @@ function UserDetailsTemplate({ params }) {
     }
   }, [id]);
 
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
-
   if (loading) return <ProgressLoading />;
 
   if (error)
@@ -80,50 +63,32 @@ function UserDetailsTemplate({ params }) {
 
   console.log(user.aggie_ring_day);
   return (
-    <Container maxWidth="sm" sx={{ marginTop: 4 }}>
+    <Box width="80%" height="85vh" sx={{ margin: "60px auto" }}>
       {user ? (
-        <Box sx={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "center",
+            gap: "20px",
+            height: "80vh",
+          }}
+        >
           <IconButton onClick={() => router.push("/Member")} role="back">
             <ArrowBackIcon />
           </IconButton>
-          <Box>
-            <Typography variant="h4" gutterBottom>
-              {user.first_name} {user.last_name}&apos;s Information
-            </Typography>
+          <AccomplishmentBar user={user} />
+          <Box
+            sx={{ margin: "20px 30px", maxHeight: "80vh", overflow: "auto" }}
+          >
             <UserInfo user={user} />
-            <Box
-              mt={3}
-              sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}
-            >
-              <Button
-                variant="outlined"
-                color="error"
-                onClick={handleOpenDialog}
-              >
-                Delete Account
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => router.push(`/Member/${id}/Edit`)}
-              >
-                Edit Profile
-              </Button>
-            </Box>
-
-            <DeleteConfirmationDialog
-              user={user}
-              openDialog={openDialog}
-              handleCloseDialog={handleCloseDialog}
-              id={id}
-              setError={setError}
-            />
           </Box>
+          <Box sx={{ flexGrow: 1.5 }} />
         </Box>
       ) : (
         <Typography variant="h6">User not found</Typography>
       )}
-    </Container>
+    </Box>
   );
 }
 

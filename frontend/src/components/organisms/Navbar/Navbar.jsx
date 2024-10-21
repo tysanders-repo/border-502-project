@@ -201,7 +201,7 @@ export default function Navbar() {
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  <CircularProgress color="white" />
+                  <CircularProgress color="white" size={24} />
                 ) : isSignedIn ? (
                   "Sign out"
                 ) : (
