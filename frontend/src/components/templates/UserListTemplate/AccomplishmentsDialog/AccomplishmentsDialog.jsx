@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Dialog, TextField, Button, List, ListItem, IconButton } from "@mui/material";
+import { Dialog, TextField, Button, List, ListItem, IconButton, Typography, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import ClearIcon from '@mui/icons-material/Clear';
 
 const AccomplishmentsDialog = ({ member, open, onClose, onSubmit }) => {
@@ -36,11 +36,20 @@ const AccomplishmentsDialog = ({ member, open, onClose, onSubmit }) => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
-      <div style={{ padding: "20px" }}>
-        <h2>Update Accomplishments for {member ? member.first_name : 'Loading...'}</h2>
-        <br></br>
-        <h3>Accomplishments:</h3> 
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+      sx={{
+        "& .MuiDialog-paper": {
+          padding: "20px", // Adjust padding as needed
+        },
+      }}
+    >
+      <DialogTitle variant= "h3">Update Accomplishments for {member ? member.first_name : 'Loading...'}</DialogTitle>
+      <DialogContent>
+        <Typography variant="h6" gutterBottom>Accomplishments:</Typography>
         <List>
           {Object.entries(accomplishments).map(([key, value]) => (
             <ListItem key={key} secondaryAction={
@@ -48,11 +57,13 @@ const AccomplishmentsDialog = ({ member, open, onClose, onSubmit }) => {
                 <ClearIcon />
               </IconButton>
             }>
-              <strong>{key}:&nbsp;</strong> {value}
+              <Typography variant="body1">
+                <strong>{key}:&nbsp;</strong> {value}
+              </Typography>
             </ListItem>
           ))}
         </List>
-        <h3>New Accomplishment:</h3> 
+        <Typography variant="h6" gutterBottom>New Accomplishment:</Typography>
         <TextField
           value={newAccomplishmentKey}
           onChange={(e) => setNewAccomplishmentKey(e.target.value)}
@@ -67,14 +78,14 @@ const AccomplishmentsDialog = ({ member, open, onClose, onSubmit }) => {
           fullWidth
           margin="normal"
         />
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "20px" }}>
-          <Button variant="outlined" color="secondary" onClick={onClose}>Cancel</Button>
-          <Button variant="contained" color="primary" onClick={handleAddAccomplishment}>Add Accomplishment</Button>
-          <Button variant="contained" color="primary" onClick={handleSave}>Save Changes</Button>
-        </div>
-      </div>
+      </DialogContent>
+      <DialogActions>
+        <Button variant="outlined" color="secondary" onClick={onClose}>Cancel</Button>
+        <Button variant="contained" color="primary" onClick={handleAddAccomplishment}>Add Accomplishment</Button>
+        <Button variant="contained" color="primary" onClick={handleSave}>Save Changes</Button>
+      </DialogActions>
     </Dialog>
-  );
+  );  
 };
 
 export default AccomplishmentsDialog;
