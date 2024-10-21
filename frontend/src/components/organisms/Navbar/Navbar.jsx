@@ -25,7 +25,9 @@ import {
   getUserUIN,
 } from "@services/authService";
 import { signIn, signOut } from "next-auth/react";
-
+import Avatar from "@mui/material/Avatar";
+import Person2Icon from "@mui/icons-material/Person2";
+import { useRouter } from "next/navigation";
 /**
  * A functional component that renders the navigation bar.
  * It includes links to different pages and handles user authentication.
@@ -36,6 +38,7 @@ export default function Navbar() {
   const [userRole, setUserRole] = useState(null); // State to store the user's role
   const theme = useTheme(); // Access the theme for responsive design
   const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Check if the screen is mobile-sized
+  const router = useRouter();
 
   /**
    * Toggles the drawer open/close state.
@@ -190,6 +193,7 @@ export default function Navbar() {
                   New Member?
                 </Button>
               )}
+
               <Button
                 variant="outline"
                 onClick={handleGoogleSignInAndOut}
@@ -197,13 +201,24 @@ export default function Navbar() {
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  <CircularProgress color="white" />
+                  <CircularProgress color="white" size={24} />
                 ) : isSignedIn ? (
                   "Sign out"
                 ) : (
                   "Sign in"
                 )}
               </Button>
+
+              {userRole && (
+                <Avatar
+                  sx={{ bgcolor: "white" }}
+                  onClick={() => router.push("/Profile")}
+                >
+                  <Person2Icon
+                    sx={{ color: `${theme.palette.primary.main}` }}
+                  />
+                </Avatar>
+              )}
             </Box>
           )}
         </Box>
