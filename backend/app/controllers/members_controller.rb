@@ -63,7 +63,7 @@ class MembersController < ApplicationController
     def update_params
       case request.headers["Role"]
       when "president"
-        params.require(:member).permit(:role, :archived, :accepted, :accomplishments, :paid_dues)
+        params.require(:member).permit(:role, :archived, :accepted, :paid_dues, accomplishments: {})
       when "vice_president"
         params.require(:member).permit(:role, :accepted, :accomplishments)
       when "treasurer"

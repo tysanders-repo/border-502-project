@@ -8,6 +8,7 @@ import {
   updateUserDues,
 } from "@services/userService";
 import DeleteConfirmationDialog from "@components/organisms/DeleteConfirmationDialog";
+import AccomplishmentsDialog from "./AccomplishmentsDialog";
 import { Alert, Typography, IconButton, Box, Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useMediaQuery } from "@mui/material";
@@ -49,6 +50,33 @@ const UserListTemplate = () => {
   const [selectedRole, setSelectedRole] = useState(null);
   const [updateDues, setUpdateDues] = useState(false);
   const [updatedUsersDues, setUpdatedUsersDues] = useState([]);
+  const [openAccomplishmentsDialog, setOpenAccomplishmentsDialog] = useState(false);
+  const [selectedMember, setSelectedMember] = useState(null);
+
+  const handleOpenAccomplishmentsDialog = (member) => {
+    setSelectedMember(member);
+    setOpenAccomplishmentsDialog(true);
+  };
+
+  const handleCloseAccomplishmentsDialog = () => {
+    setOpenAccomplishmentsDialog(false);
+    setSelectedMember(null);
+  };
+
+  const handleAccomplishmentsSubmit = async (accomplishments) => {
+    try {
+      await updateUserPresident(selectedMember.uin, { accomplishments: accomplishments });
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.uin === selectedMember.uin
+            ? { ...user, accomplishments }
+            : user,
+        ),
+      );
+    } catch (error) {
+      console.error("Error updating accomplishments:", error);
+    }
+  };
 
   const router = useRouter();
 
@@ -294,6 +322,7 @@ const UserListTemplate = () => {
           handleArchive={handleArchive}
           handleDeleteClick={handleDeleteClick}
           handleOpenRoleDialog={() => setOpenRoleDialog(true)}
+          handleOpenAccomplishmentsDialog={handleOpenAccomplishmentsDialog}
           handleMenuClick={handleMenuClick}
           handleCloseMenu={handleCloseMenu}
           anchorEl={anchorEl}
@@ -577,6 +606,13 @@ const UserListTemplate = () => {
         handleCloseDialog={() => setOpenDialog(false)}
         id={selectedUser?.uin}
         setError={setError}
+      />
+
+      <AccomplishmentsDialog
+        open={openAccomplishmentsDialog}
+        onClose={handleCloseAccomplishmentsDialog}
+        member={selectedMember}
+        onSubmit={handleAccomplishmentsSubmit}
       />
 
       <UpdateRoleDialog

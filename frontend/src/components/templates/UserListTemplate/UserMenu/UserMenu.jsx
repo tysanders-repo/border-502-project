@@ -31,6 +31,7 @@ const UserMenu = ({
   handleArchive,
   handleDeleteClick,
   handleOpenRoleDialog,
+  handleOpenAccomplishmentsDialog,
   handleMenuClick,
   handleCloseMenu,
   anchorEl,
@@ -84,7 +85,10 @@ const UserMenu = ({
         {filter === "active" && (
           <div>
             {userRole === "president" || userRole === "vice president" ? (
-              <MenuItem onClick={handleOpenRoleDialog}>Update Role</MenuItem>
+              <>
+                <MenuItem onClick={handleOpenRoleDialog}>Update Role</MenuItem>
+                <MenuItem onClick={() => handleOpenAccomplishmentsDialog(selectedUser)}>Accomplishments</MenuItem>
+              </>
             ) : null}
 
             {userRole === "president" || userRole === "internal relations" ? (
