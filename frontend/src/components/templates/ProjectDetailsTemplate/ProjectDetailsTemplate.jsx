@@ -112,7 +112,7 @@ function ProjectDetailsTemplate({ params }) {
           {/* Project details container */}
           <Box sx={{ width: "100%" }}>
             {/* Project title */}
-            <Typography variant="h4" gutterBottom aria-label="title">
+            <Typography variant="h1" gutterBottom aria-label="title">
               {project.title}
             </Typography>
 

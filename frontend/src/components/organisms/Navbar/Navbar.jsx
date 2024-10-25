@@ -137,8 +137,9 @@ export default function Navbar() {
     <AppBar
       position="static"
       style={{
-        marginBottom: "30px",
+        // marginBottom: "30px",
         padding: "10px",
+        borderBottom: "1px solid rgba(255,255,255, 0.5)",
       }}
     >
       <Toolbar>
