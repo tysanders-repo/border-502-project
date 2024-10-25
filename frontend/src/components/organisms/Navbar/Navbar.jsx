@@ -60,9 +60,11 @@ export default function Navbar() {
     { text: "Home", link: "/" },
     // Conditionally render "View Members" if role is not "member" and role exists
     userRole &&
-      userRole !== "none" &&
-      userRole !== "member" &&
-      userRole !== "subteam lead" && {
+      (userRole === "president" ||
+      userRole === "vice president" ||
+      userRole === "internal relations" ||
+      userRole === "project lead" ||
+      userRole === "admin") && {
         text: "View Members",
         link: "/Member",
       },
