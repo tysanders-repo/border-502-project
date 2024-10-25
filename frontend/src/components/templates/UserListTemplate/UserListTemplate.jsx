@@ -490,6 +490,7 @@ const UserListTemplate = () => {
             {userRole && (
               <>
                 {(userRole === "president" ||
+                  userRole === "admin" ||
                   userRole === "vice president" ||
                   userRole === "internal relations") && (
                   <>

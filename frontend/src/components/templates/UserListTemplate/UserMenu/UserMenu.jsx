@@ -73,7 +73,7 @@ const UserMenu = ({
         </MenuItem>
 
         {filter === "archived" &&
-          (userRole === "president" || userRole === "internal relations") && (
+          (userRole === "president" || userRole === "internal relations" || userRole === "admin") && (
             <>
               <MenuItem onClick={() => handleArchive(row.uin, false)}>
                 Restore
@@ -84,14 +84,14 @@ const UserMenu = ({
 
         {filter === "active" && (
           <div>
-            {userRole === "president" || userRole === "vice president" ? (
+            {userRole === "president" || userRole === "vice president" || userRole === "admin" ? (
               <>
                 <MenuItem onClick={handleOpenRoleDialog}>Update Role</MenuItem>
                 <MenuItem onClick={() => handleOpenAccomplishmentsDialog(selectedUser)}>Accomplishments</MenuItem>
               </>
             ) : null}
 
-            {userRole === "president" || userRole === "internal relations" ? (
+            {userRole === "president" || userRole === "internal relations" || userRole === "admin" ? (
               <>
                 <MenuItem
                   onClick={() =>
