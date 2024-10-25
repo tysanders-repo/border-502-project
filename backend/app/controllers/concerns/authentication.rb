@@ -14,9 +14,6 @@ module Authentication
 
                 email = decoded_token["email"]
 
-                puts "AĀAAA"
-                puts email
-
                 unless email.present?
                     puts "No email"
                     # render json: { error: 'Invalid token payload' }, status: :unauthorized
