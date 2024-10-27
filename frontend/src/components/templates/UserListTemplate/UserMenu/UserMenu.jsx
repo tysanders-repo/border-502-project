@@ -73,26 +73,36 @@ const UserMenu = ({
         </MenuItem>
 
         {filter === "archived" &&
-          (userRole === "president" || userRole === "internal relations") && (
-            <>
-              <MenuItem onClick={() => handleArchive(row.uin, false)}>
+          (userRole === "president" ||
+            userRole === "internal relations" ||
+            userRole === "admin") && (
+            <div>
+              <MenuItem onClick={() => handleArchive(selectedUser?.uin, false)}>
                 Restore
               </MenuItem>
               <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
-            </>
+            </div>
           )}
 
         {filter === "active" && (
           <div>
-            {userRole === "president" || userRole === "vice president" ? (
-              <>
+            {userRole === "president" ||
+            userRole === "vice president" ||
+            userRole === "admin" ? (
+              <div>
                 <MenuItem onClick={handleOpenRoleDialog}>Update Role</MenuItem>
-                <MenuItem onClick={() => handleOpenAccomplishmentsDialog(selectedUser)}>Accomplishments</MenuItem>
-              </>
+                <MenuItem
+                  onClick={() => handleOpenAccomplishmentsDialog(selectedUser)}
+                >
+                  Accomplishments
+                </MenuItem>
+              </div>
             ) : null}
 
-            {userRole === "president" || userRole === "internal relations" ? (
-              <>
+            {userRole === "president" ||
+            userRole === "internal relations" ||
+            userRole === "admin" ? (
+              <div>
                 <MenuItem
                   onClick={() =>
                     router.push(`/Member/${selectedUser?.uin}/Edit`)
@@ -100,11 +110,13 @@ const UserMenu = ({
                 >
                   Edit
                 </MenuItem>
-                <MenuItem onClick={() => handleArchive(row.uin, true)}>
+                <MenuItem
+                  onClick={() => handleArchive(selectedUser?.uin, true)}
+                >
                   Archive
                 </MenuItem>
                 <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
-              </>
+              </div>
             ) : null}
           </div>
         )}
