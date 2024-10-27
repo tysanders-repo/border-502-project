@@ -2,15 +2,20 @@
 
 import React, { useEffect, useState } from "react";
 import { fetchUser } from "@services/userService";
-import DeleteConfirmationDialog from "@components/organisms/DeleteConfirmationDialog";
-import { format } from "date-fns";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Typography, IconButton, Alert, Box, Avatar } from "@mui/material";
+import {
+  Typography,
+  IconButton,
+  Alert,
+  Box,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
+
 import { useRouter } from "next/navigation"; // Import useRouter for navigation
 import ProgressLoading from "@components/organisms/ProgressLoading";
 import UserInfo from "@components/organisms/UserInfo";
 import AccomplishmentBar from "@components/organisms/AccomplishmentBar";
-
 /**
  * UserDetailsTemplate Component
  *
@@ -38,6 +43,8 @@ function UserDetailsTemplate({ params }) {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Check if the screen is mobile-sized
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -61,7 +68,6 @@ function UserDetailsTemplate({ params }) {
   if (error)
     return <Alert severity="error">Error fetching user: {error.message}</Alert>;
 
-  console.log(user.aggie_ring_day);
   return (
     <Box width="80%" height="85vh" sx={{ margin: "60px auto" }}>
       {user ? (
@@ -70,14 +76,19 @@ function UserDetailsTemplate({ params }) {
             display: "flex",
             alignItems: "flex-start",
             justifyContent: "center",
-            gap: "20px",
+            gap: isMobile ? "0px" : "20px",
             height: "80vh",
           }}
         >
-          <IconButton onClick={() => router.push("/Member")} role="back">
+          <IconButton
+            onClick={() => router.push("/Member")}
+            role="back"
+            sx={{ marginTop: isMobile ? "20px" : "0px" }}
+          >
             <ArrowBackIcon />
           </IconButton>
-          <AccomplishmentBar user={user} />
+          {!isMobile && <AccomplishmentBar user={user} />}
+
           <Box
             sx={{ margin: "20px 30px", maxHeight: "80vh", overflow: "auto" }}
           >

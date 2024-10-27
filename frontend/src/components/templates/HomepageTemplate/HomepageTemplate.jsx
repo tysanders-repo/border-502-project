@@ -129,7 +129,7 @@ const HomepageTemplate = () => {
           color: theme.palette.text.primary,
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
-          alignItems: "center",
+          alignItems: isMobile? "center": "flex-start",
           gap: "30px",
         }}
       >
@@ -145,7 +145,7 @@ const HomepageTemplate = () => {
           <Typography
             variant="h1"
             gutterBottom
-            sx={{ color: theme.palette.primary.main }}
+            sx={{ color: theme.palette.primary.main, marginTop: "20px" }}
           >
             Who We Are
           </Typography>

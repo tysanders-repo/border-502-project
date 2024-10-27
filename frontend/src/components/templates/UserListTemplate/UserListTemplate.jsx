@@ -7,25 +7,33 @@ import {
   updateUserPresident,
   updateUserDues,
 } from "@services/userService";
-import DeleteConfirmationDialog from "@components/organisms/DeleteConfirmationDialog";
-import AccomplishmentsDialog from "./AccomplishmentsDialog";
-import { Alert, Typography, IconButton, Box, Button } from "@mui/material";
+
+import {
+  Alert,
+  Typography,
+  IconButton,
+  Box,
+  Button,
+  useMediaQuery,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import { getUserRole } from "@services/authService";
-import { UserRoles } from "@utils/arrays/roles";
-import ProgressLoading from "@components/organisms/ProgressLoading";
-import UpdateRoleDialog from "./UpdateRoleDialog";
-import UserMenu from "./UserMenu";
-import { capitalizeAndReplace } from "@utils/functions";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { Switch } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
+import CopySnackbar from "@components/organisms/CopySnackbar";
+import { getUserRole } from "@services/authService";
+import ProgressLoading from "@components/organisms/ProgressLoading";
+import DeleteConfirmationDialog from "@components/organisms/DeleteConfirmationDialog";
+import AccomplishmentsDialog from "./AccomplishmentsDialog";
+import UpdateRoleDialog from "./UpdateRoleDialog";
+import UserMenu from "./UserMenu";
+import { UserRoles } from "@utils/arrays/roles";
+import { capitalizeAndReplace } from "@utils/functions";
 
 /**
  * UserListTemplate component
@@ -53,6 +61,8 @@ const UserListTemplate = () => {
   const [openAccomplishmentsDialog, setOpenAccomplishmentsDialog] =
     useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [copyStatus, setCopyStatus] = useState(false);
 
   const handleOpenAccomplishmentsDialog = (member) => {
     setSelectedMember(member);
@@ -71,8 +81,8 @@ const UserListTemplate = () => {
       });
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uin === selectedMember.uin ? { ...user, accomplishments } : user,
-        ),
+          user.uin === selectedMember.uin ? { ...user, accomplishments } : user
+        )
       );
     } catch (error) {
       console.error("Error updating accomplishments:", error);
@@ -83,7 +93,7 @@ const UserListTemplate = () => {
 
   const handleUpdateDeleteUser = () => {
     setUsers((prevUsers) =>
-      prevUsers.filter((user) => user.uin !== selectedUser.uin),
+      prevUsers.filter((user) => user.uin !== selectedUser.uin)
     );
     window.location.reload();
   };
@@ -98,10 +108,8 @@ const UserListTemplate = () => {
       await updateUserPresident(selectedUser.uin, { role: selectedRole });
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uin === selectedUser.uin
-            ? { ...user, role: selectedRole }
-            : user,
-        ),
+          user.uin === selectedUser.uin ? { ...user, role: selectedRole } : user
+        )
       );
       handleCloseRoleDialog();
     } catch (err) {
@@ -115,8 +123,8 @@ const UserListTemplate = () => {
       try {
         await Promise.all(
           updatedUsersDues.map((user) =>
-            updateUserDues(user.uin, user.paid_dues),
-          ),
+            updateUserDues(user.uin, user.paid_dues)
+          )
         );
         setUpdatedUsersDues([]); // Clear the updates after successful submission
         setUpdateDues(false);
@@ -264,13 +272,13 @@ const UserListTemplate = () => {
                 // Update the updated users array
                 setUpdatedUsersDues((prevUsers) => {
                   const existingUserIndex = prevUsers.findIndex(
-                    (user) => user.uin === params.row.uin,
+                    (user) => user.uin === params.row.uin
                   );
 
                   if (existingUserIndex > -1) {
                     // if the user exists, then remove them because set to their original status
                     return prevUsers.filter(
-                      (user) => user.uin !== params.row.uin,
+                      (user) => user.uin !== params.row.uin
                     );
                   } else {
                     // If the user is not in the array add them
@@ -286,8 +294,8 @@ const UserListTemplate = () => {
                   prevUsers.map((user) =>
                     user.uin === params.row.uin
                       ? { ...user, paid_dues: newValue }
-                      : user,
-                  ),
+                      : user
+                  )
                 );
               }}
               inputProps={{ "aria-label": "controlled" }}
@@ -331,6 +339,8 @@ const UserListTemplate = () => {
           handleCloseMenu={handleCloseMenu}
           anchorEl={anchorEl}
           selectedUser={selectedUser}
+          setSnackbarOpen={setSnackbarOpen}
+          setCopyStatus={setCopyStatus}
         />
       ),
     },
@@ -389,8 +399,8 @@ const UserListTemplate = () => {
       await updateUserPresident(uin, { accepted: true });
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uin === uin ? { ...user, accepted: true } : user,
-        ),
+          user.uin === uin ? { ...user, accepted: true } : user
+        )
       );
     } catch (err) {
       setError(err);
@@ -402,8 +412,8 @@ const UserListTemplate = () => {
       await updateUserPresident(uin, { archived: status });
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uin === uin ? { ...user, archived: status } : user,
-        ),
+          user.uin === uin ? { ...user, archived: status } : user
+        )
       );
       window.location.reload();
     } catch (err) {
@@ -426,6 +436,7 @@ const UserListTemplate = () => {
     return <Alert severity="error">{error.message}</Alert>;
   }
 
+  console.log(users)
   return (
     <div>
       <Box
@@ -629,6 +640,12 @@ const UserListTemplate = () => {
         setSelectedRole={setSelectedRole}
         UserRoles={UserRoles}
         handleRoleChange={handleRoleChange}
+      />
+
+      <CopySnackbar
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+        copyStatus={copyStatus}
       />
     </div>
   );
