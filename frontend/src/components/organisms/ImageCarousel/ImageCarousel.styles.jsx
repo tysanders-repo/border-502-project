@@ -1,5 +1,3 @@
-import { styled } from '@mui/material/styles' 
+import { styled } from "@mui/material/styles";
 
-export const StyledImageCarousel = styled('div')(({theme}) => ({
-
-}))
+export const StyledImageCarousel = styled("div")(({ theme }) => ({}));

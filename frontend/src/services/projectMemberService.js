@@ -29,12 +29,15 @@ async function createProjectMember(projectMemberData) {
  */
 async function getProjectMembers(project_id) {
   try {
-    const response = await fetch(`${API_URL}/project_members/project/${project_id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `${API_URL}/project_members/project/${project_id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
 
     if (!response.ok) {
       throw new Error("Failed to fetch project members");
@@ -55,24 +58,24 @@ async function getProjectMembers(project_id) {
  * @returns {Promise<Object|null>} A promise that resolves to the member's projects or null if an error occurs.
  */
 async function getMemberProjects(uin) {
-    try {
-      const response = await fetch(`${API_URL}/project_members/member/${uin}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-  
-      if (!response.ok) {
-        throw new Error("Failed to fetch member projects");
-      }
-  
-      const memberProjectsData = await response.json();
-      return memberProjectsData;
-    } catch (error) {
-      console.error("Error fetching member projects:", error);
-      return null;
+  try {
+    const response = await fetch(`${API_URL}/project_members/member/${uin}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch member projects");
     }
+
+    const memberProjectsData = await response.json();
+    return memberProjectsData;
+  } catch (error) {
+    console.error("Error fetching member projects:", error);
+    return null;
+  }
 }
 
 /**
@@ -83,28 +86,31 @@ async function getMemberProjects(uin) {
  * @throws {Error} Throws an error if the request fails.
  */
 const deleteProjectMember = async (projectMemberId) => {
-    try {
-      const response = await fetch(`${API_URL}/project_members/${projectMemberId}`, {
-        method: 'DELETE',
+  try {
+    const response = await fetch(
+      `${API_URL}/project_members/${projectMemberId}`,
+      {
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-      });
-  
-      if (response.ok) {
-        console.log("Project member deleted successfully.");
-      } else {
-        const errorData = await response.json();
-        console.error("Error deleting project member:", errorData);
-      }
-    } catch (error) {
-      console.error("Network error:", error);
+      },
+    );
+
+    if (response.ok) {
+      console.log("Project member deleted successfully.");
+    } else {
+      const errorData = await response.json();
+      console.error("Error deleting project member:", errorData);
     }
-};  
+  } catch (error) {
+    console.error("Network error:", error);
+  }
+};
 
 export {
-    createProjectMember,
-    getMemberProjects,
-    getProjectMembers,
-    deleteProjectMember,
+  createProjectMember,
+  getMemberProjects,
+  getProjectMembers,
+  deleteProjectMember,
 };

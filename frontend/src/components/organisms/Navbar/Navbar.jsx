@@ -61,10 +61,10 @@ export default function Navbar() {
     // Conditionally render "View Members" if role is not "member" and role exists
     userRole &&
       (userRole === "president" ||
-      userRole === "vice president" ||
-      userRole === "internal relations" ||
-      userRole === "project lead" ||
-      userRole === "admin") && {
+        userRole === "vice president" ||
+        userRole === "internal relations" ||
+        userRole === "project lead" ||
+        userRole === "admin") && {
         text: "View Members",
         link: "/Member",
       },
@@ -140,7 +140,6 @@ export default function Navbar() {
     <AppBar
       position="static"
       style={{
-        // marginBottom: "30px",
         padding: "10px",
         borderBottom: "1px solid rgba(255,255,255, 0.5)",
       }}
@@ -155,8 +154,9 @@ export default function Navbar() {
           }}
         >
           <Link href="/" passHref>
-            {/* <Image src="/logo.png" alt="Logo" height={70} /> */}
-            <img src="/logo.png" alt="Logo" style={{ height: "70px" }} />
+            <Box sx={{ paddingTop: "5px" }}>
+              <img src="/logo.png" alt="Logo" style={{ height: "70px" }} />
+            </Box>
           </Link>
           {isMobile ? (
             <>

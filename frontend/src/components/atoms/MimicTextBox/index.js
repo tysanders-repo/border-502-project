@@ -1,1 +1,1 @@
-export { default } from './MimicTextBox'
+export { default } from "./MimicTextBox";

@@ -71,8 +71,8 @@ const UserListTemplate = () => {
       });
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uin === selectedMember.uin ? { ...user, accomplishments } : user
-        )
+          user.uin === selectedMember.uin ? { ...user, accomplishments } : user,
+        ),
       );
     } catch (error) {
       console.error("Error updating accomplishments:", error);
@@ -83,7 +83,7 @@ const UserListTemplate = () => {
 
   const handleUpdateDeleteUser = () => {
     setUsers((prevUsers) =>
-      prevUsers.filter((user) => user.uin !== selectedUser.uin)
+      prevUsers.filter((user) => user.uin !== selectedUser.uin),
     );
     window.location.reload();
   };
@@ -98,8 +98,10 @@ const UserListTemplate = () => {
       await updateUserPresident(selectedUser.uin, { role: selectedRole });
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uin === selectedUser.uin ? { ...user, role: selectedRole } : user
-        )
+          user.uin === selectedUser.uin
+            ? { ...user, role: selectedRole }
+            : user,
+        ),
       );
       handleCloseRoleDialog();
     } catch (err) {
@@ -113,8 +115,8 @@ const UserListTemplate = () => {
       try {
         await Promise.all(
           updatedUsersDues.map((user) =>
-            updateUserDues(user.uin, user.paid_dues)
-          )
+            updateUserDues(user.uin, user.paid_dues),
+          ),
         );
         setUpdatedUsersDues([]); // Clear the updates after successful submission
         setUpdateDues(false);
@@ -262,13 +264,13 @@ const UserListTemplate = () => {
                 // Update the updated users array
                 setUpdatedUsersDues((prevUsers) => {
                   const existingUserIndex = prevUsers.findIndex(
-                    (user) => user.uin === params.row.uin
+                    (user) => user.uin === params.row.uin,
                   );
 
                   if (existingUserIndex > -1) {
                     // if the user exists, then remove them because set to their original status
                     return prevUsers.filter(
-                      (user) => user.uin !== params.row.uin
+                      (user) => user.uin !== params.row.uin,
                     );
                   } else {
                     // If the user is not in the array add them
@@ -284,8 +286,8 @@ const UserListTemplate = () => {
                   prevUsers.map((user) =>
                     user.uin === params.row.uin
                       ? { ...user, paid_dues: newValue }
-                      : user
-                  )
+                      : user,
+                  ),
                 );
               }}
               inputProps={{ "aria-label": "controlled" }}
@@ -387,8 +389,8 @@ const UserListTemplate = () => {
       await updateUserPresident(uin, { accepted: true });
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uin === uin ? { ...user, accepted: true } : user
-        )
+          user.uin === uin ? { ...user, accepted: true } : user,
+        ),
       );
     } catch (err) {
       setError(err);
@@ -400,8 +402,8 @@ const UserListTemplate = () => {
       await updateUserPresident(uin, { archived: status });
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uin === uin ? { ...user, archived: status } : user
-        )
+          user.uin === uin ? { ...user, archived: status } : user,
+        ),
       );
       window.location.reload();
     } catch (err) {

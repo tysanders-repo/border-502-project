@@ -78,7 +78,7 @@ function UserEditTemplate({
     useState([]);
   const [personalInterests, setPersonalInterests] = useState([]);
   const [selectedPersonalInterests, setSelectedPersonalInterests] = useState(
-    []
+    [],
   );
   const [companyInterests, setCompanyInterests] = useState([]);
   const [selectedCompanyInterests, setSelectedCompanyInterests] = useState([]);
@@ -222,7 +222,7 @@ function UserEditTemplate({
               const existingRestriction = dietaryRestrictions.find(
                 (restrictions) =>
                   restrictions.item_name.toLowerCase() ===
-                  restriction.toLowerCase()
+                  restriction.toLowerCase(),
               );
               if (!existingRestriction) {
                 restrictionObject = await createDietaryRestriction({
@@ -238,7 +238,7 @@ function UserEditTemplate({
             // Only create member diet if it doesn't already exist
             const exist_response = await checkMemberDietExists(
               response.uin,
-              restrictionObject.id
+              restrictionObject.id,
             );
             if (!exist_response) {
               await createMemberDiet({
@@ -258,7 +258,8 @@ function UserEditTemplate({
             if (typeof personalInterest === "string") {
               const existingPersonalInterest = personalInterests.find(
                 (persElem) =>
-                  persElem.name.toLowerCase() === personalInterest.toLowerCase()
+                  persElem.name.toLowerCase() ===
+                  personalInterest.toLowerCase(),
               );
               if (!existingPersonalInterest) {
                 persInterestObj = await createInterest({
@@ -294,7 +295,7 @@ function UserEditTemplate({
             if (typeof careerInterest === "string") {
               const existingCareerInterest = careerInterests.find(
                 (carElem) =>
-                  carElem.name.toLowerCase() === careerInterest.toLowerCase()
+                  carElem.name.toLowerCase() === careerInterest.toLowerCase(),
               );
               if (!existingCareerInterest) {
                 carInterestObj = await createInterest({
@@ -330,7 +331,7 @@ function UserEditTemplate({
             if (typeof companyInterest === "string") {
               const existingCompanyInterest = companyInterests.find(
                 (compElem) =>
-                  compElem.name.toLowerCase() === companyInterest.toLowerCase()
+                  compElem.name.toLowerCase() === companyInterest.toLowerCase(),
               );
               if (!existingCompanyInterest) {
                 compInterestObj = await createInterest({

@@ -47,7 +47,11 @@ const UpdateRoleDialog = ({
         />
       </DialogContent>
       <DialogActions>
-        <Button variant="outlined" color="secondary" onClick={handleCloseRoleDialog}>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={handleCloseRoleDialog}
+        >
           Cancel
         </Button>
         <Button variant="contained" color="primary" onClick={handleRoleChange}>
