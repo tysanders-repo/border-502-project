@@ -4,6 +4,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import { useRouter } from "next/navigation";
+import { handleCopyClick } from "@utils/functions";
 
 /**
  * UserActions component
@@ -36,6 +37,8 @@ const UserMenu = ({
   handleCloseMenu,
   anchorEl,
   selectedUser,
+  setSnackbarOpen,
+  setCopyStatus,
 }) => {
   const router = useRouter();
 
@@ -69,7 +72,7 @@ const UserMenu = ({
         }}
       >
         <MenuItem onClick={() => router.push(`/Member/${selectedUser?.uin}`)}>
-          View
+          View Profile
         </MenuItem>
 
         {filter === "archived" &&
@@ -95,6 +98,17 @@ const UserMenu = ({
                   onClick={() => handleOpenAccomplishmentsDialog(selectedUser)}
                 >
                   Accomplishments
+                </MenuItem>
+                <MenuItem
+                  onClick={() =>
+                    handleCopyClick(
+                      selectedUser?.email,
+                      setCopyStatus,
+                      setSnackbarOpen
+                    )
+                  }
+                >
+                  Copy Email
                 </MenuItem>
               </div>
             ) : null}
