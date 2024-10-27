@@ -110,10 +110,31 @@ function ProjectDetailsTemplate({ params }) {
           </IconButton>
 
           {/* Project details container */}
-          <Box sx={{ width: "100%" }}>
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
+            }}
+          >
             {/* Project title */}
-            <Typography variant="h1" gutterBottom aria-label="title">
-              {project.title}
+            <Typography variant="h3" aria-label="title">
+              {project.title} Details
+            </Typography>
+
+            {/* Project start date */}
+            <Typography variant="h5" aria-label="start">
+              Start Date: {format(new Date(project.date), "MMMM d, yyyy")}
+            </Typography>
+
+            {/* Project description */}
+            <Typography variant="h6" aria-label="description">
+              Description: {project.description}
+            </Typography>
+
+            <Typography variant="h5" aria-label="description">
+              Images:
             </Typography>
 
             {/* Image gallery */}
@@ -136,16 +157,6 @@ function ProjectDetailsTemplate({ params }) {
                 </ImageListItem>
               ))}
             </ImageList>
-
-            {/* Project start date */}
-            <Typography variant="h6" aria-label="start">
-              Start Date: {format(new Date(project.date), "MMMM d, yyyy")}
-            </Typography>
-
-            {/* Project description */}
-            <Typography variant="h6" aria-label="description">
-              Description: {project.description}
-            </Typography>
 
             {/* Action buttons for editing and deleting the project */}
             <Box

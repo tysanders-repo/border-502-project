@@ -14,8 +14,6 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid2";
 import { useRouter } from "next/navigation";
-import ImageList from "@mui/material/ImageList";
-import ImageListItem from "@mui/material/ImageListItem";
 import { fetchAllProjects } from "@services/projectService";
 import { format } from "date-fns";
 import { useTheme, useMediaQuery } from "@mui/material";
@@ -69,7 +67,8 @@ const HomepageTemplate = () => {
     return <Alert severity="error">{error.message}</Alert>;
   }
 
-  console.log(projects);
+  console.log(projects)
+
   return (
     <Box>
       <Box
@@ -81,7 +80,7 @@ const HomepageTemplate = () => {
           backgroundRepeat: "no-repeat",
           color: "white",
           padding: "100px",
-          height: "40vh",
+          height: "50vh",
           display: "flex",
           alignItems: "center",
           justifyContent: "flex-start",
@@ -271,7 +270,7 @@ const HomepageTemplate = () => {
             color: "white",
             textAlign: "center",
             zIndex: 2,
-            width: "60%",
+            width: "70%",
           }}
         >
           <Typography variant="h1">Our Projects</Typography>
@@ -293,8 +292,6 @@ const HomepageTemplate = () => {
         sx={{
           display: "flex",
           flexDirection: "column",
-          // marginTop: "30px",
-          // gap: "10px",
         }}
       >
         {projects &&
@@ -308,10 +305,20 @@ const HomepageTemplate = () => {
               }}
             >
               <Box sx={{ width: "50%" }}>
-                {project.image_urls?.length > 0 && (
+                {project.image_urls?.length > 0 ? (
                   <img
                     src={project.image_urls[0]?.url}
                     alt={project.title} // Add alt text for accessibility
+                    style={{
+                      width: "100%",
+                      height: "300px",
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : (
+                  <img
+                    src={"./placeholder.png"}
+                    alt="Placeholder project image"
                     style={{
                       width: "100%",
                       height: "300px",
@@ -329,7 +336,7 @@ const HomepageTemplate = () => {
                   width: "50%",
                 }}
               >
-                <Box sx={{ padding: "20px" }}>
+                <Box sx={{ padding: "30px" }}>
                   <Typography
                     variant="h4"
                     sx={{ color: theme.palette.primary.main }}
@@ -347,7 +354,9 @@ const HomepageTemplate = () => {
                       variant="body1"
                       sx={{ color: theme.palette.text.main }}
                     >
-                      {project.description}
+                      {project.description?.length > 250
+                        ? `${project.description.slice(0, 250)}...`
+                        : project.description}
                     </Typography>
                   )}
                 </Box>

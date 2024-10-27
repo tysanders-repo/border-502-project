@@ -171,7 +171,7 @@ function ProjectListTemplate() {
           display: "flex",
           flexDirection: "column",
           width: "80%",
-          margin: "0 auto",
+          margin: "50px auto",
           gap: "10px",
         }}
       >
@@ -182,21 +182,21 @@ function ProjectListTemplate() {
             marginBottom: "15px",
           }}
         >
-          <Typography variant="h4">Projects</Typography>
+          <Typography variant="h3">Projects</Typography>
           <Box sx={{ display: "flex", gap: "10px" }}>
-            <Button
-              variant="outlined"
-              onClick={() => router.push("/Member")}
-              startIcon={<ManageAccountsIcon />}
-            >
-              {isMobile ? "Members" : "Manage Members"}
-            </Button>
             <Button
               variant="outlined"
               startIcon={<AddCircleOutlineIcon />}
               onClick={() => router.push("Project/New")}
             >
               {isMobile ? "Project" : "Add Project"}
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => router.push("/Member")}
+              startIcon={<ManageAccountsIcon />}
+            >
+              {isMobile ? "Members" : "Manage Members"}
             </Button>
           </Box>
         </Box>
