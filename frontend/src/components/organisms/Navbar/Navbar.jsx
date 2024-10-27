@@ -132,16 +132,17 @@ export default function Navbar() {
 
     setup();
   }, []);
-  console.log(process.env.NEXTAUTH_URL);
-  console.log(process.env.REACT_APP_API_URL);
-  console.log(process.env.NEXT_PUBLIC_AUTHJS_LOCAL_SESSION_COOKIE);
-  console.log("Next line");
+  // console.log(process.env.NEXTAUTH_URL);
+  // console.log(process.env.REACT_APP_API_URL);
+  // console.log(process.env.NEXT_PUBLIC_AUTHJS_LOCAL_SESSION_COOKIE);
+  // console.log("Next line");
   return (
     <AppBar
       position="static"
       style={{
-        marginBottom: "30px",
+        // marginBottom: "30px",
         padding: "10px",
+        borderBottom: "1px solid rgba(255,255,255, 0.5)",
       }}
     >
       <Toolbar>

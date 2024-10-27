@@ -7,7 +7,7 @@ const AccomplishmentBar = ({ user }) => {
     <Box
       style={{
         background: "#f7f7f7",
-        // minHeight: "75vh",
+
         padding: "30px",
         minWidth: "200px",
         display: "flex",
@@ -42,7 +42,7 @@ const AccomplishmentBar = ({ user }) => {
       <Box>
         {Object.keys(user.accomplishments).length > 0 && (
           <Box>
-            <Typography variant="h6" sx={{ fontweight: "bold" }} gutterBottom>
+            <Typography variant="h6" sx={{ fontWeight: "bold" }} gutterBottom>
               Accomplishments:
             </Typography>
             {Object.entries(user.accomplishments).map(([key, value]) => (

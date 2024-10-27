@@ -214,10 +214,6 @@ function UserEditTemplate({
         // Update user data
         const response = await updateUser(id, updatedUser);
 
-        // Delete existing dietary restrictions
-        const delRestrictions = await deleteMemberDietsByUin(response.uin);
-        const delInterests = await deleteMemberInterestsByUin(response.uin);
-
         try {
           // Add new dietary restrictions
           for (const restriction of selectedDietaryRestrictions) {
@@ -400,9 +396,9 @@ function UserEditTemplate({
 
   return (
     <Box sx={{ maxWidth: "md", margin: isEdit ? "0px" : "0 auto" }}>
-      <Typography variant="h5" sx={{ marginBottom: "20px" }} gutterBottom>
+      {/* <Typography variant="h5" sx={{ marginBottom: "20px" }} gutterBottom>
         Edit User
-      </Typography>
+      </Typography> */}
       <UserForm
         user={user}
         loading={loading}

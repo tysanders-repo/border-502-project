@@ -128,7 +128,8 @@ function ProfileTemplate({ params }) {
       sx={{
         width: "90%",
         display: "flex",
-        margin: "0px auto",
+        margin: "50px auto",
+        overflow: "scroll",
       }}
     >
       <Box sx={{ flexGrow: 1 }}>

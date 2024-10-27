@@ -50,7 +50,8 @@ const UserListTemplate = () => {
   const [selectedRole, setSelectedRole] = useState(null);
   const [updateDues, setUpdateDues] = useState(false);
   const [updatedUsersDues, setUpdatedUsersDues] = useState([]);
-  const [openAccomplishmentsDialog, setOpenAccomplishmentsDialog] = useState(false);
+  const [openAccomplishmentsDialog, setOpenAccomplishmentsDialog] =
+    useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
 
   const handleOpenAccomplishmentsDialog = (member) => {
@@ -65,13 +66,13 @@ const UserListTemplate = () => {
 
   const handleAccomplishmentsSubmit = async (accomplishments) => {
     try {
-      await updateUserPresident(selectedMember.uin, { accomplishments: accomplishments });
+      await updateUserPresident(selectedMember.uin, {
+        accomplishments: accomplishments,
+      });
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uin === selectedMember.uin
-            ? { ...user, accomplishments }
-            : user,
-        ),
+          user.uin === selectedMember.uin ? { ...user, accomplishments } : user
+        )
       );
     } catch (error) {
       console.error("Error updating accomplishments:", error);
@@ -189,6 +190,9 @@ const UserListTemplate = () => {
 
   // Adjusting display params when changing views
   useEffect(() => {
+    if (isMobile) {
+      return;
+    }
     if (filter === "archived") {
       setColumnVisibilityModel({
         uin: false,
@@ -427,7 +431,7 @@ const UserListTemplate = () => {
           display: "flex",
           flexDirection: "column",
           width: "80%",
-          margin: "0 auto",
+          margin: "50px auto",
           gap: "10px",
         }}
       >
@@ -439,7 +443,7 @@ const UserListTemplate = () => {
           }}
         >
           <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-            <Typography variant="h4">EWB Members</Typography>
+            <Typography variant="h3">Members</Typography>
             {userRole && (
               <Typography variant="caption" gutterBottom>
                 Current User: {capitalizeAndReplace(userRole)}
