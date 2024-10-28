@@ -116,7 +116,7 @@ const UserForm = ({
               variant="caption"
               sx={{ marginLeft: "10px", color: "grey" }}
             >
-              {edit ? "Cannot be changed" : "Cannot be changed after submitted"}
+              {edit ? "Cannot be changed" : "Gmail only for sign-in. Cannot be changed after submitted."}
             </Typography>
           </CaptionBox>
         </SideBySideBox>
