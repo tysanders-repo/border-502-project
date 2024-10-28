@@ -85,10 +85,10 @@ export const validateUserForm = (user, setFormError) => {
   }
 
   // Validate aggie ring day (optional, but if provided, should be a valid date)
-  if (user.aggie_ring_day && isNaN(Date.parse(user.aggie_ring_day))) {
-    errors.aggie_ring_day = true;
-    isValid = false;
-  }
+  // if (user.aggie_ring_day && isNaN(Date.parse(user.aggie_ring_day))) {
+  //   errors.aggie_ring_day = true;
+  //   isValid = false;
+  // }
 
   // Validate birthday (required and must be a valid date)
   if (!user.birthday || isNaN(Date.parse(user.birthday))) {
@@ -97,10 +97,10 @@ export const validateUserForm = (user, setFormError) => {
   }
 
   // Validate graduation day (required and must be a valid date)
-  if (!user.graduation_day || isNaN(Date.parse(user.graduation_day))) {
-    errors.graduation_day = true;
-    isValid = false;
-  }
+  // if (!user.graduation_day && isNaN(Date.parse(user.graduation_day))) {
+  //   errors.graduation_day = true;
+  //   isValid = false;
+  // }
 
   // Update the form error state
   setFormError(errors);
