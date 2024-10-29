@@ -9,7 +9,7 @@ export const StyledFooter = styled("footer")(({ theme }) => ({
   color: theme.palette.common.white,
   display: "flex",
   flexDirection: "row",
-  justifyContent: "space-between",
+  justifyContent: "space-evenly",
 }));
 
 export const VeritcalBox = styled(Box)(() => ({
