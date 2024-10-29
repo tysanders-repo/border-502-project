@@ -34,10 +34,10 @@ export const DescriptionBox = styled("div")(({ theme, project }) => ({
   display: "flex",
   padding: "20px",
   flexDirection: "column",
-  // alignItems: "center",
-
+  padding: "0px 40px",
   [theme.breakpoints.up("md")]: {
     flexDirection: "row",
+    padding: "0px",
     justifyContent: "space-evenly",
     alignItems: "flex-start",
   },

@@ -146,7 +146,7 @@ function ProjectViewTemplate({ params }) {
 
       <DescriptionBox>
         <Box>
-          <Typography variant="h4" sx={{ textAlign: "center" }}>
+          <Typography gutterBottom variant="h4" sx={{ textAlign: "center" }}>
             Members
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -173,7 +173,7 @@ function ProjectViewTemplate({ params }) {
           sx={{ mx: 2, bgcolor: theme.palette.primary.main }}
         />
         <Box>
-          <Typography variant="h4" sx={{ textAlign: "center" }}>
+          <Typography variant="h4" gutterBottom sx={{ textAlign: "center" }}>
             Important Updates
           </Typography>
         </Box>
