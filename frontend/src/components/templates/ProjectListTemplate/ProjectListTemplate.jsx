@@ -93,7 +93,7 @@ function ProjectListTemplate() {
             <MenuItem
               onClick={() =>
                 handleCopyClick(
-                  selectedProject?.title,
+                  selectedProject.members.map((member) => member.email).join(", "),
                   setCopyStatus,
                   setSnackbarOpen
                 )

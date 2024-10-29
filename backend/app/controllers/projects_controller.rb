@@ -5,14 +5,29 @@ class ProjectsController < ApplicationController
 
   # GET /projects
   def index
-    @projects = Project.all
+    @projects = Project.includes(:members).all
 
-    render json: @projects.as_json(methods: :image_urls) # Include image URLs in the index action
+    render json: @projects.as_json(
+      methods: :image_urls, # Include project image URLs
+      include: {
+        members: {
+          only: [:uin, :first_name, :last_name, :email], 
+        }
+      }
+    )
   end
-
   # GET /projects/1
   def show
-    render json: @project.as_json(methods: :image_urls)
+    @project = Project.includes(:members).find(params[:id])
+  
+    render json: @project.as_json(
+      methods: :image_urls,
+      include: {
+        members: {
+          only: [:uin, :first_name, :last_name, :email]
+        }
+      }
+    )
   end
 
   # POST /projects
