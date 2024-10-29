@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // Next.js router for navigation.
 import { fetchProject } from "@services/projectService"; // Service function to fetch a project by ID.
+import { getProjectMembers } from "@services/projectMemberService";
 import { format } from "date-fns";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
@@ -33,6 +34,7 @@ function ProjectViewTemplate({ params }) {
 
   const router = useRouter(); // Next.js router for handling navigation.
   const { id } = params; // Destructure `id` from the route parameters.
+  const [members, setMembers] = useState([]);
 
   /**
    * useEffect Hook
@@ -45,6 +47,13 @@ function ProjectViewTemplate({ params }) {
       try {
         const json = await fetchProject(id); // Fetch project data using the provided ID.
         setProject(json); // Update project state with fetched data.
+        try{
+          const members = await getProjectMembers(id);
+          setMembers(members);
+        } catch (error) {
+          setError(error);
+          setLoading(false);
+        }
         setLoading(false); // Set loading state to false.
       } catch (error) {
         setError(error); // Set error state if the request fails.
@@ -118,6 +127,11 @@ function ProjectViewTemplate({ params }) {
             {/* Project description */}
             <Typography variant="h6" role="description">
               Description: {project.description}
+            </Typography>
+
+            {/* Project members */}
+            <Typography variant="h6" role="members">
+              Members: {members.map((member) => member.first_name+" "+member.last_name).join(", ")}
             </Typography>
           </Box>
         </Box>

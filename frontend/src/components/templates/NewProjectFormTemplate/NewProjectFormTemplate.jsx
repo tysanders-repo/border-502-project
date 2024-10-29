@@ -35,7 +35,7 @@ function NewProjectFormTemplate() {
     images: [],
     image_urls: [],
   });
-  const [loading, setLoading] = useState(false); // Tracks the loading state during form submission.
+  const [loading, setLoading] = useState(true); // Tracks the loading state during form submission.
   const [error, setError] = useState(null); // Stores error messages, if any.
   const [formError, setFormError] = useState({
     title: false,
@@ -53,6 +53,7 @@ function NewProjectFormTemplate() {
       } catch(error) {
         console.error("Error fetching members: ", error);
       }
+      setLoading(false);
     }
 
     fetchMembers();
@@ -185,8 +186,6 @@ function NewProjectFormTemplate() {
       <ProjectForm
         project={project}
         setProject={setProject}
-        projectMembers={projectMembers}
-        setProjectMembers={setProjectMembers}
         removedImages={null}
         setRemovedImages={null}
         loading={loading}

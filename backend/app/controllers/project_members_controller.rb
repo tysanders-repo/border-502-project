@@ -28,6 +28,13 @@ class ProjectMembersController < ApplicationController
     render json: @members
   end
 
+  def project_members_by_project
+    project_id = params[:project_id]
+    @project_members = ProjectMember.where(project_members: { project_id: project_id })
+
+    render json: @project_members
+  end
+
   # POST /project_members
   def create
     @project_member = ProjectMember.new(project_member_params)
