@@ -13,6 +13,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
 import UploadIcon from "@mui/icons-material/Upload";
 import ProgressLoading from "../ProgressLoading";
+import Autocomplete from "@mui/material/Autocomplete";
 
 /**
  * ProjectForm Component
@@ -47,6 +48,9 @@ const ProjectForm = ({
   onSubmit,
   handleCancel,
   handleImageChange,
+  selectedMembers,
+  members,
+  handleMembersRestrictionChange,
 }) => {
   // Local state to hold preview images for display before uploading
   const projectCurrent = project.image_urls; // Contains existing image URLs fetched from the database
@@ -155,6 +159,23 @@ const ProjectForm = ({
           fullWidth
           multiline
           rows={5}
+        />
+
+        {/* Member Names (Multi-Select AutoComplete) */}
+        <Autocomplete
+          freeSolo
+          multiple
+          value={selectedMembers}
+          options={members}
+          getOptionLabel={(option) => option.first_name + " " + option.last_name}
+          onChange={handleMembersRestrictionChange}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Members"
+              variant="outlined"
+            />
+          )}
         />
 
         {/* Image preview list */}
