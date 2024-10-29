@@ -2,10 +2,18 @@
 
 import React from "react";
 import { format } from "date-fns";
-import { Typography, Box, Divider } from "@mui/material";
+import {
+  Typography,
+  Box,
+  Divider,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
 import { BoldHeader, DisplayBox, SideBySideBox } from "./UserInfo.styles";
 
 const UserInfo = ({ user }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Check if the screen is mobile-sized
   return (
     <div>
       {user.uin && (
@@ -157,6 +165,20 @@ const UserInfo = ({ user }) => {
               <Typography variant="subtitle1">None</Typography>
             )}
           </DisplayBox>
+
+          {isMobile && (
+            <Box>
+              <Divider sx={{ margin: "15px 0px" }} />
+              <BoldHeader variant="h5" sx={{ margin: "10px 0px" }}>
+                Accomplishments
+              </BoldHeader>
+              {Object.entries(user.accomplishments).map(([key, value]) => (
+                <Typography key={key} variant="body1" gutterBottom>
+                  {key.charAt(0).toUpperCase() + key.slice(1)}: {value}
+                </Typography>
+              ))}
+            </Box>
+          )}
         </Box>
       )}
     </div>

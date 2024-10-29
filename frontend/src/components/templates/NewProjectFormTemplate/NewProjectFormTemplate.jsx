@@ -176,9 +176,9 @@ function NewProjectFormTemplate() {
   }
 
   return (
-    <Container maxWidth="md" sx={{ textAlign: "center" }}>
+    <Container maxWidth="md" sx={{ textAlign: "center", margin: "50px auto" }}>
       {/* Page heading */}
-      <Typography variant="h4" component="h1" mb="40px">
+      <Typography variant="h3" mb="40px">
         Create A New Project
       </Typography>
 

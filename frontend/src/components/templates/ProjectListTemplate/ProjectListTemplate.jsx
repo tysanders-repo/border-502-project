@@ -22,6 +22,8 @@ import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ProgressLoading from "@components/organisms/ProgressLoading";
+import CopySnackbar from "@components/organisms/CopySnackbar";
+import { handleCopyClick } from "@utils/functions";
 
 /**
  * ProjectListTemplate component
@@ -37,7 +39,8 @@ function ProjectListTemplate() {
   const [openDialog, setOpenDialog] = useState(false); // State to manage the open/close state of the delete confirmation dialog.
   const theme = useTheme(); // Hook to access the theme for responsive design.
   const isMobile = useMediaQuery(theme.breakpoints.down("md")); // Determine if the view is mobile based on the screen size.
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [copyStatus, setCopyStatus] = useState(false);
   const router = useRouter(); // Next.js router for navigation.
 
   const columns = [
@@ -67,7 +70,7 @@ function ProjectListTemplate() {
             slotProps={{
               paper: {
                 sx: {
-                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.5)",
+                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
                 },
               },
             }}
@@ -87,6 +90,17 @@ function ProjectListTemplate() {
               Edit
             </MenuItem>
             <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
+            <MenuItem
+              onClick={() =>
+                handleCopyClick(
+                  selectedProject?.title,
+                  setCopyStatus,
+                  setSnackbarOpen
+                )
+              }
+            >
+              Copy Emails
+            </MenuItem>
           </Menu>
         </div>
       ),
@@ -171,7 +185,7 @@ function ProjectListTemplate() {
           display: "flex",
           flexDirection: "column",
           width: "80%",
-          margin: "0 auto",
+          margin: "50px auto",
           gap: "10px",
         }}
       >
@@ -182,21 +196,21 @@ function ProjectListTemplate() {
             marginBottom: "15px",
           }}
         >
-          <Typography variant="h4">Projects</Typography>
+          <Typography variant="h3">Projects</Typography>
           <Box sx={{ display: "flex", gap: "10px" }}>
-            <Button
-              variant="outlined"
-              onClick={() => router.push("/Member")}
-              startIcon={<ManageAccountsIcon />}
-            >
-              {isMobile ? "Members" : "Manage Members"}
-            </Button>
             <Button
               variant="outlined"
               startIcon={<AddCircleOutlineIcon />}
               onClick={() => router.push("Project/New")}
             >
               {isMobile ? "Project" : "Add Project"}
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => router.push("/Member")}
+              startIcon={<ManageAccountsIcon />}
+            >
+              {isMobile ? "Members" : "Manage Members"}
             </Button>
           </Box>
         </Box>
@@ -217,6 +231,12 @@ function ProjectListTemplate() {
         id={selectedProject?.id}
         setError={setError}
         onDelete={loadProjects} // Callback function to reload projects after deletion.
+      />
+
+      <CopySnackbar
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+        copyStatus={copyStatus}
       />
     </>
   );

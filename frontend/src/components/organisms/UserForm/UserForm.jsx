@@ -55,8 +55,6 @@ const UserForm = ({
   selectedCompanyInterests,
   edit = false,
 }) => {
-  console.log(user.dietary_restrictions);
-
   return (
     <form onSubmit={onSubmit} role="form">
       <Box
@@ -110,7 +108,7 @@ const UserForm = ({
               helperText={formError.email ? "Valid Email is required" : ""}
               slotProps={{
                 input: {
-                  readOnly: { edit },
+                  readOnly: edit,
                 },
               }}
             />
@@ -118,7 +116,7 @@ const UserForm = ({
               variant="caption"
               sx={{ marginLeft: "10px", color: "grey" }}
             >
-              {edit ? "Cannot be changed" : "Cannot be changed after submitted"}
+              {edit ? "Cannot be changed" : "Gmail only for sign-in. Cannot be changed after submitted."}
             </Typography>
           </CaptionBox>
         </SideBySideBox>
@@ -156,7 +154,7 @@ const UserForm = ({
               helperText={formError.uin ? "Valid UIN is required" : ""}
               slotProps={{
                 input: {
-                  readOnly: { edit },
+                  readOnly: edit,
                 },
               }}
             />

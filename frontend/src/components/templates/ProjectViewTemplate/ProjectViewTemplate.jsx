@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation"; // Next.js router for navigation.
 import { fetchProject } from "@services/projectService"; // Service function to fetch a project by ID.
 import { getProjectMembers } from "@services/projectMemberService";
 import { format } from "date-fns";
-import ImageList from "@mui/material/ImageList";
-import ImageListItem from "@mui/material/ImageListItem";
+import Grid from "@mui/material/Grid2";
 import ProgressLoading from "@components/organisms/ProgressLoading";
-import { Container, Typography, Alert, Box, IconButton } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Typography, Divider, Alert, Box, IconButton } from "@mui/material";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import ImageCarousel from "@components/organisms/ImageCarousel";
+import { BackgroundBox } from "./ProjectViewTemplate.styles";
+import { useTheme } from "@mui/material";
 
 /**
  * ProjectViewTemplate Component
@@ -35,6 +37,7 @@ function ProjectViewTemplate({ params }) {
   const router = useRouter(); // Next.js router for handling navigation.
   const { id } = params; // Destructure `id` from the route parameters.
   const [members, setMembers] = useState([]);
+  const theme = useTheme();
 
   /**
    * useEffect Hook
@@ -74,71 +77,81 @@ function ProjectViewTemplate({ params }) {
     );
 
   return (
-    <Container maxWidth="lg" sx={{ marginTop: 4 }}>
-      {project ? (
-        <Box sx={{ display: "flex", alignItems: "flex-start", gap: "20px" }}>
-          {/* Back button to navigate to the homepage */}
-          <IconButton onClick={() => router.push("/")}>
-            <ArrowBackIcon />
-          </IconButton>
-
-          <Box sx={{ width: "100%" }}>
-            {/* Project title */}
-            <Typography variant="h4" gutterBottom role="title">
-              {project.title}
-            </Typography>
-
-            {/* Image gallery */}
-            <ImageList
-              sx={{ width: "100%", height: "100%" }}
-              cols={2}
-              rowHeight={400}
-              slotProps={{
-                root: {
-                  sx: {
-                    border: "1px solid #e0e0e0",
-                  },
-                },
+    <Box>
+      <BackgroundBox project={project}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "15px",
+            zIndex: 2,
+            width: "80%",
+            margin: "0 auto",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              gap: "20px",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <IconButton
+              onClick={() => router.push("/")}
+              sx={{ width: "30px", height: "30px" }}
+            >
+              <ArrowBackIosIcon sx={{ color: "white" }} />
+            </IconButton>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                zIndex: 2,
               }}
             >
-              {project.image_urls?.map((image) => (
-                <ImageListItem key={image.id}>
-                  <img
-                    src={image.url}
-                    alt={`preview ${image.id}`}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                </ImageListItem>
-              ))}
-            </ImageList>
-
-            {/* Project start date */}
-            <Typography variant="h6" role="start">
-              Start Date:
-              {project.date
-                ? format(new Date(project.date), "MMMM d, yyyy")
-                : "N/A"}
-            </Typography>
-
-            {/* Project description */}
-            <Typography variant="h6" role="description">
-              Description: {project.description}
-            </Typography>
-
-            {/* Project members */}
-            <Typography variant="h6" role="members">
-              Members: {members.map((member) => member.first_name+" "+member.last_name).join(", ")}
-            </Typography>
+              <Typography variant="h1"> {project.title}</Typography>
+              <Divider
+                sx={{
+                  width: "70%",
+                  opacity: "100%",
+                  border: "0.5px solid white",
+                }}
+              />
+              <Typography variant="h5">
+                Started {format(new Date(project.date), "MMMM d, yyyy")}
+              </Typography>
+            </Box>
           </Box>
         </Box>
-      ) : (
-        <Typography variant="h6">Project not found</Typography>
-      )}
-    </Container>
+      </BackgroundBox>
+
+      <Grid container sx={{ margin: "35px" }}>
+        <Grid item size={{ s: 12, md: 6 }} sx={{ maxHeight: "450px" }}>
+          <ImageCarousel images={project.image_urls} />
+        </Grid>
+        <Grid item size={{ s: 12, md: 6 }} sx={{ padding: "20px" }}>
+          <Typography
+            variant="h1"
+            gutterBottom
+            sx={{ color: theme.palette.primary.main }}
+          >
+            About This Project
+          </Typography>
+          <Typography variant="h6" sx={{ textAlign: "justify" }}>
+            {project.description}
+          </Typography>
+        </Grid>
+      </Grid>
+
+      <Box>
+        <Typography>Project Members</Typography>
+        <Typography variant="h6" role="members">
+          {members.map((member) => member.first_name+" "+member.last_name).join(", ")}
+        </Typography>
+      </Box>
+    </Box>
   );
 }
 

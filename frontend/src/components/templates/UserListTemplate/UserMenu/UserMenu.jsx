@@ -4,6 +4,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import { useRouter } from "next/navigation";
+import { handleCopyClick } from "@utils/functions";
 
 /**
  * UserActions component
@@ -36,6 +37,8 @@ const UserMenu = ({
   handleCloseMenu,
   anchorEl,
   selectedUser,
+  setSnackbarOpen,
+  setCopyStatus,
 }) => {
   const router = useRouter();
 
@@ -69,30 +72,51 @@ const UserMenu = ({
         }}
       >
         <MenuItem onClick={() => router.push(`/Member/${selectedUser?.uin}`)}>
-          View
+          View Profile
         </MenuItem>
 
         {filter === "archived" &&
-          (userRole === "president" || userRole === "internal relations") && (
-            <>
-              <MenuItem onClick={() => handleArchive(row.uin, false)}>
+          (userRole === "president" ||
+            userRole === "internal relations" ||
+            userRole === "admin") && (
+            <div>
+              <MenuItem onClick={() => handleArchive(selectedUser?.uin, false)}>
                 Restore
               </MenuItem>
               <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
-            </>
+            </div>
           )}
 
         {filter === "active" && (
           <div>
-            {userRole === "president" || userRole === "vice president" ? (
-              <>
+            {userRole === "president" ||
+            userRole === "vice president" ||
+            userRole === "admin" ? (
+              <div>
                 <MenuItem onClick={handleOpenRoleDialog}>Update Role</MenuItem>
-                <MenuItem onClick={() => handleOpenAccomplishmentsDialog(selectedUser)}>Accomplishments</MenuItem>
-              </>
+                <MenuItem
+                  onClick={() => handleOpenAccomplishmentsDialog(selectedUser)}
+                >
+                  Accomplishments
+                </MenuItem>
+                <MenuItem
+                  onClick={() =>
+                    handleCopyClick(
+                      selectedUser?.email,
+                      setCopyStatus,
+                      setSnackbarOpen
+                    )
+                  }
+                >
+                  Copy Email
+                </MenuItem>
+              </div>
             ) : null}
 
-            {userRole === "president" || userRole === "internal relations" ? (
-              <>
+            {userRole === "president" ||
+            userRole === "internal relations" ||
+            userRole === "admin" ? (
+              <div>
                 <MenuItem
                   onClick={() =>
                     router.push(`/Member/${selectedUser?.uin}/Edit`)
@@ -100,11 +124,13 @@ const UserMenu = ({
                 >
                   Edit
                 </MenuItem>
-                <MenuItem onClick={() => handleArchive(row.uin, true)}>
+                <MenuItem
+                  onClick={() => handleArchive(selectedUser?.uin, true)}
+                >
                   Archive
                 </MenuItem>
                 <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
-              </>
+              </div>
             ) : null}
           </div>
         )}

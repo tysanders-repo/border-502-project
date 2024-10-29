@@ -1,5 +1,3 @@
-import { styled } from '@mui/material/styles' 
+import { styled } from "@mui/material/styles";
 
-export const StyledAccomplishmentBar = styled('div')(({theme}) => ({
-
-}))
+export const StyledAccomplishmentBar = styled("div")(({ theme }) => ({}));

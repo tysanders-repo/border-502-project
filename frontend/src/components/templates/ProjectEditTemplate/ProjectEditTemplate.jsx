@@ -227,7 +227,7 @@ function ProjectEditTemplate({ params }) {
   }
 
   return (
-    <Container maxWidth="md" sx={{ textAlign: "center" }}>
+    <Container maxWidth="md" sx={{ textAlign: "center", margin: "50px auto" }}>
       {/* Page header */}
       <Typography variant="h4" component="h1" gutterBottom>
         Edit Project - {project.title}

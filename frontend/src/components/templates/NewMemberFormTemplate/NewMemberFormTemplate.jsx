@@ -66,7 +66,7 @@ function NewMemberFormTemplate() {
     useState([]);
   const [personalInterests, setPersonalInterests] = useState([]);
   const [selectedPersonalInterests, setSelectedPersonalInterests] = useState(
-    []
+    [],
   );
   const [companyInterests, setCompanyInterests] = useState([]);
   const [selectedCompanyInterests, setSelectedCompanyInterests] = useState([]);
@@ -200,7 +200,7 @@ function NewMemberFormTemplate() {
               const existingRestriction = dietaryRestrictions.find(
                 (restrictions) =>
                   restrictions.item_name.toLowerCase() ===
-                  restriction.toLowerCase()
+                  restriction.toLowerCase(),
               );
               if (!existingRestriction) {
                 restrictionObject = await createDietaryRestriction({
@@ -215,7 +215,7 @@ function NewMemberFormTemplate() {
             //only create member diet if it doesnt already exist
             const exist_response = await checkMemberDietExists(
               newUser.uin,
-              restrictionObject.id
+              restrictionObject.id,
             );
             console.log("Existence check response:", exist_response);
 
@@ -235,7 +235,8 @@ function NewMemberFormTemplate() {
             if (typeof personalInterest === "string") {
               const existingPersonalInterest = personalInterests.find(
                 (persElem) =>
-                  persElem.name.toLowerCase() === personalInterest.toLowerCase()
+                  persElem.name.toLowerCase() ===
+                  personalInterest.toLowerCase(),
               );
               if (!existingPersonalInterest) {
                 console.log("attempting to create new interest");
@@ -251,7 +252,7 @@ function NewMemberFormTemplate() {
             }
             const exist_response = await checkMemberInterestExists(
               newUser.uin,
-              persInterestObj.id
+              persInterestObj.id,
             );
             console.log("Existence check response:", exist_response);
 
@@ -271,7 +272,7 @@ function NewMemberFormTemplate() {
             if (typeof careerInterest === "string") {
               const existingCareerInterest = careerInterests.find(
                 (carElem) =>
-                  carElem.name.toLowerCase() === careerInterest.toLowerCase()
+                  carElem.name.toLowerCase() === careerInterest.toLowerCase(),
               );
               if (!existingCareerInterest) {
                 console.log("attempting to create new interest");
@@ -287,7 +288,7 @@ function NewMemberFormTemplate() {
             }
             const exist_response = await checkMemberInterestExists(
               newUser.uin,
-              carInterestObj.id
+              carInterestObj.id,
             );
             console.log("Existence check response:", exist_response);
 
@@ -307,7 +308,7 @@ function NewMemberFormTemplate() {
             if (typeof companyInterest === "string") {
               const existingCompanyInterest = companyInterests.find(
                 (compElem) =>
-                  compElem.name.toLowerCase() === companyInterest.toLowerCase()
+                  compElem.name.toLowerCase() === companyInterest.toLowerCase(),
               );
               if (!existingCompanyInterest) {
                 console.log("attempting to create new interest");
@@ -323,7 +324,7 @@ function NewMemberFormTemplate() {
             }
             const exist_response = await checkMemberInterestExists(
               newUser.uin,
-              compInterestObj.id
+              compInterestObj.id,
             );
             console.log("Existence check response:", exist_response);
 

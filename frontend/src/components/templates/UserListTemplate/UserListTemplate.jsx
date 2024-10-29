@@ -7,25 +7,33 @@ import {
   updateUserPresident,
   updateUserDues,
 } from "@services/userService";
-import DeleteConfirmationDialog from "@components/organisms/DeleteConfirmationDialog";
-import AccomplishmentsDialog from "./AccomplishmentsDialog";
-import { Alert, Typography, IconButton, Box, Button } from "@mui/material";
+
+import {
+  Alert,
+  Typography,
+  IconButton,
+  Box,
+  Button,
+  useMediaQuery,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import { getUserRole } from "@services/authService";
-import { UserRoles } from "@utils/arrays/roles";
-import ProgressLoading from "@components/organisms/ProgressLoading";
-import UpdateRoleDialog from "./UpdateRoleDialog";
-import UserMenu from "./UserMenu";
-import { capitalizeAndReplace } from "@utils/functions";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { Switch } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
+import CopySnackbar from "@components/organisms/CopySnackbar";
+import { getUserRole } from "@services/authService";
+import ProgressLoading from "@components/organisms/ProgressLoading";
+import DeleteConfirmationDialog from "@components/organisms/DeleteConfirmationDialog";
+import AccomplishmentsDialog from "./AccomplishmentsDialog";
+import UpdateRoleDialog from "./UpdateRoleDialog";
+import UserMenu from "./UserMenu";
+import { UserRoles } from "@utils/arrays/roles";
+import { capitalizeAndReplace } from "@utils/functions";
 
 /**
  * UserListTemplate component
@@ -50,8 +58,11 @@ const UserListTemplate = () => {
   const [selectedRole, setSelectedRole] = useState(null);
   const [updateDues, setUpdateDues] = useState(false);
   const [updatedUsersDues, setUpdatedUsersDues] = useState([]);
-  const [openAccomplishmentsDialog, setOpenAccomplishmentsDialog] = useState(false);
+  const [openAccomplishmentsDialog, setOpenAccomplishmentsDialog] =
+    useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [copyStatus, setCopyStatus] = useState(false);
 
   const handleOpenAccomplishmentsDialog = (member) => {
     setSelectedMember(member);
@@ -65,13 +76,13 @@ const UserListTemplate = () => {
 
   const handleAccomplishmentsSubmit = async (accomplishments) => {
     try {
-      await updateUserPresident(selectedMember.uin, { accomplishments: accomplishments });
+      await updateUserPresident(selectedMember.uin, {
+        accomplishments: accomplishments,
+      });
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uin === selectedMember.uin
-            ? { ...user, accomplishments }
-            : user,
-        ),
+          user.uin === selectedMember.uin ? { ...user, accomplishments } : user
+        )
       );
     } catch (error) {
       console.error("Error updating accomplishments:", error);
@@ -189,6 +200,9 @@ const UserListTemplate = () => {
 
   // Adjusting display params when changing views
   useEffect(() => {
+    if (isMobile) {
+      return;
+    }
     if (filter === "archived") {
       setColumnVisibilityModel({
         uin: false,
@@ -325,6 +339,8 @@ const UserListTemplate = () => {
           handleCloseMenu={handleCloseMenu}
           anchorEl={anchorEl}
           selectedUser={selectedUser}
+          setSnackbarOpen={setSnackbarOpen}
+          setCopyStatus={setCopyStatus}
         />
       ),
     },
@@ -420,6 +436,7 @@ const UserListTemplate = () => {
     return <Alert severity="error">{error.message}</Alert>;
   }
 
+  console.log(users)
   return (
     <div>
       <Box
@@ -427,7 +444,7 @@ const UserListTemplate = () => {
           display: "flex",
           flexDirection: "column",
           width: "80%",
-          margin: "0 auto",
+          margin: "50px auto",
           gap: "10px",
         }}
       >
@@ -439,7 +456,7 @@ const UserListTemplate = () => {
           }}
         >
           <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-            <Typography variant="h4">EWB Members</Typography>
+            <Typography variant="h3">Members</Typography>
             {userRole && (
               <Typography variant="caption" gutterBottom>
                 Current User: {capitalizeAndReplace(userRole)}
@@ -490,6 +507,7 @@ const UserListTemplate = () => {
             {userRole && (
               <>
                 {(userRole === "president" ||
+                  userRole === "admin" ||
                   userRole === "vice president" ||
                   userRole === "internal relations") && (
                   <>
@@ -622,6 +640,12 @@ const UserListTemplate = () => {
         setSelectedRole={setSelectedRole}
         UserRoles={UserRoles}
         handleRoleChange={handleRoleChange}
+      />
+
+      <CopySnackbar
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+        copyStatus={copyStatus}
       />
     </div>
   );
