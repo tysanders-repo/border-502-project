@@ -29,3 +29,16 @@ export const BackgroundBox = styled("div")(({ theme, project }) => ({
     padding: "100px",
   },
 }));
+
+export const DescriptionBox = styled("div")(({ theme, project }) => ({
+  display: "flex",
+  padding: "20px",
+  flexDirection: "column",
+  // alignItems: "center",
+
+  [theme.breakpoints.up("md")]: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "flex-start",
+  },
+}));
