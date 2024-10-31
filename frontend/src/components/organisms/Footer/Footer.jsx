@@ -16,7 +16,7 @@ const Footer = () => {
   return (
     <StyledFooter>
       <VeritcalBox>
-        <Typography variant="h6">Contact Us:</Typography>
+        <Typography variant="h6">Contact Us</Typography>
         <Box sx={{ display: "flex", gap: "10px", marginTop: "10px" }}>
           <MailOutlineIcon />
           <Typography variant="body1">president@ewb-tamu.org</Typography>
@@ -24,7 +24,7 @@ const Footer = () => {
       </VeritcalBox>
 
       <VeritcalBox>
-        <Typography>Follow us!</Typography> {/* Navigation section heading */}
+        <Typography>Follow Us</Typography> {/* Navigation section heading */}
         <Box>
           <a
             href="https://www.instagram.com/ewbtamu/?hl=en"

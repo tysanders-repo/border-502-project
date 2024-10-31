@@ -77,23 +77,32 @@ function ProjectListTemplate() {
           >
             <MenuItem
               component={Link}
-              href={`/Project/${selectedProject?.id}`}
-              onClick={handleCloseMenu}
-            >
-              View
-            </MenuItem>
-            <MenuItem
-              component={Link}
               href={`/Project/${selectedProject?.id}/Edit`}
               onClick={handleCloseMenu}
             >
               Edit
             </MenuItem>
+            <MenuItem
+              component={Link}
+              href={`/Project/${selectedProject?.id}`}
+              onClick={handleCloseMenu}
+            >
+              View Info
+            </MenuItem>
             <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
+            <MenuItem
+              component={Link}
+              href={`/Project/${selectedProject?.id}`}
+              onClick={handleCloseMenu}
+            >
+              View Page
+            </MenuItem>
             <MenuItem
               onClick={() =>
                 handleCopyClick(
-                  selectedProject.members.map((member) => member.email).join(", "),
+                  selectedProject.members
+                    .map((member) => member.email)
+                    .join(", "),
                   setCopyStatus,
                   setSnackbarOpen
                 )
@@ -206,7 +215,7 @@ function ProjectListTemplate() {
               {isMobile ? "Project" : "Add Project"}
             </Button>
             <Button
-              variant="outlined"
+              variant="contained"
               onClick={() => router.push("/Member")}
               startIcon={<ManageAccountsIcon />}
             >

@@ -103,7 +103,7 @@ const AccomplishmentsDialog = ({ member, open, onClose, onSubmit }) => {
         />
       </DialogContent>
       <DialogActions>
-        <Button variant="outlined" color="secondary" onClick={onClose}>
+        <Button variant="outlined" onClick={onClose}>
           Cancel
         </Button>
         <Button

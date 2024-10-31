@@ -13,12 +13,6 @@ const customPalette = {
     dark: "#003f7d",
     contrastText: "#ffffff",
   },
-  // secondary: {
-  //   main: "#700101",
-  //   light: "#942f2f",
-  //   dark: "#3d0000",
-  //   contrastText: "#ffffff",
-  // },
   background: {
     default: "#f5f5f5",
   },

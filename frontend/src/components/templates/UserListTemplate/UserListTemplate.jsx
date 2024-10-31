@@ -34,6 +34,9 @@ import UpdateRoleDialog from "./UpdateRoleDialog";
 import UserMenu from "./UserMenu";
 import { UserRoles } from "@utils/arrays/roles";
 import { capitalizeAndReplace } from "@utils/functions";
+import MailIcon from "@mui/icons-material/Mail";
+
+import { handleCopyClick } from "@utils/functions";
 
 /**
  * UserListTemplate component
@@ -116,6 +119,8 @@ const UserListTemplate = () => {
       setError(err);
     }
   };
+
+  console.log(users);
 
   const handleDuesSubmit = async () => {
     if (updatedUsersDues.length > 0) {
@@ -436,7 +441,7 @@ const UserListTemplate = () => {
     return <Alert severity="error">{error.message}</Alert>;
   }
 
-  console.log(users)
+  console.log(users);
   return (
     <div>
       <Box
@@ -464,7 +469,7 @@ const UserListTemplate = () => {
             )}
           </Box>
           <Button
-            variant="outlined"
+            variant="contained"
             onClick={() => router.push(`/Project`)}
             startIcon={<ManageAccountsIcon />}
           >
@@ -578,29 +583,49 @@ const UserListTemplate = () => {
               </>
             )}
           </Box>
-          <Box sx={{ display: "flex", gap: "5px" }}>
-            <Button
-              variant={updateDues ? "contained" : "outlined"}
-              onClick={() =>
-                updateDues ? handleDuesSubmit() : setUpdateDues(true)
-              }
-              startIcon={<AttachMoneyIcon />}
-            >
-              {updateDues ? "Submit Dues" : "Update Dues"}
-            </Button>
-            {updateDues && (
-              <Button
-                variant={"outlined"}
-                color="secondary"
-                onClick={() => {
-                  setUpdateDues(false);
-                  setUpdatedUsersDues([]);
-                  window.location.reload();
-                }}
-                startIcon={<ClearIcon />}
-              >
-                Cancel Update
-              </Button>
+          <Box>
+            {filter === "active" && (
+              <Box sx={{ display: "flex", gap: "5px" }}>
+                <Button
+                  variant={updateDues ? "contained" : "outlined"}
+                  onClick={() =>
+                    updateDues ? handleDuesSubmit() : setUpdateDues(true)
+                  }
+                  startIcon={<AttachMoneyIcon />}
+                >
+                  {updateDues ? "Submit Dues" : "Update Dues"}
+                </Button>
+                {updateDues && (
+                  <Button
+                    variant={"outlined"}
+                    onClick={() => {
+                      setUpdateDues(false);
+                      setUpdatedUsersDues([]);
+                      window.location.reload();
+                    }}
+                    startIcon={<ClearIcon />}
+                  >
+                    Cancel
+                  </Button>
+                )}
+                <IconButton
+                  sx={{
+                    color: theme.palette.primary.main,
+                  }}
+                  onClick={() =>
+                    handleCopyClick(
+                      filteredUsers
+                        .filter((member) => !member.paid_dues)
+                        .map((member) => member.email)
+                        .join(", "),
+                      setCopyStatus,
+                      setSnackbarOpen
+                    )
+                  }
+                >
+                  <MailIcon />
+                </IconButton>
+              </Box>
             )}
           </Box>
         </Box>
