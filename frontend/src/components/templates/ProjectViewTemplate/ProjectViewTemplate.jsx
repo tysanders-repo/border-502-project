@@ -3,16 +3,23 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // Next.js router for navigation.
 import { fetchProject } from "@services/projectService"; // Service function to fetch a project by ID.
-import { getProjectMembers } from "@services/projectMemberService";
 import { format } from "date-fns";
 import Grid from "@mui/material/Grid2";
 import ProgressLoading from "@components/organisms/ProgressLoading";
-import { Typography, Divider, Alert, Box, IconButton } from "@mui/material";
+import {
+  Typography,
+  Divider,
+  Alert,
+  Box,
+  IconButton,
+  Button,
+} from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ImageCarousel from "@components/organisms/ImageCarousel";
-import { BackgroundBox } from "./ProjectViewTemplate.styles";
+import { BackgroundBox, DescriptionBox } from "./ProjectViewTemplate.styles";
 import { useTheme } from "@mui/material";
-
+import Person2Icon from "@mui/icons-material/Person2";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 /**
  * ProjectViewTemplate Component
  *
@@ -36,7 +43,6 @@ function ProjectViewTemplate({ params }) {
 
   const router = useRouter(); // Next.js router for handling navigation.
   const { id } = params; // Destructure `id` from the route parameters.
-  const [members, setMembers] = useState([]);
   const theme = useTheme();
 
   /**
@@ -50,13 +56,6 @@ function ProjectViewTemplate({ params }) {
       try {
         const json = await fetchProject(id); // Fetch project data using the provided ID.
         setProject(json); // Update project state with fetched data.
-        try{
-          const members = await getProjectMembers(id);
-          setMembers(members);
-        } catch (error) {
-          setError(error);
-          setLoading(false);
-        }
         setLoading(false); // Set loading state to false.
       } catch (error) {
         setError(error); // Set error state if the request fails.
@@ -145,12 +144,40 @@ function ProjectViewTemplate({ params }) {
         </Grid>
       </Grid>
 
-      <Box>
-        <Typography>Project Members</Typography>
-        <Typography variant="h6" role="members">
-          {members.map((member) => member.first_name+" "+member.last_name).join(", ")}
-        </Typography>
-      </Box>
+      <DescriptionBox>
+        <Box>
+          <Typography gutterBottom variant="h4" sx={{ textAlign: "center" }}>
+            Members
+          </Typography>
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            {project.members.map((member) => (
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Button
+                  sx={{ color: "black", textTransform: "capitalize" }}
+                  onClick={() => router.push(`/Member/${member.uin}`)}
+                  startIcon={<Person2Icon />}
+                  endIcon={<KeyboardArrowRightIcon sx={{ fontSize: "40px" }} />}
+                >
+                  <Typography key={member.uin} variant="h5">
+                    {member.first_name} {member.last_name}
+                  </Typography>
+                </Button>
+              </Box>
+            ))}
+          </Box>
+        </Box>
+
+        <Divider
+          orientation="vertical"
+          flexItem
+          sx={{ mx: 2, bgcolor: theme.palette.primary.main }}
+        />
+        <Box>
+          <Typography variant="h4" gutterBottom sx={{ textAlign: "center" }}>
+            Important Updates
+          </Typography>
+        </Box>
+      </DescriptionBox>
     </Box>
   );
 }

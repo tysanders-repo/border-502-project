@@ -77,15 +77,8 @@ function ProjectListTemplate() {
               },
             }}
           >
-            <MenuItem
-              component={Link}
-              href={`/Project/${selectedProject?.id}`}
-              onClick={handleCloseMenu}
-            >
-              View
-            </MenuItem>
-            {userAuthorized ? (
-            <MenuItem
+            {userAuthorized ?
+            (<MenuItem
               component={Link}
               href={`/Project/${selectedProject?.id}/Edit`}
               onClick={handleCloseMenu}
@@ -93,13 +86,22 @@ function ProjectListTemplate() {
               Edit
             </MenuItem>)
             : null}
-            {userAuthorized ? (
-            <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>)
+            {userAuthorized ? 
+            (<MenuItem onClick={handleDeleteClick}>Delete</MenuItem>)
             : null}
+            <MenuItem
+              component={Link}
+              href={`/Project/${selectedProject?.id}`}
+              onClick={handleCloseMenu}
+            >
+              View Page
+            </MenuItem>
             <MenuItem
               onClick={() =>
                 handleCopyClick(
-                  selectedProject?.title,
+                  selectedProject.members
+                    .map((member) => member.email)
+                    .join(", "),
                   setCopyStatus,
                   setSnackbarOpen
                 )
@@ -221,7 +223,7 @@ function ProjectListTemplate() {
             </Button>) :
             null}
             <Button
-              variant="outlined"
+              variant="contained"
               onClick={() => router.push("/Member")}
               startIcon={<ManageAccountsIcon />}
             >

@@ -1,6 +1,6 @@
 class Project < ApplicationRecord
-    has_many :members, through: :project_members
     has_many :project_members, dependent: :destroy, foreign_key: "project_id", primary_key: "id"
+    has_many :members, through: :project_members
 
     has_many_attached :images
 
