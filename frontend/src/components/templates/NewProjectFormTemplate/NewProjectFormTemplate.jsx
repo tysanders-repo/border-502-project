@@ -15,6 +15,7 @@ import ProjectForm from "@components/organisms/ProjectForm/ProjectForm"; // Form
 import ProgressLoading from "@components/organisms/ProgressLoading"; // Loading indicator component for async operations.
 import { fetchAllUsers } from "@services/userService";
 import { createProjectMember } from "@services/projectMemberService";
+import { getUserRole } from "@services/authService";
 
 /**
  * NewProjectFormTemplate Component.
@@ -47,15 +48,19 @@ function NewProjectFormTemplate() {
 
   useEffect(() => {
     async function fetchMembers() {
-      try {
-        const data = await fetchAllUsers();
-        setMembers(data);
-      } catch(error) {
-        console.error("Error fetching members: ", error);
+      const role = await getUserRole();
+      if(role !== "project lead" && role !== "president"){ // Redirect non-admin users to homepage
+        router.push("/");
+      }else{
+        try {
+          const data = await fetchAllUsers();
+          setMembers(data);
+        } catch(error) {
+          console.error("Error fetching members: ", error);
+        }
+        setLoading(false);
       }
-      setLoading(false);
     }
-
     fetchMembers();
   }, []);
 

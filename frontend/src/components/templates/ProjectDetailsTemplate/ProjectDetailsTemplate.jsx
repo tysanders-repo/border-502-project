@@ -16,6 +16,7 @@ import { format } from "date-fns";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import ProgressLoading from "@components/organisms/ProgressLoading";
+import { getUserRole } from "@services/authService";
 
 import {
   Button,
@@ -49,6 +50,7 @@ function ProjectDetailsTemplate({ params }) {
   const [error, setError] = useState(null); // Stores error messages, if any.
   const [openDialog, setOpenDialog] = useState(false); // Tracks visibility of the delete confirmation dialog.
   const [members, setMembers] = useState([]);
+  const [userAuthorized, setUserAuthorized] = useState(false);
 
   const router = useRouter(); // Next.js router for handling navigation.
   const { id } = params; // Destructure `id` from the route parameters.
@@ -61,20 +63,27 @@ function ProjectDetailsTemplate({ params }) {
    */
   useEffect(() => {
     const fetchCurrentProject = async () => {
-      try {
-        const json = await fetchProject(id); // Fetch project data using the provided ID.
-        setProject(json); // Update project state with fetched data.
-        try{
-          const members = await getProjectMembers(id);
-          setMembers(members);
+      const role = await getUserRole();
+      if(role === undefined || role === "member" || role === "none"){ // Redirect non-admin users to homepage
+        router.push("/");
+      }else{
+        if(role === "project lead" || role === "president") // Only allow president and project lead to edit and delete projects
+            setUserAuthorized(true);
+        try {
+          const json = await fetchProject(id); // Fetch project data using the provided ID.
+          setProject(json); // Update project state with fetched data.
+          try{
+            const members = await getProjectMembers(id);
+            setMembers(members);
+          } catch (error) {
+            setError(error);
+            setLoading(false);
+          }
+          setLoading(false); // Set loading state to false.
         } catch (error) {
-          setError(error);
-          setLoading(false);
+          setError(error); // Set error state if the request fails.
+          setLoading(false); // Set loading state to false.
         }
-        setLoading(false); // Set loading state to false.
-      } catch (error) {
-        setError(error); // Set error state if the request fails.
-        setLoading(false); // Set loading state to false.
       }
     };
 
@@ -177,23 +186,27 @@ function ProjectDetailsTemplate({ params }) {
               mt={3}
               sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}
             >
-              <Button
+              {userAuthorized ?
+              (<Button
                 variant="outlined"
                 color="error"
                 onClick={handleOpenDialog}
                 sx={{ minWidth: "100px" }}
               >
                 Delete
-              </Button>
+              </Button>) :
+              null}
               <Box sx={{ display: "flex", gap: "10px" }}>
-                <Button
+                {userAuthorized ?
+                (<Button
                   variant="outlined"
                   color="primary"
                   onClick={() => router.push(`/Project/${id}/Edit`)}
                   sx={{ minWidth: "100px" }}
                 >
                   Edit
-                </Button>
+                </Button>) :
+                null}
                 <Button
                   variant="contained"
                   color="primary"
