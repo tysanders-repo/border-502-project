@@ -8,6 +8,7 @@ import ProjectForm from "@components/organisms/ProjectForm/ProjectForm"; // Form
 import ProgressLoading from "@components/organisms/ProgressLoading";
 import { fetchAllUsers } from "@services/userService"
 import { getProjectMembers, deleteProjectMember, createProjectMember, getProjectMembersByProject } from "@services/projectMemberService";
+import { getUserRole } from "@services/authService";
 
 /**
  * ProjectEditTemplate component
@@ -70,22 +71,32 @@ function ProjectEditTemplate({ params }) {
    */
   useEffect(() => {
     if (!id) return;
-
     const fetchCurrentProject = async () => {
-      try {
-        const json = await fetchProject(id); // Fetch project data using the provided ID.
-        setProject(json); // Update project state with fetched data.
+      const role = await getUserRole();
+      if(role !== "project lead" && role !== "president"){ // Redirect non-admin users to homepage
+        router.push("/");
+      }else{
         try {
-          const members = await getProjectMembers(id);
-          setSelectedMembers(members);
-          setPrevMembers(members);
-        } catch(e) {
-          setError(e);
+          const json = await fetchProject(id); // Fetch project data using the provided ID.
+          setProject(json); // Update project state with fetched data.
+          try {
+            const members = await getProjectMembers(id);
+            setSelectedMembers(members);
+            setPrevMembers(members);
+          } catch(e) {
+            setError(e);
+          }
+          try {
+            const data = await fetchAllUsers();
+            setMembers(data);
+          } catch(error) {
+            console.error("Error fetching members: ", error);
+          }
+        } catch (e) {
+          setError(e); // Set error state if the request fails.
+        } finally {
+          setLoading(false); // Set loading state to false.
         }
-      } catch (e) {
-        setError(e); // Set error state if the request fails.
-      } finally {
-        setLoading(false); // Set loading state to false.
       }
     };
 

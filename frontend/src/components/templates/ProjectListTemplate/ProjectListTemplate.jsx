@@ -24,6 +24,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ProgressLoading from "@components/organisms/ProgressLoading";
 import CopySnackbar from "@components/organisms/CopySnackbar";
 import { handleCopyClick } from "@utils/functions";
+import { getUserRole } from "@services/authService";
 
 /**
  * ProjectListTemplate component
@@ -41,6 +42,7 @@ function ProjectListTemplate() {
   const isMobile = useMediaQuery(theme.breakpoints.down("md")); // Determine if the view is mobile based on the screen size.
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [copyStatus, setCopyStatus] = useState(false);
+  const [userAuthorized, setUserAuthorized] = useState(false);
   const router = useRouter(); // Next.js router for navigation.
 
   const columns = [
@@ -75,21 +77,18 @@ function ProjectListTemplate() {
               },
             }}
           >
-            <MenuItem
+            {userAuthorized ?
+            (<MenuItem
               component={Link}
               href={`/Project/${selectedProject?.id}/Edit`}
               onClick={handleCloseMenu}
             >
               Edit
-            </MenuItem>
-            <MenuItem
-              component={Link}
-              href={`/Project/${selectedProject?.id}`}
-              onClick={handleCloseMenu}
-            >
-              View Info
-            </MenuItem>
-            <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
+            </MenuItem>)
+            : null}
+            {userAuthorized ? 
+            (<MenuItem onClick={handleDeleteClick}>Delete</MenuItem>)
+            : null}
             <MenuItem
               component={Link}
               href={`/Project/${selectedProject?.id}`}
@@ -121,19 +120,26 @@ function ProjectListTemplate() {
    *
    * @description Fetches all projects from the server and updates the projects state. Handles loading and error states.
    */
-  const loadProjects = async () => {
-    try {
-      const data = await fetchAllProjects(); // Fetch project data from the service.
-      setProjects(data); // Update projects state with fetched data.
-      setLoading(false); // Set loading state to false.
-    } catch (e) {
-      setError(e); // Set error state if the request fails.
-      setLoading(false); // Set loading state to false.
+  const loadProjectsAndSetAuth = async () => {
+    const role = await getUserRole();
+    if(role === undefined || role === "member" || role === "none"){ // Redirect non-admin users to homepage
+      router.push("/");
+    }else{
+      if(role === "project lead" || role === "president") // Only allow president and project lead to edit and delete projects
+          setUserAuthorized(true);
+      try {
+        const data = await fetchAllProjects(); // Fetch project data from the service.
+        setProjects(data); // Update projects state with fetched data.
+        setLoading(false); // Set loading state to false.
+      } catch (e) {
+        setError(e); // Set error state if the request fails.
+        setLoading(false); // Set loading state to false.
+      }
     }
   };
 
   useEffect(() => {
-    loadProjects(); // Load projects when the component mounts.
+    loadProjectsAndSetAuth(); // Load projects when the component mounts.
   }, []);
 
   /**
@@ -207,13 +213,15 @@ function ProjectListTemplate() {
         >
           <Typography variant="h3">Projects</Typography>
           <Box sx={{ display: "flex", gap: "10px" }}>
-            <Button
+            {userAuthorized ?
+            (<Button
               variant="outlined"
               startIcon={<AddCircleOutlineIcon />}
               onClick={() => router.push("Project/New")}
             >
               {isMobile ? "Project" : "Add Project"}
-            </Button>
+            </Button>) :
+            null}
             <Button
               variant="contained"
               onClick={() => router.push("/Member")}
@@ -239,7 +247,7 @@ function ProjectListTemplate() {
         handleCloseDialog={handleCloseDialog}
         id={selectedProject?.id}
         setError={setError}
-        onDelete={loadProjects} // Callback function to reload projects after deletion.
+        onDelete={loadProjectsAndSetAuth} // Callback function to reload projects after deletion.
       />
 
       <CopySnackbar
