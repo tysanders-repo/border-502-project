@@ -15,6 +15,8 @@ import {
   Box,
   Button,
   useMediaQuery,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useTheme } from "@mui/material/styles";
@@ -67,6 +69,16 @@ const UserListTemplate = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [copyStatus, setCopyStatus] = useState(false);
 
+  const [duesAnchorEl, setDuesAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setDuesAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setDuesAnchorEl(null);
+  };
+
   const handleOpenAccomplishmentsDialog = (member) => {
     setSelectedMember(member);
     setOpenAccomplishmentsDialog(true);
@@ -102,6 +114,11 @@ const UserListTemplate = () => {
   };
   const handleCloseRoleDialog = () => {
     setOpenRoleDialog(false);
+  };
+
+  const handleClickUpdateDues = () => {
+    setUpdateDues(true);
+    handleClose();
   };
 
   const handleRoleChange = async () => {
@@ -473,7 +490,7 @@ const UserListTemplate = () => {
             onClick={() => router.push(`/Project`)}
             startIcon={<ManageAccountsIcon />}
           >
-            {isMobile ? "Projects" : "Manage Projects"}
+            {isMobile ? "Projects" : "View Projects"}
           </Button>
         </Box>
 
@@ -586,15 +603,47 @@ const UserListTemplate = () => {
           <Box>
             {filter === "active" && (
               <Box sx={{ display: "flex", gap: "5px" }}>
-                <Button
-                  variant={updateDues ? "contained" : "outlined"}
-                  onClick={() =>
-                    updateDues ? handleDuesSubmit() : setUpdateDues(true)
-                  }
-                  startIcon={<AttachMoneyIcon />}
+                {updateDues ? (
+                  <Button
+                    variant={updateDues ? "contained" : "outlined"}
+                    onClick={() => handleDuesSubmit()}
+                    startIcon={<AttachMoneyIcon />}
+                  >
+                    Submit Dues
+                  </Button>
+                ) : (
+                  <Button
+                    variant={updateDues ? "contained" : "outlined"}
+                    onClick={handleClick}
+                    startIcon={<AttachMoneyIcon />}
+                  >
+                    Manage Dues
+                  </Button>
+                )}
+
+                <Menu
+                  anchorEl={duesAnchorEl}
+                  open={Boolean(duesAnchorEl)}
+                  onClose={handleClose}
                 >
-                  {updateDues ? "Submit Dues" : "Update Dues"}
-                </Button>
+                  <MenuItem onClick={handleClickUpdateDues}>
+                    Update Dues
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() =>
+                      handleCopyClick(
+                        filteredUsers
+                          .filter((member) => !member.paid_dues)
+                          .map((member) => member.email)
+                          .join(", "),
+                        setCopyStatus,
+                        setSnackbarOpen
+                      )
+                    }
+                  >
+                    Copy Unpaid Emails
+                  </MenuItem>
+                </Menu>
                 {updateDues && (
                   <Button
                     variant={"outlined"}
@@ -608,23 +657,6 @@ const UserListTemplate = () => {
                     Cancel
                   </Button>
                 )}
-                <IconButton
-                  sx={{
-                    color: theme.palette.primary.main,
-                  }}
-                  onClick={() =>
-                    handleCopyClick(
-                      filteredUsers
-                        .filter((member) => !member.paid_dues)
-                        .map((member) => member.email)
-                        .join(", "),
-                      setCopyStatus,
-                      setSnackbarOpen
-                    )
-                  }
-                >
-                  <MailIcon />
-                </IconButton>
               </Box>
             )}
           </Box>
