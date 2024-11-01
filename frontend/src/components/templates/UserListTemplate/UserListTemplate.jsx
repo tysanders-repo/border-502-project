@@ -37,7 +37,8 @@ import UserMenu from "./UserMenu";
 import { UserRoles } from "@utils/arrays/roles";
 import { capitalizeAndReplace } from "@utils/functions";
 import MailIcon from "@mui/icons-material/Mail";
-
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 import { handleCopyClick } from "@utils/functions";
 
 /**
@@ -178,6 +179,13 @@ const UserListTemplate = () => {
     graduation_day: false,
     accepted: false,
   });
+
+  useEffect(() => {
+    setColumnVisibilityModel((prevModel) => ({
+      ...prevModel,
+      paid_dues: true,
+    }));
+  }, [updateDues]);
 
   // Adjusting display params when changing screen sizes
   useEffect(() => {
@@ -602,24 +610,58 @@ const UserListTemplate = () => {
           </Box>
           <Box>
             {filter === "active" && (
-              <Box sx={{ display: "flex", gap: "5px" }}>
+              <Box sx={{ display: "flex", gap: "5px", alignItems: "center" }}>
+                {isMobile && updateDues && (
+                  <Typography variant="h6">Submit:</Typography>
+                )}
+
                 {updateDues ? (
-                  <Button
-                    variant={updateDues ? "contained" : "outlined"}
-                    onClick={() => handleDuesSubmit()}
-                    startIcon={<AttachMoneyIcon />}
-                  >
-                    Submit Dues
-                  </Button>
+                  isMobile ? (
+                    <IconButton onClick={handleDuesSubmit}>
+                      <CheckIcon sx={{ color: "green" }} />
+                    </IconButton>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      onClick={handleDuesSubmit}
+                      startIcon={<AttachMoneyIcon />}
+                    >
+                      Submit Dues
+                    </Button>
+                  )
                 ) : (
                   <Button
-                    variant={updateDues ? "contained" : "outlined"}
+                    variant="outlined"
                     onClick={handleClick}
                     startIcon={<AttachMoneyIcon />}
                   >
                     Manage Dues
                   </Button>
                 )}
+                {updateDues &&
+                  (isMobile ? (
+                    <IconButton
+                      onClick={() => {
+                        setUpdateDues(false);
+                        setUpdatedUsersDues([]);
+                        window.location.reload();
+                      }}
+                    >
+                      <CloseIcon sx={{ color: "red" }} />
+                    </IconButton>
+                  ) : (
+                    <Button
+                      variant="outlined"
+                      onClick={() => {
+                        setUpdateDues(false);
+                        setUpdatedUsersDues([]);
+                        window.location.reload();
+                      }}
+                      startIcon={<ClearIcon />}
+                    >
+                      Cancel
+                    </Button>
+                  ))}
 
                 <Menu
                   anchorEl={duesAnchorEl}
@@ -644,19 +686,6 @@ const UserListTemplate = () => {
                     Copy Unpaid Emails
                   </MenuItem>
                 </Menu>
-                {updateDues && (
-                  <Button
-                    variant={"outlined"}
-                    onClick={() => {
-                      setUpdateDues(false);
-                      setUpdatedUsersDues([]);
-                      window.location.reload();
-                    }}
-                    startIcon={<ClearIcon />}
-                  >
-                    Cancel
-                  </Button>
-                )}
               </Box>
             )}
           </Box>

@@ -81,7 +81,7 @@ function UserDetailsTemplate({ params }) {
           }}
         >
           <IconButton
-            onClick={() => router.push("/Member")}
+            onClick={() => router.back()}
             role="back"
             sx={{ marginTop: isMobile ? "20px" : "0px" }}
           >
