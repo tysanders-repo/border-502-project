@@ -25,7 +25,7 @@ const Footer = () => {
 
       <VeritcalBox>
         <Typography variant="h6">Help & FAQ</Typography>
-        <IconButton href="/Help" sx={{ color: "white"}}>
+        <IconButton href="/Help" sx={{ color: "white" }}>
           <HelpOutlineIcon />
         </IconButton>
       </VeritcalBox>

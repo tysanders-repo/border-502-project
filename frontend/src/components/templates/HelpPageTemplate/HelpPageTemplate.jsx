@@ -25,7 +25,7 @@ const HelpPageTemplate = (props) => {
           alignItems: "center",
           justifyContent: "flex-start",
           "&::before": {
-            content: "''",
+            content: "",
             position: "absolute",
             top: 0,
             left: 0,
@@ -47,7 +47,8 @@ const HelpPageTemplate = (props) => {
             </AccordionSummary>
             <AccordionDetails>
               <Typography>
-                This platform is designed to help users manage horses and student records efficiently.
+                This platform is designed to help users manage horses and
+                student records efficiently.
               </Typography>
             </AccordionDetails>
           </Accordion>
@@ -57,7 +58,8 @@ const HelpPageTemplate = (props) => {
             </AccordionSummary>
             <AccordionDetails>
               <Typography>
-                To reset your password, go to the login page and click on "Forgot Password."
+                To reset your password, go to the login page and click on Forgot
+                Password.
               </Typography>
             </AccordionDetails>
           </Accordion>
@@ -67,7 +69,8 @@ const HelpPageTemplate = (props) => {
             </AccordionSummary>
             <AccordionDetails>
               <Typography>
-                Please reach out to support@yourplatform.com for any assistance you need.
+                Please reach out to support@yourplatform.com for any assistance
+                you need.
               </Typography>
             </AccordionDetails>
           </Accordion>
