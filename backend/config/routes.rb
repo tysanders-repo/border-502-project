@@ -20,6 +20,15 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :project_members do
+    collection do
+      get "project/:project_id", to: "project_members#by_project", as: "by_project"
+      # Messy for now, but need a way to get only the project member association
+      get "project/project_members/:project_id", to: "project_members#project_members_by_project", as: "project_members_by_project"
+      get "member/:uin", to: "project_members#by_member", as: "by_member"
+    end
+  end
+
   resources :member_diets do
     collection do
       get "exists/:uin/:item_id", to: "member_diets#exists", as: "exists"

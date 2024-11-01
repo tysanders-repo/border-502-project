@@ -3,14 +3,50 @@ class MembersController < ApplicationController
   # skip_before_action :authenticate_request
   # GET /members
   def index
-    @members = Member.all
-
-    render json: @members
+    @members = Member.includes(
+      member_interests: :interest,
+      member_diets: :dietary_restriction 
+    ).all
+  
+    members_with_grouped_interests = @members.map do |member|
+      grouped_interests = member.member_interests.includes(:interest).group_by do |mi|
+        mi.interest.interest_type
+      end
+      member.as_json(except: [:created_at, :updated_at]).merge(
+          interests: grouped_interests.transform_values do |interests|
+            interests.map { |mi| { id: mi.interest.id, name: mi.interest.name } }
+          end,
+          dietary_restrictions: member.member_diets.map do |diet|
+            { id: diet.dietary_restriction.id, item_name: diet.dietary_restriction.item_name }
+          end
+        )
+    end
+  
+    render json: members_with_grouped_interests
   end
-
+  
   # GET /members/1
   def show
-    render json: @member
+    @member = Member.includes(
+      member_interests: :interest,
+      member_diets: :dietary_restriction
+    ).find(params[:uin])
+  
+    grouped_interests = @member.member_interests.includes(:interest).group_by do |mi|
+      mi.interest.interest_type
+    end
+  
+    # Directly include member data along with grouped interests and dietary restrictions
+    member_with_details = @member.as_json(except: [:created_at, :updated_at]).merge(
+      interests: grouped_interests.transform_values do |interests|
+        interests.map { |mi| { id: mi.interest.id, name: mi.interest.name } }
+      end,
+      dietary_restrictions: @member.member_diets.map do |diet|
+        { id: diet.dietary_restriction.id, item_name: diet.dietary_restriction.item_name }
+      end
+    )
+  
+    render json: member_with_details
   end
 
   # POST /members
@@ -63,7 +99,7 @@ class MembersController < ApplicationController
     def update_params
       case request.headers["Role"]
       when "president"
-        params.require(:member).permit(:role, :archived, :accepted, :accomplishments, :paid_dues)
+        params.require(:member).permit(:role, :archived, :accepted, :paid_dues, accomplishments: {})
       when "vice_president"
         params.require(:member).permit(:role, :accepted, :accomplishments)
       when "treasurer"

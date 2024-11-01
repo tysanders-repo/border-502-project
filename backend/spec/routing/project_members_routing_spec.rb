@@ -10,6 +10,13 @@ RSpec.describe ProjectMembersController, type: :routing do
       expect(get: "/project_members/1").to route_to("project_members#show", id: "1")
     end
 
+    it "routes to #by_project via GET" do
+      expect(get: "/project_members/project/1").to route_to("project_members#by_project", project_id: "1")
+    end
+
+    it "routes to #by_member via GET" do
+      expect(get: "/project_members/member/123456").to route_to("project_members#by_member", uin: "123456")
+    end
 
     it "routes to #create" do
       expect(post: "/project_members").to route_to("project_members#create")

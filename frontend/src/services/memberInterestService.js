@@ -174,22 +174,6 @@ const checkMemberInterestExists = async (uin, interest_id) => {
   }
 };
 
-// Delete Association
-// async function deleteMemberDiet(uin) {
-//   const response = await fetch(`${API_URL}/member_diets/${uin}`, {
-//     method: "DELETE",
-//   });
-
-//   if (!response.ok) {
-//     throw new Error(response.statusText);
-//   }
-
-//   if (response.status === 204) {
-//     return null;
-//   }
-//   return response.json();
-// }
-
 export {
   createMemberInterest,
   getMemberCareerInterests,

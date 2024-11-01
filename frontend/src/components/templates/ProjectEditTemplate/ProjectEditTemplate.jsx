@@ -6,6 +6,9 @@ import { Container, Typography, Alert } from "@mui/material";
 import { fetchProject, updateProject } from "@services/projectService"; // Service functions to fetch and update project data
 import ProjectForm from "@components/organisms/ProjectForm/ProjectForm"; // Form component for editing project details
 import ProgressLoading from "@components/organisms/ProgressLoading";
+import { fetchAllUsers } from "@services/userService"
+import { getProjectMembers, deleteProjectMember, createProjectMember, getProjectMembersByProject } from "@services/projectMemberService";
+import { getUserRole } from "@services/authService";
 
 /**
  * ProjectEditTemplate component
@@ -30,6 +33,32 @@ function ProjectEditTemplate({ params }) {
   const [error, setError] = useState(null); // Stores error messages if the request fails.
   const [formError, setFormError] = useState({ name: false, uin: false }); // Tracks form validation errors.
   const [removedImages, setRemovedImages] = useState([]);
+  const [members, setMembers] = useState([]);
+  const [selectedMembers, setSelectedMembers] = useState([]);
+  const [prevMembers, setPrevMembers] = useState([]);
+
+  useEffect(() => {
+    async function fetchMembers() {
+      try {
+        const data = await fetchAllUsers();
+        setMembers(data);
+      } catch(error) {
+        console.error("Error fetching members: ", error);
+      }
+      setLoading(false);
+    }
+
+    fetchMembers();
+  }, []);
+
+  // Only sets array equal to new one if the new one deleted a member, or if the member added exists
+  const handleMembersRestrictionChange = async (event, newValue) => {
+    if(newValue.length < selectedMembers.length){
+      setSelectedMembers(newValue);
+    }else if(newValue.length > 0 && members.includes(newValue[newValue.length - 1])){
+      setSelectedMembers(newValue);
+    }
+  };
 
   const router = useRouter(); // Next.js router for handling navigation.
   const { id } = params; // Destructure `id` from the route parameters.
@@ -42,15 +71,32 @@ function ProjectEditTemplate({ params }) {
    */
   useEffect(() => {
     if (!id) return;
-
     const fetchCurrentProject = async () => {
-      try {
-        const json = await fetchProject(id); // Fetch project data using the provided ID.
-        setProject(json); // Update project state with fetched data.
-      } catch (e) {
-        setError(e); // Set error state if the request fails.
-      } finally {
-        setLoading(false); // Set loading state to false.
+      const role = await getUserRole();
+      if(role !== "project lead" && role !== "president"){ // Redirect non-admin users to homepage
+        router.push("/");
+      }else{
+        try {
+          const json = await fetchProject(id); // Fetch project data using the provided ID.
+          setProject(json); // Update project state with fetched data.
+          try {
+            const members = await getProjectMembers(id);
+            setSelectedMembers(members);
+            setPrevMembers(members);
+          } catch(e) {
+            setError(e);
+          }
+          try {
+            const data = await fetchAllUsers();
+            setMembers(data);
+          } catch(error) {
+            console.error("Error fetching members: ", error);
+          }
+        } catch (e) {
+          setError(e); // Set error state if the request fails.
+        } finally {
+          setLoading(false); // Set loading state to false.
+        }
       }
     };
 
@@ -95,6 +141,40 @@ function ProjectEditTemplate({ params }) {
     if (validateForm()) {
       try {
         const response = await updateProject(id, project, removedImages); // Update project data on the server.
+        let projectMembersDelete = [];
+        let projectMembersCreate = [];
+        // O(NM) but it doesn't matter because these arrays won't have many elements...
+        // Also didn't want to delete and create the project members again
+        for(const member of selectedMembers){
+          if(!(prevMembers.includes(member))){
+            projectMembersCreate.push(member);
+          }
+        }
+        for(const member of prevMembers){
+          if(!(selectedMembers.includes(member))){
+            projectMembersDelete.push(member);
+          }
+        }
+        const projectMembers = await getProjectMembersByProject(id);
+        for(const member of projectMembersDelete){
+          for(const pMember of projectMembers){
+            if(member.uin === pMember.uin){
+              try{
+                await deleteProjectMember(pMember.id);
+              }catch(e){
+                setError(e);
+              }
+            }
+          }
+        }
+        for(const member of projectMembersCreate){
+          try{
+            const projectMemberData = {uin: member.uin, project_id: id};
+            await createProjectMember(projectMemberData);
+          }catch(e){
+            setError(e);
+          }
+        }
         router.push(`/Project/${response.id}`); // Navigate to the manage page of the updated project.
       } catch (e) {
         setError(e); // Set error state if the update fails.
@@ -158,7 +238,7 @@ function ProjectEditTemplate({ params }) {
   }
 
   return (
-    <Container maxWidth="md" sx={{ textAlign: "center" }}>
+    <Container maxWidth="md" sx={{ textAlign: "center", margin: "50px auto" }}>
       {/* Page header */}
       <Typography variant="h4" component="h1" gutterBottom>
         Edit Project - {project.title}
@@ -177,6 +257,9 @@ function ProjectEditTemplate({ params }) {
         onSubmit={handleSubmit}
         handleCancel={handleCancel}
         handleImageChange={handleImageChange}
+        selectedMembers={selectedMembers}
+        members={members}
+        handleMembersRestrictionChange={handleMembersRestrictionChange}
       />
     </Container>
   );

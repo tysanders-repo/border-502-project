@@ -8,11 +8,13 @@ import {
   Drawer,
   List,
   ListItem,
+  Menu,
+  MenuItem,
   ListItemText,
   Button,
   useMediaQuery,
   Box,
-  CircularProgress,
+  Typography,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
@@ -25,7 +27,12 @@ import {
   getUserUIN,
 } from "@services/authService";
 import { signIn, signOut } from "next-auth/react";
-
+import Avatar from "@mui/material/Avatar";
+import HomeIcon from "@mui/icons-material/Home";
+import { useRouter } from "next/navigation";
+import PersonIcon from "@mui/icons-material/Person";
+import HardwareIcon from "@mui/icons-material/Hardware";
+import LogoutIcon from "@mui/icons-material/Logout";
 /**
  * A functional component that renders the navigation bar.
  * It includes links to different pages and handles user authentication.
@@ -36,6 +43,15 @@ export default function Navbar() {
   const [userRole, setUserRole] = useState(null); // State to store the user's role
   const theme = useTheme(); // Access the theme for responsive design
   const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Check if the screen is mobile-sized
+  const router = useRouter();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   /**
    * Toggles the drawer open/close state.
@@ -55,10 +71,12 @@ export default function Navbar() {
   // Menu items based on user role
   const menuItems = [
     { text: "Home", link: "/" },
-    // Conditionally render "View Members" if role is not "member" and role exists
     userRole &&
-      userRole !== "member" &&
-      userRole !== "subteam lead" && {
+      (userRole === "president" ||
+        userRole === "vice president" ||
+        userRole === "internal relations" ||
+        userRole === "project lead" ||
+        userRole === "admin") && {
         text: "View Members",
         link: "/Member",
       },
@@ -119,23 +137,18 @@ export default function Navbar() {
         } else {
           setUserRole(role);
         }
-        console.log(role);
-        console.log(uin);
       }
     };
 
     setup();
   }, []);
-  console.log(process.env.NEXTAUTH_URL);
-  console.log(process.env.REACT_APP_API_URL);
-  console.log(process.env.NEXT_PUBLIC_AUTHJS_LOCAL_SESSION_COOKIE);
-  console.log("Next line");
+
   return (
     <AppBar
       position="static"
       style={{
-        marginBottom: "30px",
         padding: "10px",
+        borderBottom: "1px solid rgba(255,255,255, 0.5)",
       }}
     >
       <Toolbar>
@@ -148,8 +161,9 @@ export default function Navbar() {
           }}
         >
           <Link href="/" passHref>
-            {/* <Image src="/logo.png" alt="Logo" height={70} /> */}
-            <img src="/logo.png" alt="Logo" style={{ height: "70px" }} />
+            <Box sx={{ paddingTop: "5px" }}>
+              <img src="/logo.png" alt="Logo" style={{ height: "70px" }} />
+            </Box>
           </Link>
           {isMobile ? (
             <>
@@ -170,16 +184,6 @@ export default function Navbar() {
                 gap: "20px",
               }}
             >
-              {menuItems.map((item, index) => (
-                <Button
-                  key={index}
-                  color="inherit"
-                  component={Link}
-                  href={item.link}
-                >
-                  {item.text}
-                </Button>
-              ))}
               {!userRole && (
                 <Button
                   variant="outlined"
@@ -190,20 +194,75 @@ export default function Navbar() {
                   New Member?
                 </Button>
               )}
-              <Button
-                variant="outline"
-                onClick={handleGoogleSignInAndOut}
-                color="inherit"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <CircularProgress color="white" />
-                ) : isSignedIn ? (
-                  "Sign out"
-                ) : (
-                  "Sign in"
-                )}
-              </Button>
+
+              {userRole && (
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Button
+                    sx={{ textTransform: "Capitalize" }}
+                    onClick={handleMenuOpen}
+                  >
+                    <Avatar
+                      sx={{ border: "1px solid white", bgcolor: "transparent" }}
+                    >
+                      <PersonIcon sx={{ color: theme.palette.common.white }} />
+                    </Avatar>
+                  </Button>
+
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    transformOrigin={{ vertical: "top", horizontal: "right" }}
+                  >
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        router.push("/");
+                      }}
+                    >
+                      <Box sx={{ display: "flex", gap: "5px" }}>
+                        <HomeIcon />
+                        <Typography> Home</Typography>
+                      </Box>
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        router.push("/Project");
+                      }}
+                    >
+                      <Box sx={{ display: "flex", gap: "5px" }}>
+                        <HardwareIcon />
+                        <Typography> Projects</Typography>
+                      </Box>
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        router.push("/Member");
+                      }}
+                    >
+                      <Box sx={{ display: "flex", gap: "5px" }}>
+                        <PersonIcon />
+                        <Typography>Members</Typography>
+                      </Box>
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        {
+                          handleMenuClose(), handleGoogleSignInAndOut();
+                        }
+                      }}
+                    >
+                      <Box sx={{ display: "flex", gap: "5px" }}>
+                        <LogoutIcon />
+                        <Typography>Sign Out</Typography>
+                      </Box>
+                    </MenuItem>
+                  </Menu>
+                </Box>
+              )}
             </Box>
           )}
         </Box>

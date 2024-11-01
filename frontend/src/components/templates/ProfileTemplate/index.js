@@ -1,1 +1,1 @@
-export { default } from './ProfileTemplate'
+export { default } from "./ProfileTemplate";

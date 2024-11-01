@@ -1,18 +1,12 @@
 import React from "react";
-import {
-  TextField,
-  Button,
-  CircularProgress,
-  Alert,
-  Box,
-  Typography,
-} from "@mui/material";
+import { TextField, Button, Alert, Box, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import { SideBySideBox, CaptionBox } from "./UserForm.styles"; // Custom styled components
 import { Majors } from "@utils/arrays/majors"; // Array of possible majors
 import { ShirtSizes } from "@utils/arrays/shirts"; // Array of possible shirt sizes
 import dayjs from "dayjs"; // Utility for date parsing and formatting
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"; // MUI DatePicker component
+import ProgressLoading from "../ProgressLoading";
 
 /**
  * UserForm Component
@@ -59,6 +53,7 @@ const UserForm = ({
   companyInterests,
   handleCompanyInterestRestrictionChange,
   selectedCompanyInterests,
+  edit = false,
 }) => {
   return (
     <form onSubmit={onSubmit} role="form">
@@ -102,15 +97,28 @@ const UserForm = ({
             error={formError.phone}
             helperText={formError.phone ? "Valid Phone Number is required" : ""}
           />
-          <TextField
-            label="Email"
-            variant="outlined"
-            fullWidth
-            value={user.email || ""}
-            onChange={(e) => onChange("email", e.target.value)}
-            error={formError.email}
-            helperText={formError.email ? "Valid Email is required" : ""}
-          />
+          <CaptionBox>
+            <TextField
+              label="Email"
+              variant="outlined"
+              fullWidth
+              value={user.email || ""}
+              onChange={(e) => onChange("email", e.target.value)}
+              error={formError.email}
+              helperText={formError.email ? "Valid Email is required" : ""}
+              slotProps={{
+                input: {
+                  readOnly: edit,
+                },
+              }}
+            />
+            <Typography
+              variant="caption"
+              sx={{ marginLeft: "10px", color: "grey" }}
+            >
+              {edit ? "Cannot be changed" : "Gmail only for sign-in. Cannot be changed after submitted."}
+            </Typography>
+          </CaptionBox>
         </SideBySideBox>
 
         {/* Major Field (AutoComplete) */}
@@ -134,16 +142,30 @@ const UserForm = ({
 
         {/* UIN and Graduation Year Fields */}
         <SideBySideBox>
-          <TextField
-            label="UIN"
-            variant="outlined"
-            fullWidth
-            type="number"
-            value={user.uin || ""}
-            onChange={(e) => onChange("uin", e.target.value)}
-            error={formError.uin}
-            helperText={formError.uin ? "Valid UIN is required" : ""}
-          />
+          <CaptionBox>
+            <TextField
+              label="UIN"
+              variant="outlined"
+              fullWidth
+              type="number"
+              value={user.uin || ""}
+              onChange={(e) => onChange("uin", e.target.value)}
+              error={formError.uin}
+              helperText={formError.uin ? "Valid UIN is required" : ""}
+              slotProps={{
+                input: {
+                  readOnly: edit,
+                },
+              }}
+            />
+            <Typography
+              variant="caption"
+              sx={{ marginLeft: "10px", color: "grey" }}
+            >
+              {edit ? "Cannot be changed" : "Cannot be changed after submitted"}
+            </Typography>
+          </CaptionBox>
+
           <TextField
             label="Graduation Year"
             variant="outlined"
@@ -293,13 +315,20 @@ const UserForm = ({
         />
 
         {/* Form Actions (Cancel and Submit Buttons) */}
-        <SideBySideBox sx={{ flexDirection: "column-reverse" }}>
+        <SideBySideBox
+          sx={{
+            flexDirection: "column-reverse",
+            justifyContent: "center",
+            margin: "0px auto",
+          }}
+        >
           <Button
             onClick={handleCancel}
             variant="outlined"
             color="primary"
             fullWidth
             disabled={loading}
+            sx={{ width: "250px" }}
           >
             Cancel
           </Button>
@@ -309,8 +338,9 @@ const UserForm = ({
             color="primary"
             fullWidth
             disabled={loading}
+            sx={{ width: "250px" }}
           >
-            {loading ? <CircularProgress size={24} /> : "Submit"}
+            {loading ? <ProgressLoading /> : "Submit"}
           </Button>
         </SideBySideBox>
 

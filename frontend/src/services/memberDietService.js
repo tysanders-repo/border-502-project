@@ -111,31 +111,8 @@ const checkMemberDietExists = async (uin, itemId) => {
   }
 };
 
-/**
- * Delete a specific member diet association by their UIN.
- *
- * @param {string} uin - The UIN of the member diet to delete.
- * @returns {Promise<void|null>} A promise that resolves when the diet is successfully deleted, or null if no content is returned.
- * @throws {Error} Throws an error if the request fails.
- */
-async function deleteMemberDiet(uin) {
-  const response = await fetch(`${API_URL}/member_diets/${uin}`, {
-    method: "DELETE",
-  });
-
-  if (!response.ok) {
-    throw new Error(response.statusText);
-  }
-
-  if (response.status === 204) {
-    return null;
-  }
-  return response.json();
-}
-
 export {
   createMemberDiet,
-  deleteMemberDiet,
   getMemberDiet,
   deleteMemberDietsByUin,
   checkMemberDietExists,

@@ -55,6 +55,25 @@ Member.find_or_create_by!(uin: 112233445) do |member|
   member.accomplishments = { "leadership" => "Led communication campaigns", "awards" => "Excellence in Communication 2023" }
 end
 
+Member.find_or_create_by!(uin: 511223344) do |member|
+  member.first_name = "EWB"
+  member.last_name = "Pl"
+  member.role = "project lead"
+  member.major = "Business Administration"
+  member.year = 2024
+  member.email = "ewbappprojectlead@gmail.com"
+  member.phone = 5511223344
+  member.tshirt_size = "S"
+  member.paid_dues = true
+  member.join_date = DateTime.now - 3.years
+  member.aggie_ring_day = DateTime.now + 6.months
+  member.birthday = DateTime.new(2003, 7, 12)
+  member.graduation_day = DateTime.new(2025, 5, 12)
+  member.archived = false
+  member.accepted = true
+  member.accomplishments = { "awards" => "Best EWB Officer 2023" }
+end
+
 Member.find_or_create_by!(uin: 210398210) do |member|
   member.first_name = "Jane"
   member.last_name = "Smith Jr"
