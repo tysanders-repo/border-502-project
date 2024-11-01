@@ -1,4 +1,4 @@
-export const API_URL = process.env.REACT_APP_API_URL;
+export const API_URL = process.env.NEXT_PUBLIC_NEXTAUTH_URL;
 const useSecureCookies =
   process.env.NEXT_PUBLIC_NEXTAUTH_URL.startsWith("https://");
 const cookiePrefix = useSecureCookies ? "__Secure-" : "";
