@@ -9,7 +9,7 @@ export default function ImageCarousel({ images = [], interval = 3000 }) {
   useEffect(() => {
     const cycleImages = () => {
       setCurrentIndex((prevIndex) =>
-        prevIndex === images.length - 1 ? 0 : prevIndex + 1,
+        prevIndex === images.length - 1 ? 0 : prevIndex + 1
       );
     };
 
@@ -20,13 +20,13 @@ export default function ImageCarousel({ images = [], interval = 3000 }) {
 
   const handlePrev = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1,
+      prevIndex === 0 ? images.length - 1 : prevIndex - 1
     );
   };
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === images.length - 1 ? 0 : prevIndex + 1,
+      prevIndex === images.length - 1 ? 0 : prevIndex + 1
     );
   };
 
@@ -36,6 +36,7 @@ export default function ImageCarousel({ images = [], interval = 3000 }) {
         <>
           <Box
             component="img"
+            key="Image"
             src={images[currentIndex]?.url}
             alt={`Image ${currentIndex + 1}`}
             sx={{
@@ -74,6 +75,7 @@ export default function ImageCarousel({ images = [], interval = 3000 }) {
         </>
       ) : (
         <img
+          key="placeholder image"
           src="/placeholder.png"
           style={{
             width: "100%",

@@ -9,7 +9,7 @@ export const capitalizeAndReplace = (str) => {
 export const handleCopyClick = async (
   textToCopy,
   setCopyStatus,
-  setSnackbarOpen
+  setSnackbarOpen,
 ) => {
   console.log(textToCopy);
   try {

@@ -6,8 +6,13 @@ import { Container, Typography, Alert } from "@mui/material";
 import { fetchProject, updateProject } from "@services/projectService"; // Service functions to fetch and update project data
 import ProjectForm from "@components/organisms/ProjectForm/ProjectForm"; // Form component for editing project details
 import ProgressLoading from "@components/organisms/ProgressLoading";
-import { fetchAllUsers } from "@services/userService"
-import { getProjectMembers, deleteProjectMember, createProjectMember, getProjectMembersByProject } from "@services/projectMemberService";
+import { fetchAllUsers } from "@services/userService";
+import {
+  getProjectMembers,
+  deleteProjectMember,
+  createProjectMember,
+  getProjectMembersByProject,
+} from "@services/projectMemberService";
 import { getUserRole } from "@services/authService";
 
 /**
@@ -42,7 +47,7 @@ function ProjectEditTemplate({ params }) {
       try {
         const data = await fetchAllUsers();
         setMembers(data);
-      } catch(error) {
+      } catch (error) {
         console.error("Error fetching members: ", error);
       }
       setLoading(false);
@@ -53,9 +58,12 @@ function ProjectEditTemplate({ params }) {
 
   // Only sets array equal to new one if the new one deleted a member, or if the member added exists
   const handleMembersRestrictionChange = async (event, newValue) => {
-    if(newValue.length < selectedMembers.length){
+    if (newValue.length < selectedMembers.length) {
       setSelectedMembers(newValue);
-    }else if(newValue.length > 0 && members.includes(newValue[newValue.length - 1])){
+    } else if (
+      newValue.length > 0 &&
+      members.includes(newValue[newValue.length - 1])
+    ) {
       setSelectedMembers(newValue);
     }
   };
@@ -73,9 +81,10 @@ function ProjectEditTemplate({ params }) {
     if (!id) return;
     const fetchCurrentProject = async () => {
       const role = await getUserRole();
-      if(role !== "project lead" && role !== "president"){ // Redirect non-admin users to homepage
+      if (role !== "project lead" && role !== "president") {
+        // Redirect non-admin users to homepage
         router.push("/");
-      }else{
+      } else {
         try {
           const json = await fetchProject(id); // Fetch project data using the provided ID.
           setProject(json); // Update project state with fetched data.
@@ -83,13 +92,13 @@ function ProjectEditTemplate({ params }) {
             const members = await getProjectMembers(id);
             setSelectedMembers(members);
             setPrevMembers(members);
-          } catch(e) {
+          } catch (e) {
             setError(e);
           }
           try {
             const data = await fetchAllUsers();
             setMembers(data);
-          } catch(error) {
+          } catch (error) {
             console.error("Error fetching members: ", error);
           }
         } catch (e) {
@@ -145,33 +154,33 @@ function ProjectEditTemplate({ params }) {
         let projectMembersCreate = [];
         // O(NM) but it doesn't matter because these arrays won't have many elements...
         // Also didn't want to delete and create the project members again
-        for(const member of selectedMembers){
-          if(!(prevMembers.includes(member))){
+        for (const member of selectedMembers) {
+          if (!prevMembers.includes(member)) {
             projectMembersCreate.push(member);
           }
         }
-        for(const member of prevMembers){
-          if(!(selectedMembers.includes(member))){
+        for (const member of prevMembers) {
+          if (!selectedMembers.includes(member)) {
             projectMembersDelete.push(member);
           }
         }
         const projectMembers = await getProjectMembersByProject(id);
-        for(const member of projectMembersDelete){
-          for(const pMember of projectMembers){
-            if(member.uin === pMember.uin){
-              try{
+        for (const member of projectMembersDelete) {
+          for (const pMember of projectMembers) {
+            if (member.uin === pMember.uin) {
+              try {
                 await deleteProjectMember(pMember.id);
-              }catch(e){
+              } catch (e) {
                 setError(e);
               }
             }
           }
         }
-        for(const member of projectMembersCreate){
-          try{
-            const projectMemberData = {uin: member.uin, project_id: id};
+        for (const member of projectMembersCreate) {
+          try {
+            const projectMemberData = { uin: member.uin, project_id: id };
             await createProjectMember(projectMemberData);
-          }catch(e){
+          } catch (e) {
             setError(e);
           }
         }

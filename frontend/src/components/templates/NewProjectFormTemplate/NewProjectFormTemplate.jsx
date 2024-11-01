@@ -49,13 +49,14 @@ function NewProjectFormTemplate() {
   useEffect(() => {
     async function fetchMembers() {
       const role = await getUserRole();
-      if(role !== "project lead" && role !== "president"){ // Redirect non-admin users to homepage
+      if (role !== "project lead" && role !== "president") {
+        // Redirect non-admin users to homepage
         router.push("/");
-      }else{
+      } else {
         try {
           const data = await fetchAllUsers();
           setMembers(data);
-        } catch(error) {
+        } catch (error) {
           console.error("Error fetching members: ", error);
         }
         setLoading(false);
@@ -116,11 +117,11 @@ function NewProjectFormTemplate() {
     try {
       const data = await createProject(project); // Call service to create a new project.
       const id = data.id;
-      for(const member of selectedMembers){
-        try{
-          const projectMemberData = {uin: member.uin, project_id: id};
+      for (const member of selectedMembers) {
+        try {
+          const projectMemberData = { uin: member.uin, project_id: id };
           await createProjectMember(projectMemberData);
-        } catch(error) {
+        } catch (error) {
           setError("Failed to create project member");
           console.error("Error: ", error);
         }

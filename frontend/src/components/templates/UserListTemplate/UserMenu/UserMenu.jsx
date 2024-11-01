@@ -104,7 +104,7 @@ const UserMenu = ({
                     handleCopyClick(
                       selectedUser?.email,
                       setCopyStatus,
-                      setSnackbarOpen
+                      setSnackbarOpen,
                     )
                   }
                 >

@@ -129,7 +129,7 @@ const HomepageTemplate = () => {
           color: theme.palette.text.primary,
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
-          alignItems: isMobile? "center": "flex-start",
+          alignItems: isMobile ? "center" : "flex-start",
           gap: "30px",
         }}
       >
@@ -251,6 +251,7 @@ const HomepageTemplate = () => {
           </Grid>
           <Grid item size={2}>
             <img
+              key={"Image 1"}
               src="./homepage8.png"
               style={{
                 width: "100%",
@@ -297,6 +298,7 @@ const HomepageTemplate = () => {
         {projects &&
           projects.map((project, index) => (
             <Box
+              key={`Project ${index}`}
               sx={{
                 display: "flex",
                 flexDirection: index % 2 === 0 ? "row-reverse" : "row",
@@ -307,6 +309,7 @@ const HomepageTemplate = () => {
               <Box sx={{ width: "50%" }}>
                 {project.image_urls?.length > 0 ? (
                   <img
+                    key={`Image ${index}`}
                     src={project.image_urls[0]?.url}
                     alt={project.title} // Add alt text for accessibility
                     style={{
@@ -317,6 +320,7 @@ const HomepageTemplate = () => {
                   />
                 ) : (
                   <img
+                    key={`placeholder ${index}`}
                     src={"./placeholder.png"}
                     alt="Placeholder project image"
                     style={{

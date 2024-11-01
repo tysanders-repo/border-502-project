@@ -151,7 +151,10 @@ function ProjectViewTemplate({ params }) {
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             {project.members.map((member) => (
-              <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Box
+                sx={{ display: "flex", alignItems: "center" }}
+                key={member.uin}
+              >
                 <Button
                   sx={{ color: "black", textTransform: "capitalize" }}
                   onClick={() => router.push(`/Member/${member.uin}`)}
