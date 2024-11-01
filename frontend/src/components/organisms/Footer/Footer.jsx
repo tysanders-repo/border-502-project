@@ -7,7 +7,7 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
-
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline"; // You can choose any icon here
 /**
  * A functional component that renders the footer of the application.
  * @returns {JSX.Element} The rendered Footer component.
@@ -21,6 +21,13 @@ const Footer = () => {
           <MailOutlineIcon />
           <Typography variant="body1">president@ewb-tamu.org</Typography>
         </Box>
+      </VeritcalBox>
+
+      <VeritcalBox>
+        <Typography variant="h6">Help & FAQ</Typography>
+        <IconButton href="/Help" sx={{ color: "white"}}>
+          <HelpOutlineIcon />
+        </IconButton>
       </VeritcalBox>
 
       <VeritcalBox>
