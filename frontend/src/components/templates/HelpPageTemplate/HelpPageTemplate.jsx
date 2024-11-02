@@ -25,7 +25,7 @@ const HelpPageTemplate = (props) => {
           alignItems: "center",
           justifyContent: "flex-start",
           "&::before": {
-            content: "",
+            content: '""',
             position: "absolute",
             top: 0,
             left: 0,
@@ -38,39 +38,47 @@ const HelpPageTemplate = (props) => {
         }}
       >
         <Box sx={{ position: "relative", zIndex: 3, color: "white" }}>
-          <Typography variant="h4" gutterBottom>
+          <Typography variant="h3" gutterBottom>
             Help & FAQs
+          </Typography>
+          <Typography variant="h4" gutterBottom>
+            General Use
           </Typography>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>What is this platform about?</Typography>
+              <Typography>How do I become a member?</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Typography>
-                This platform is designed to help users manage horses and
-                student records efficiently.
+                To apply to become a new member, click the "New Member?" button on the top right of the website in order to be taken to the member application form.
+                Submit the form which will be reviewed by organization leaders.
               </Typography>
+              <img src="/new_member.gif" alt="New member guide"/>
             </AccordionDetails>
           </Accordion>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>How do I reset my password?</Typography>
+              <Typography>How do I sign into my account?</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Typography>
-                To reset your password, go to the login page and click on Forgot
-                Password.
+                To sign into your account, just press sign in on the top right of the website and you will be redirected to a Google
+                sign-in. Use the email that you entered in your application to access your profile and actions.
               </Typography>
             </AccordionDetails>
           </Accordion>
+          <br></br>
+          <Typography variant="h4" gutterBottom>
+            Officers
+          </Typography>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>Who can I contact for support?</Typography>
+              <Typography>As an officer, how do I access the dashboards to manage organizational members and projects?</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Typography>
-                Please reach out to support@yourplatform.com for any assistance
-                you need.
+                After clicking on the profile icon on the right of the navigation bar, the "Members" option will lead to the members
+                dashboard while the "Projects" option will lead to the projects dashboard.
               </Typography>
             </AccordionDetails>
           </Accordion>
