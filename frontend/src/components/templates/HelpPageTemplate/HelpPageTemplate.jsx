@@ -73,6 +73,16 @@ const HelpPageTemplate = (props) => {
           </Typography>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>What are the specific actions and views available to each officer?</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                WIP
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography>As an officer, how do I access the dashboards to manage organizational members and projects?</Typography>
             </AccordionSummary>
             <AccordionDetails>
@@ -80,6 +90,54 @@ const HelpPageTemplate = (props) => {
                 After clicking on the profile icon on the right of the navigation bar, the "Members" option will lead to the members
                 dashboard while the "Projects" option will lead to the projects dashboard.
               </Typography>
+              <img src="/dashboards.gif" alt="Dashboard guide"/>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>How do I adjust the dues of members?</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                In the member dashboard, click on the "Manage Dues" button and then "Update Dues". Now you can update the due
+                status of active members.
+              </Typography>
+              <img src="/dues.gif" alt="Update dues guide"/>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>How do I view and manage applications?</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                In the member dashboard, if you have the permissions, you should be able to see a toggle to view applications which will display the current
+                member applications. From this display, you can accept or deny applications.
+              </Typography>
+              <img src="/applications.gif" alt="Applications guide"/>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>How do I archive, view archived members, and restore archived members?</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                In the member dashboard, if you have the permissions, you should be able to archive a member in a drop down menu, toggle to view archived members,
+                and restore archived members.
+              </Typography>
+              <img src="/archives.gif" alt="Archives guide"/>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>How do I filter and manage the information displayed for members?</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                In the member dashboard, you can adjust the columns that are displayed and filter for members with specific details.
+              </Typography>
+              <img src="/members.gif" alt="Member filter guide"/>
             </AccordionDetails>
           </Accordion>
         </Box>

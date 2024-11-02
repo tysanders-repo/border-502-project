@@ -195,6 +195,21 @@ export default function Navbar() {
                 </Button>
               )}
 
+              <Button
+                variant="outline"
+                onClick={handleGoogleSignInAndOut}
+                color="inherit"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <CircularProgress color="white" size={24} />
+                ) : isSignedIn ? (
+                  ""
+                ) : (
+                  "Sign in"
+                )}
+              </Button>
+
               {userRole && (
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Button
