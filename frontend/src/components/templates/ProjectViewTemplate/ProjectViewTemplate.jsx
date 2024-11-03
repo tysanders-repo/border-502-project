@@ -66,7 +66,7 @@ function ProjectViewTemplate({ params }) {
         const json = await fetchProject(id);
         
         // Check and parse `timeline` if needed
-        const parsedTimeline = json.timeline.map((item) => {
+        const parsedTimeline = json.timeline?.map((item) => {
           try {
             return typeof item === "string" ? JSON.parse(item) : item;
           } catch (error) {
@@ -105,10 +105,9 @@ function ProjectViewTemplate({ params }) {
   if (loading) return <ProgressLoading />;
 
   // If an error occurred while fetching data, display an error message.
-  if (error)
-    return (
-      <Alert severity="error">Error fetching project: {error.message}</Alert>
-    );
+  if (error) {
+    return <Alert severity="error">Error fetching project: {error.message}</Alert>;
+  }
 
   return (
     <Box>

@@ -45,6 +45,12 @@ async function createProject(projectData) {
   formData.append("project[title]", projectData.title);
   formData.append("project[description]", projectData.description);
   formData.append("project[date]", projectData.date);
+  
+  if (Array.isArray(projectData.timeline) && projectData.timeline.length > 0) {
+    projectData.timeline.forEach((milestone) => {
+      formData.append("project[timeline][]", JSON.stringify(milestone));
+    });
+  }
 
   projectData.images.forEach((image) => {
     formData.append("project[images][]", image);
