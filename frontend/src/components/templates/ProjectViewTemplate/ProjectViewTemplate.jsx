@@ -12,8 +12,17 @@ import {
   Alert,
   Box,
   IconButton,
-  Button,
+  Button
 } from "@mui/material";
+import {
+  Timeline,
+  TimelineItem,
+  TimelineSeparator,
+  TimelineConnector,
+  TimelineContent,
+  TimelineDot,
+  timelineItemClasses 
+} from "@mui/lab";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ImageCarousel from "@components/organisms/ImageCarousel";
 import { BackgroundBox, DescriptionBox } from "./ProjectViewTemplate.styles";
@@ -54,17 +63,43 @@ function ProjectViewTemplate({ params }) {
   useEffect(() => {
     const fetchCurrentProject = async () => {
       try {
-        const json = await fetchProject(id); // Fetch project data using the provided ID.
-        setProject(json); // Update project state with fetched data.
-        setLoading(false); // Set loading state to false.
+        const json = await fetchProject(id);
+        
+        // Check and parse `timeline` if needed
+        const parsedTimeline = json.timeline.map((item) => {
+          try {
+            return typeof item === "string" ? JSON.parse(item) : item;
+          } catch (error) {
+            console.warn("Error parsing timeline item:", item);
+            return null; // Skip or handle the invalid item
+          }
+        }).filter(Boolean); // Filter out null items
+  
+        setProject({ ...json, timeline: parsedTimeline });
+        setLoading(false);
       } catch (error) {
-        setError(error); // Set error state if the request fails.
-        setLoading(false); // Set loading state to false.
+        setError(error);
+        setLoading(false);
       }
     };
-
+  
     fetchCurrentProject();
   }, [id]);
+
+
+  const getColor = (status) => {
+    switch (status) {
+      case "completed":
+        return "success";
+      case "in progress":
+        return "secondary";
+      case "upcoming":
+        return "grey";
+      default:
+        return "grey";
+    }
+  };
+
 
   // If the data is still loading, show a loading spinner.
   if (loading) return <ProgressLoading />;
@@ -175,10 +210,42 @@ function ProjectViewTemplate({ params }) {
           flexItem
           sx={{ mx: 2, bgcolor: theme.palette.primary.main }}
         />
-        <Box>
-          <Typography variant="h4" gutterBottom sx={{ textAlign: "center" }}>
-            Important Updates
-          </Typography>
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Box>
+            <Typography variant="h4" gutterBottom sx={{ textAlign: "center" }}>
+              Important Updates
+            </Typography>
+          </Box>
+          <Box>
+            <Timeline
+              sx={{
+                [`& .${timelineItemClasses.root}:before`]: {
+                  flex: 0,
+                  padding: 0,
+                },
+              }}
+            >
+              {project.timeline
+                ?.sort((a, b) => new Date(a.date) - new Date(b.date))
+                .map((milestone, index) => (
+                  <TimelineItem key={milestone.id}>
+                    <TimelineSeparator>
+                      <TimelineDot color={getColor(milestone.status)} />
+                      {index < project.timeline.length - 1 && <TimelineConnector />}
+                    </TimelineSeparator>
+                    <TimelineContent>
+                      <Typography variant="h6">{milestone.title}</Typography>
+                      <Typography variant="subtitle1">
+                        {milestone.date
+                          ? format(new Date(milestone.date), "MMMM d, yyyy")
+                          : "Date not available"}
+                      </Typography>
+                      <br />
+                    </TimelineContent>
+                  </TimelineItem>
+                ))}
+            </Timeline>
+          </Box>
         </Box>
       </DescriptionBox>
     </Box>

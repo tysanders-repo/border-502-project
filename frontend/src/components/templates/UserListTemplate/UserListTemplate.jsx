@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   fetchAllUsers,
-  updateUserPresident,
+  co,
   updateUserDues,
 } from "@services/userService";
 
@@ -75,6 +75,7 @@ const UserListTemplate = () => {
   const handleClick = (event) => {
     setDuesAnchorEl(event.currentTarget);
   };
+
 
   const handleClose = () => {
     setDuesAnchorEl(null);

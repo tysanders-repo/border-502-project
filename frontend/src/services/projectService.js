@@ -84,6 +84,13 @@ async function updateProject(id, projectData, removedImages = []) {
   formData.append("project[description]", projectData.description);
   formData.append("project[date]", projectData.date);
 
+  if (Array.isArray(projectData.timeline) && projectData.timeline.length > 0) {
+    // Send timeline as an array of milestones
+    projectData.timeline.forEach((milestone) => {
+      formData.append("project[timeline][]", JSON.stringify(milestone));
+    });
+  }
+
   if (Array.isArray(projectData.images) && projectData.images.length > 0) {
     projectData.images.forEach((image) => {
       formData.append("project[images][]", image);
@@ -95,6 +102,7 @@ async function updateProject(id, projectData, removedImages = []) {
       formData.append("project[remove_images][]", image);
     });
   }
+
   const response = await fetch(`${API_URL}/projects/${id}`, {
     method: "PUT",
     body: formData,
@@ -104,6 +112,9 @@ async function updateProject(id, projectData, removedImages = []) {
   }
   return response.json();
 }
+
+
+
 
 /**
  * Delete a project by ID from the API.

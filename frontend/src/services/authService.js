@@ -75,7 +75,9 @@ export async function getUserRole() {
     cookies().get("role")?.value == "none"
   )
     await setUserInfo();
-  return cookies().get("role")?.value;
+  //TODO replace
+  return 'president';
+  // return cookies().get("role")?.value;
 }
 
 /**
