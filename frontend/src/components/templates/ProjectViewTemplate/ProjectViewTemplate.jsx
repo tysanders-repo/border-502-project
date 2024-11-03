@@ -65,15 +65,17 @@ function ProjectViewTemplate({ params }) {
       try {
         const json = await fetchProject(id);
         
-        // Check and parse `timeline` if needed
-        const parsedTimeline = json.timeline?.map((item) => {
-          try {
-            return typeof item === "string" ? JSON.parse(item) : item;
-          } catch (error) {
-            console.warn("Error parsing timeline item:", item);
-            return null; // Skip or handle the invalid item
-          }
-        }).filter(Boolean); // Filter out null items
+        console.log("Project Data:", json); // Log the fetched project data
+        const parsedTimeline = Array.isArray(json.timeline) ? 
+          json.timeline.map((item) => {
+            try {
+              return typeof item === "string" ? JSON.parse(item) : item;
+            } catch (error) {
+              console.warn("Error parsing timeline item:", item);
+              return null; // Skip or handle the invalid item
+            }
+          }).filter(Boolean) : []; // Default to empty array if not an array
+  
   
         setProject({ ...json, timeline: parsedTimeline });
         setLoading(false);
