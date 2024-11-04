@@ -10,7 +10,7 @@ import { HeaderText, ImageBox, DetailsBox } from "./HelpPageTemplate.styles";
 
 const HelpPageTemplate = (props) => {
   return (
-    <StyledHelpPageTemplate>
+    // <StyledHelpPageTemplate>
       <Box
         sx={{
           position: "relative",
@@ -115,7 +115,6 @@ const HelpPageTemplate = (props) => {
               <ImageBox>
                 <img src="/dashboards.gif" alt="Dashboard guide" />
               </ImageBox>
-            </DetailsBox>
           </AccordionDetails>
         </Accordion>
         <Accordion>
@@ -192,7 +191,8 @@ const HelpPageTemplate = (props) => {
           </AccordionDetails>
         </Accordion>
       </Box>
-    </Box>
+      </Box>
+    // </StyledHelpPageTemplate>
   );
 };
 
