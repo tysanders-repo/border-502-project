@@ -407,9 +407,9 @@ const UserListTemplate = () => {
     const fetchData = async () => {
       await Promise.all([loadUsers(), loadRole()]);
       const role = await getUserRole();
-      if(role === undefined || role === "none"){
+      if (role === undefined || role === "none") {
         router.push("/");
-      }else{
+      } else {
         setLoading(false); // Set loading to false after both are completed
       }
     };

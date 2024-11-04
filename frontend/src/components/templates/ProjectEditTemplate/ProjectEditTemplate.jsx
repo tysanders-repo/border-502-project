@@ -138,8 +138,12 @@ function ProjectEditTemplate({ params }) {
         const response = await updateProject(id, project, removedImages); // Update project data on the server.
         // O(NM) but it doesn't matter because these arrays won't have many elements...
         // Also didn't want to delete and create the project members again
-        const projectMembersCreate = selectedMembers.filter((member) => !prevMembers.includes(member));
-        const projectMembersDelete = prevMembers.filter((member) => !selectedMembers.includes(member));
+        const projectMembersCreate = selectedMembers.filter(
+          (member) => !prevMembers.includes(member),
+        );
+        const projectMembersDelete = prevMembers.filter(
+          (member) => !selectedMembers.includes(member),
+        );
         const projectMembers = await getProjectMembersByProject(id);
         for (const member of projectMembersDelete) {
           for (const pMember of projectMembers) {

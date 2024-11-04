@@ -56,9 +56,9 @@ function ProfileTemplate({ params }) {
   const fetchUserData = async () => {
     setLoading(true);
     const role = await getUserRole();
-    if(role === undefined || role === "member" || role === "none"){
+    if (role === undefined || role === "member" || role === "none") {
       router.push("/");
-    }else{
+    } else {
       try {
         const isCurrentUser = params.id === undefined;
         const id = isCurrentUser ? await getUserUIN() : params.id;

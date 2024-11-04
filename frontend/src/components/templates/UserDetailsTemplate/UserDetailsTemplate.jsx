@@ -49,9 +49,9 @@ function UserDetailsTemplate({ params }) {
   useEffect(() => {
     const fetchCurrentUser = async () => {
       const role = await getUserRole();
-      if(role === undefined || role === "none" || role === "member"){
+      if (role === undefined || role === "none" || role === "member") {
         router.push("/");
-      }else{
+      } else {
         try {
           const json = await fetchUser(id);
           setUser(json);

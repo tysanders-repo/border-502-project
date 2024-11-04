@@ -133,9 +133,9 @@ function UserEditTemplate({
       setLoading(true);
       const uin = await getUserUIN();
       const role = await getUserRole();
-      if(uin !== id && role !== "president"){
+      if (uin !== id && role !== "president") {
         router.push("/");
-      }else{
+      } else {
         try {
           // Fetch user data based on ID
           const userData = await fetchUser(id);
