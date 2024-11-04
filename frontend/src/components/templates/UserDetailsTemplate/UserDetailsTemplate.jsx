@@ -48,13 +48,18 @@ function UserDetailsTemplate({ params }) {
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
-      try {
-        const json = await fetchUser(id);
-        setUser(json);
-        setLoading(false);
-      } catch (error) {
-        setError(error);
-        setLoading(false);
+      const role = await getUserRole();
+      if (role === undefined || role === "none" || role === "member") {
+        router.push("/");
+      } else {
+        try {
+          const json = await fetchUser(id);
+          setUser(json);
+          setLoading(false);
+        } catch (error) {
+          setError(error);
+          setLoading(false);
+        }
       }
     };
 

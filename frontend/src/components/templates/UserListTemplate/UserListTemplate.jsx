@@ -406,7 +406,12 @@ const UserListTemplate = () => {
     // Load role and users in parallel
     const fetchData = async () => {
       await Promise.all([loadUsers(), loadRole()]);
-      setLoading(false); // Set loading to false after both are completed
+      const role = await getUserRole();
+      if (role === undefined || role === "none") {
+        router.push("/");
+      } else {
+        setLoading(false); // Set loading to false after both are completed
+      }
     };
 
     fetchData();
