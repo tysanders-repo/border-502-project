@@ -291,7 +291,7 @@ export default function Navbar() {
                     <MenuItem
                       onClick={() => {
                         handleMenuClose();
-                        router.push("/Help");
+                        router.push("/Profile");
                       }}
                     >
                       <Box sx={{ display: "flex", gap: "5px" }}>
