@@ -15,6 +15,8 @@ import {
   Box,
   Button,
   useMediaQuery,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useTheme } from "@mui/material/styles";
@@ -35,7 +37,8 @@ import UserMenu from "./UserMenu";
 import { UserRoles } from "@utils/arrays/roles";
 import { capitalizeAndReplace } from "@utils/functions";
 import MailIcon from "@mui/icons-material/Mail";
-
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 import { handleCopyClick } from "@utils/functions";
 
 /**
@@ -67,6 +70,16 @@ const UserListTemplate = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [copyStatus, setCopyStatus] = useState(false);
 
+  const [duesAnchorEl, setDuesAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setDuesAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setDuesAnchorEl(null);
+  };
+
   const handleOpenAccomplishmentsDialog = (member) => {
     setSelectedMember(member);
     setOpenAccomplishmentsDialog(true);
@@ -84,8 +97,8 @@ const UserListTemplate = () => {
       });
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uin === selectedMember.uin ? { ...user, accomplishments } : user
-        )
+          user.uin === selectedMember.uin ? { ...user, accomplishments } : user,
+        ),
       );
     } catch (error) {
       console.error("Error updating accomplishments:", error);
@@ -96,12 +109,17 @@ const UserListTemplate = () => {
 
   const handleUpdateDeleteUser = () => {
     setUsers((prevUsers) =>
-      prevUsers.filter((user) => user.uin !== selectedUser.uin)
+      prevUsers.filter((user) => user.uin !== selectedUser.uin),
     );
     window.location.reload();
   };
   const handleCloseRoleDialog = () => {
     setOpenRoleDialog(false);
+  };
+
+  const handleClickUpdateDues = () => {
+    setUpdateDues(true);
+    handleClose();
   };
 
   const handleRoleChange = async () => {
@@ -111,8 +129,10 @@ const UserListTemplate = () => {
       await updateUserPresident(selectedUser.uin, { role: selectedRole });
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uin === selectedUser.uin ? { ...user, role: selectedRole } : user
-        )
+          user.uin === selectedUser.uin
+            ? { ...user, role: selectedRole }
+            : user,
+        ),
       );
       handleCloseRoleDialog();
     } catch (err) {
@@ -128,8 +148,8 @@ const UserListTemplate = () => {
       try {
         await Promise.all(
           updatedUsersDues.map((user) =>
-            updateUserDues(user.uin, user.paid_dues)
-          )
+            updateUserDues(user.uin, user.paid_dues),
+          ),
         );
         setUpdatedUsersDues([]); // Clear the updates after successful submission
         setUpdateDues(false);
@@ -161,6 +181,13 @@ const UserListTemplate = () => {
     graduation_day: false,
     accepted: false,
   });
+
+  useEffect(() => {
+    setColumnVisibilityModel((prevModel) => ({
+      ...prevModel,
+      paid_dues: true,
+    }));
+  }, [updateDues]);
 
   // Adjusting display params when changing screen sizes
   useEffect(() => {
@@ -277,13 +304,13 @@ const UserListTemplate = () => {
                 // Update the updated users array
                 setUpdatedUsersDues((prevUsers) => {
                   const existingUserIndex = prevUsers.findIndex(
-                    (user) => user.uin === params.row.uin
+                    (user) => user.uin === params.row.uin,
                   );
 
                   if (existingUserIndex > -1) {
                     // if the user exists, then remove them because set to their original status
                     return prevUsers.filter(
-                      (user) => user.uin !== params.row.uin
+                      (user) => user.uin !== params.row.uin,
                     );
                   } else {
                     // If the user is not in the array add them
@@ -299,8 +326,8 @@ const UserListTemplate = () => {
                   prevUsers.map((user) =>
                     user.uin === params.row.uin
                       ? { ...user, paid_dues: newValue }
-                      : user
-                  )
+                      : user,
+                  ),
                 );
               }}
               inputProps={{ "aria-label": "controlled" }}
@@ -409,8 +436,8 @@ const UserListTemplate = () => {
       await updateUserPresident(uin, { accepted: true });
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uin === uin ? { ...user, accepted: true } : user
-        )
+          user.uin === uin ? { ...user, accepted: true } : user,
+        ),
       );
     } catch (err) {
       setError(err);
@@ -422,8 +449,8 @@ const UserListTemplate = () => {
       await updateUserPresident(uin, { archived: status });
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uin === uin ? { ...user, archived: status } : user
-        )
+          user.uin === uin ? { ...user, archived: status } : user,
+        ),
       );
       window.location.reload();
     } catch (err) {
@@ -478,7 +505,7 @@ const UserListTemplate = () => {
             onClick={() => router.push(`/Project`)}
             startIcon={<ManageAccountsIcon />}
           >
-            {isMobile ? "Projects" : "Manage Projects"}
+            {isMobile ? "Projects" : "View Projects"}
           </Button>
         </Box>
 
@@ -590,46 +617,82 @@ const UserListTemplate = () => {
           </Box>
           <Box>
             {filter === "active" && (
-              <Box sx={{ display: "flex", gap: "5px" }}>
-                <Button
-                  variant={updateDues ? "contained" : "outlined"}
-                  onClick={() =>
-                    updateDues ? handleDuesSubmit() : setUpdateDues(true)
-                  }
-                  startIcon={<AttachMoneyIcon />}
-                >
-                  {updateDues ? "Submit Dues" : "Update Dues"}
-                </Button>
-                {updateDues && (
+              <Box sx={{ display: "flex", gap: "5px", alignItems: "center" }}>
+                {isMobile && updateDues && (
+                  <Typography variant="h6">Submit:</Typography>
+                )}
+
+                {updateDues ? (
+                  isMobile ? (
+                    <IconButton onClick={handleDuesSubmit}>
+                      <CheckIcon sx={{ color: "green" }} />
+                    </IconButton>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      onClick={handleDuesSubmit}
+                      startIcon={<AttachMoneyIcon />}
+                    >
+                      Submit Dues
+                    </Button>
+                  )
+                ) : (
                   <Button
-                    variant={"outlined"}
-                    onClick={() => {
-                      setUpdateDues(false);
-                      setUpdatedUsersDues([]);
-                      window.location.reload();
-                    }}
-                    startIcon={<ClearIcon />}
+                    variant="outlined"
+                    onClick={handleClick}
+                    startIcon={<AttachMoneyIcon />}
                   >
-                    Cancel
+                    Manage Dues
                   </Button>
                 )}
-                <IconButton
-                  sx={{
-                    color: theme.palette.primary.main,
-                  }}
-                  onClick={() =>
-                    handleCopyClick(
-                      filteredUsers
-                        .filter((member) => !member.paid_dues)
-                        .map((member) => member.email)
-                        .join(", "),
-                      setCopyStatus,
-                      setSnackbarOpen
-                    )
-                  }
+                {updateDues &&
+                  (isMobile ? (
+                    <IconButton
+                      onClick={() => {
+                        setUpdateDues(false);
+                        setUpdatedUsersDues([]);
+                        window.location.reload();
+                      }}
+                    >
+                      <CloseIcon sx={{ color: "red" }} />
+                    </IconButton>
+                  ) : (
+                    <Button
+                      variant="outlined"
+                      onClick={() => {
+                        setUpdateDues(false);
+                        setUpdatedUsersDues([]);
+                        window.location.reload();
+                      }}
+                      startIcon={<ClearIcon />}
+                    >
+                      Cancel
+                    </Button>
+                  ))}
+
+                <Menu
+                  anchorEl={duesAnchorEl}
+                  open={Boolean(duesAnchorEl)}
+                  onClose={handleClose}
                 >
-                  <MailIcon />
-                </IconButton>
+                  <MenuItem onClick={handleClickUpdateDues}>
+                    Update Dues
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() =>
+                      handleCopyClick(
+                        filteredUsers
+                          .filter((member) => !member.paid_dues)
+                          .map((member) => member.email)
+                          .join(", "),
+                        setCopyStatus,
+                        setSnackbarOpen,
+                      )
+                    }
+                  >
+                    Copy Unpaid Emails
+                  </MenuItem>
+                </Menu>
               </Box>
             )}
           </Box>

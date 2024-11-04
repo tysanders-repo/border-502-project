@@ -8,11 +8,13 @@ import {
   Drawer,
   List,
   ListItem,
+  Menu,
+  MenuItem,
   ListItemText,
   Button,
   useMediaQuery,
   Box,
-  CircularProgress,
+  Typography,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
@@ -26,8 +28,11 @@ import {
 } from "@services/authService";
 import { signIn, signOut } from "next-auth/react";
 import Avatar from "@mui/material/Avatar";
-import Person2Icon from "@mui/icons-material/Person2";
+import HomeIcon from "@mui/icons-material/Home";
 import { useRouter } from "next/navigation";
+import PersonIcon from "@mui/icons-material/Person";
+import HardwareIcon from "@mui/icons-material/Hardware";
+import LogoutIcon from "@mui/icons-material/Logout";
 /**
  * A functional component that renders the navigation bar.
  * It includes links to different pages and handles user authentication.
@@ -39,6 +44,14 @@ export default function Navbar() {
   const theme = useTheme(); // Access the theme for responsive design
   const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Check if the screen is mobile-sized
   const router = useRouter();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   /**
    * Toggles the drawer open/close state.
@@ -58,7 +71,6 @@ export default function Navbar() {
   // Menu items based on user role
   const menuItems = [
     { text: "Home", link: "/" },
-    // Conditionally render "View Members" if role is not "member" and role exists
     userRole &&
       (userRole === "president" ||
         userRole === "vice president" ||
@@ -173,16 +185,6 @@ export default function Navbar() {
                 gap: "20px",
               }}
             >
-              {menuItems.map((item, index) => (
-                <Button
-                  key={index}
-                  color="inherit"
-                  component={Link}
-                  href={item.link}
-                >
-                  {item.text}
-                </Button>
-              ))}
               {!userRole && (
                 <Button
                   variant="outlined"
@@ -194,30 +196,73 @@ export default function Navbar() {
                 </Button>
               )}
 
-              <Button
-                variant="outline"
-                onClick={handleGoogleSignInAndOut}
-                color="inherit"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <CircularProgress color="white" size={24} />
-                ) : isSignedIn ? (
-                  "Sign out"
-                ) : (
-                  "Sign in"
-                )}
-              </Button>
-
               {userRole && (
-                <Avatar
-                  sx={{ bgcolor: "white" }}
-                  onClick={() => router.push("/Profile")}
-                >
-                  <Person2Icon
-                    sx={{ color: `${theme.palette.primary.main}` }}
-                  />
-                </Avatar>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Button
+                    sx={{ textTransform: "Capitalize" }}
+                    onClick={handleMenuOpen}
+                  >
+                    <Avatar
+                      sx={{ border: "1px solid white", bgcolor: "transparent" }}
+                    >
+                      <PersonIcon sx={{ color: theme.palette.common.white }} />
+                    </Avatar>
+                  </Button>
+
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    transformOrigin={{ vertical: "top", horizontal: "right" }}
+                  >
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        router.push("/");
+                      }}
+                    >
+                      <Box sx={{ display: "flex", gap: "5px" }}>
+                        <HomeIcon />
+                        <Typography> Home</Typography>
+                      </Box>
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        router.push("/Project");
+                      }}
+                    >
+                      <Box sx={{ display: "flex", gap: "5px" }}>
+                        <HardwareIcon />
+                        <Typography> Projects</Typography>
+                      </Box>
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        router.push("/Member");
+                      }}
+                    >
+                      <Box sx={{ display: "flex", gap: "5px" }}>
+                        <PersonIcon />
+                        <Typography>Members</Typography>
+                      </Box>
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        {
+                          handleMenuClose(), handleGoogleSignInAndOut();
+                        }
+                      }}
+                    >
+                      <Box sx={{ display: "flex", gap: "5px" }}>
+                        <LogoutIcon />
+                        <Typography>Sign Out</Typography>
+                      </Box>
+                    </MenuItem>
+                  </Menu>
+                </Box>
               )}
             </Box>
           )}

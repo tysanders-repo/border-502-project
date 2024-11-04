@@ -1,6 +1,5 @@
 import { API_URL } from "../constants";
 
-
 /**
  * Create a new project member association.
  *
@@ -54,12 +53,15 @@ async function getProjectMembers(project_id) {
 
 async function getProjectMembersByProject(project_id) {
   try {
-    const response = await fetch(`${API_URL}/project_members/project/project_members/${project_id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `${API_URL}/project_members/project/project_members/${project_id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
 
     if (!response.ok) {
       throw new Error("Failed to fetch project members");
@@ -131,9 +133,9 @@ const deleteProjectMember = async (projectMemberId) => {
 };
 
 export {
-    createProjectMember,
-    getMemberProjects,
-    getProjectMembers,
-    getProjectMembersByProject,
-    deleteProjectMember,
+  createProjectMember,
+  getMemberProjects,
+  getProjectMembers,
+  getProjectMembersByProject,
+  deleteProjectMember,
 };

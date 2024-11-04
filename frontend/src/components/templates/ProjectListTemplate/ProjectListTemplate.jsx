@@ -77,18 +77,18 @@ function ProjectListTemplate() {
               },
             }}
           >
-            {userAuthorized ?
-            (<MenuItem
-              component={Link}
-              href={`/Project/${selectedProject?.id}/Edit`}
-              onClick={handleCloseMenu}
-            >
-              Edit
-            </MenuItem>)
-            : null}
-            {userAuthorized ? 
-            (<MenuItem onClick={handleDeleteClick}>Delete</MenuItem>)
-            : null}
+            {userAuthorized ? (
+              <MenuItem
+                component={Link}
+                href={`/Project/${selectedProject?.id}/Edit`}
+                onClick={handleCloseMenu}
+              >
+                Edit
+              </MenuItem>
+            ) : null}
+            {userAuthorized ? (
+              <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
+            ) : null}
             <MenuItem
               component={Link}
               href={`/Project/${selectedProject?.id}`}
@@ -103,7 +103,7 @@ function ProjectListTemplate() {
                     .map((member) => member.email)
                     .join(", "),
                   setCopyStatus,
-                  setSnackbarOpen
+                  setSnackbarOpen,
                 )
               }
             >
@@ -122,11 +122,13 @@ function ProjectListTemplate() {
    */
   const loadProjectsAndSetAuth = async () => {
     const role = await getUserRole();
-    if(role === undefined || role === "member" || role === "none"){ // Redirect non-admin users to homepage
+    if (role === undefined || role === "member" || role === "none") {
+      // Redirect non-admin users to homepage
       router.push("/");
-    }else{
-      if(role === "project lead" || role === "president") // Only allow president and project lead to edit and delete projects
-          setUserAuthorized(true);
+    } else {
+      if (role === "project lead" || role === "president")
+        // Only allow president and project lead to edit and delete projects
+        setUserAuthorized(true);
       try {
         const data = await fetchAllProjects(); // Fetch project data from the service.
         setProjects(data); // Update projects state with fetched data.
@@ -213,15 +215,15 @@ function ProjectListTemplate() {
         >
           <Typography variant="h3">Projects</Typography>
           <Box sx={{ display: "flex", gap: "10px" }}>
-            {userAuthorized ?
-            (<Button
-              variant="outlined"
-              startIcon={<AddCircleOutlineIcon />}
-              onClick={() => router.push("Project/New")}
-            >
-              {isMobile ? "Project" : "Add Project"}
-            </Button>) :
-            null}
+            {userAuthorized ? (
+              <Button
+                variant="outlined"
+                startIcon={<AddCircleOutlineIcon />}
+                onClick={() => router.push("Project/New")}
+              >
+                {isMobile ? "Project" : "Add Project"}
+              </Button>
+            ) : null}
             <Button
               variant="contained"
               onClick={() => router.push("/Member")}

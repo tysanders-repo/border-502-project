@@ -167,14 +167,12 @@ const ProjectForm = ({
           multiple
           value={selectedMembers}
           options={members}
-          getOptionLabel={(option) => option.first_name + " " + option.last_name}
+          getOptionLabel={(option) =>
+            option.first_name + " " + option.last_name
+          }
           onChange={handleMembersRestrictionChange}
           renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Members"
-              variant="outlined"
-            />
+            <TextField {...params} label="Members" variant="outlined" />
           )}
         />
 
