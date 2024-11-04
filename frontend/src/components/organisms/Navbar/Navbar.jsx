@@ -113,7 +113,6 @@ export default function Navbar() {
       console.error("Google error:", error);
     } finally {
       setIsLoading(false);
-      window.location.reload();
     }
   };
 
