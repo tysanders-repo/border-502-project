@@ -68,6 +68,40 @@ const HelpPageTemplate = (props) => {
           </Accordion>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <HeaderText>
+                How do I access and edit my profile?
+              </HeaderText>
+            </AccordionSummary>
+            <AccordionDetails>
+              <DetailsBox>
+                <Typography>
+                  You can access the profile through the drop down on the top-right of the screen after signing in.
+                </Typography>
+                <ImageBox>
+                  <img src="/profile.gif" alt="Profile guide"/>
+                </ImageBox>
+              </DetailsBox>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <HeaderText>
+                How do I edit my information?
+              </HeaderText>
+            </AccordionSummary>
+            <AccordionDetails>
+              <DetailsBox>
+                <Typography>
+                  You can edit your information through the edit form located in the profile.
+                </Typography>
+                <ImageBox>
+                  <img src="/profile.gif" alt="Profile guide"/>
+                </ImageBox>
+              </DetailsBox>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <HeaderText>I lost my account credentials and/or used a email that isn't compatible with Google sign-in.</HeaderText>
             </AccordionSummary>
             <AccordionDetails>
