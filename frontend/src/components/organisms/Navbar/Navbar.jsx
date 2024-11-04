@@ -71,24 +71,23 @@ export default function Navbar() {
     setDrawerOpen(open);
   };
 
+  const privilegedUser =
+    userRole === "president" ||
+    userRole === "vice president" ||
+    userRole === "internal relations" ||
+    userRole === "project lead" ||
+    userRole === "admin";
+
   // Menu items based on user role
   const menuItems = [
     { text: "Home", link: "/" },
     userRole &&
-      (userRole === "president" ||
-        userRole === "vice president" ||
-        userRole === "internal relations" ||
-        userRole === "project lead" ||
-        userRole === "admin") && {
+      privilegedUser && {
         text: "Members",
         link: "/Member",
       },
     userRole &&
-      (userRole === "president" ||
-        userRole === "vice president" ||
-        userRole === "internal relations" ||
-        userRole === "project lead" ||
-        userRole === "admin") && {
+      privilegedUser && {
         text: "Projects",
         link: "/Project",
       },
@@ -166,6 +165,7 @@ export default function Navbar() {
       console.error("Google error:", error);
     } finally {
       setIsLoading(false);
+      window.location.reload();
     }
   };
 
@@ -299,28 +299,33 @@ export default function Navbar() {
                         <Typography>Profile</Typography>
                       </Box>
                     </MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        handleMenuClose();
-                        router.push("/Project");
-                      }}
-                    >
-                      <Box sx={{ display: "flex", gap: "5px" }}>
-                        <HardwareIcon />
-                        <Typography> Projects</Typography>
-                      </Box>
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        handleMenuClose();
-                        router.push("/Member");
-                      }}
-                    >
-                      <Box sx={{ display: "flex", gap: "5px" }}>
-                        <GroupIcon />
-                        <Typography>Members</Typography>
-                      </Box>
-                    </MenuItem>
+                    {privilegedUser && (
+                      <>
+                        <MenuItem
+                          onClick={() => {
+                            handleMenuClose();
+                            router.push("/Project");
+                          }}
+                        >
+                          <Box sx={{ display: "flex", gap: "5px" }}>
+                            <HardwareIcon />
+                            <Typography> Projects</Typography>
+                          </Box>
+                        </MenuItem>
+
+                        <MenuItem
+                          onClick={() => {
+                            handleMenuClose();
+                            router.push("/Member");
+                          }}
+                        >
+                          <Box sx={{ display: "flex", gap: "5px" }}>
+                            <GroupIcon />
+                            <Typography>Members</Typography>
+                          </Box>
+                        </MenuItem>
+                      </>
+                    )}
                     <MenuItem
                       onClick={() => {
                         handleMenuClose();
