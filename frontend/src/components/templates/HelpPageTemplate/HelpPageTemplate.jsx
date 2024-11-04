@@ -50,10 +50,10 @@ const HelpPageTemplate = (props) => {
             </AccordionSummary>
             <AccordionDetails>
               <Typography>
-                To apply to become a new member, click the "New Member?" button
-                on the top right of the website in order to be taken to the
-                member application form. Submit the form which will be reviewed
-                by organization leaders.
+                To apply to become a new member, click the &quot;New
+                Member?&quot; button on the top right of the website in order to
+                be taken to the member application form. Submit the form which
+                will be reviewed by organization leaders.
               </Typography>
               <img src="/new_member.gif" alt="New member guide" />
             </AccordionDetails>
@@ -96,8 +96,8 @@ const HelpPageTemplate = (props) => {
             <AccordionDetails>
               <Typography>
                 After clicking on the profile icon on the right of the
-                navigation bar, the "Members" option will lead to the members
-                dashboard while the "Projects" option will lead to the projects
+                navigation bar, the &quot;Members&quot; option will lead to the members
+                dashboard while the &quot;Projects&quot; option will lead to the projects
                 dashboard.
               </Typography>
               <img src="/dashboards.gif" alt="Dashboard guide" />
@@ -109,8 +109,8 @@ const HelpPageTemplate = (props) => {
             </AccordionSummary>
             <AccordionDetails>
               <Typography>
-                In the member dashboard, click on the "Manage Dues" button and
-                then "Update Dues". Now you can update the due status of active
+                In the member dashboard, click on the &quot;Manage Dues&quot; button and
+                then &quot;Update Dues&quot;. Now you can update the due status of active
                 members.
               </Typography>
               <img src="/dues.gif" alt="Update dues guide" />
