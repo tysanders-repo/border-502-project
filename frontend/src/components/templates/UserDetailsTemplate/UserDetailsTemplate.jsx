@@ -16,6 +16,8 @@ import { useRouter } from "next/navigation"; // Import useRouter for navigation
 import ProgressLoading from "@components/organisms/ProgressLoading";
 import UserInfo from "@components/organisms/UserInfo";
 import AccomplishmentBar from "@components/organisms/AccomplishmentBar";
+import { getUserRole } from "@services/authService";
+
 /**
  * UserDetailsTemplate Component
  *
@@ -48,13 +50,18 @@ function UserDetailsTemplate({ params }) {
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
-      try {
-        const json = await fetchUser(id);
-        setUser(json);
-        setLoading(false);
-      } catch (error) {
-        setError(error);
-        setLoading(false);
+      const role = await getUserRole();
+      if (role === undefined || role === "none" || role === "member") {
+        router.push("/");
+      } else {
+        try {
+          const json = await fetchUser(id);
+          setUser(json);
+          setLoading(false);
+        } catch (error) {
+          setError(error);
+          setLoading(false);
+        }
       }
     };
 

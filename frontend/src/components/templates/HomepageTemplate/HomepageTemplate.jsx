@@ -67,7 +67,7 @@ const HomepageTemplate = () => {
     return <Alert severity="error">{error.message}</Alert>;
   }
 
-  console.log(projects);
+  //console.log(projects);
 
   return (
     <Box>
@@ -80,7 +80,7 @@ const HomepageTemplate = () => {
           backgroundRepeat: "no-repeat",
           color: "white",
           padding: "100px",
-          height: "50vh",
+          height: "60vh",
           display: "flex",
           alignItems: "center",
           justifyContent: "flex-start",

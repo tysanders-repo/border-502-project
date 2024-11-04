@@ -6,7 +6,7 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { StyledHelpPageTemplate } from "./HelpPageTemplate.styles";
+import { HeaderText, ImageBox, DetailsBox } from "./HelpPageTemplate.styles";
 
 const HelpPageTemplate = (props) => {
   return (
@@ -35,8 +35,10 @@ const HelpPageTemplate = (props) => {
             </AccordionSummary>
             <AccordionDetails>
               <Typography>
-                To apply to become a new member, click the "New Member?" button on the top right of the website in order to be taken to the member application form.
-                Submit the form which will be reviewed by organization leaders.
+                To apply to become a new member, click the &quot;New
+                Member?&quot; button on the top right of the website in order to
+                be taken to the member application form. Submit the form which
+                will be reviewed by organization leaders.
               </Typography>
               <img src="/new_member.gif" alt="New member guide"/>
             </AccordionDetails>
@@ -105,62 +107,92 @@ const HelpPageTemplate = (props) => {
             </AccordionSummary>
             <AccordionDetails>
               <Typography>
-                After clicking on the profile icon on the right of the navigation bar, the "Members" option will lead to the members
-                dashboard while the "Projects" option will lead to the projects dashboard.
+                After clicking on the profile icon on the right of the
+                navigation bar, the &quot;Members&quot; option will lead to the
+                members dashboard while the &quot;Projects&quot; option will
+                lead to the projects dashboard.
               </Typography>
-              <img src="/dashboards.gif" alt="Dashboard guide"/>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>How do I adjust the dues of members?</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
+              <ImageBox>
+                <img src="/dashboards.gif" alt="Dashboard guide" />
+              </ImageBox>
+            </DetailsBox>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <HeaderText>How do I adjust the dues of members?</HeaderText>
+          </AccordionSummary>
+          <AccordionDetails>
+            <DetailsBox>
               <Typography>
-                In the member dashboard, click on the "Manage Dues" button and then "Update Dues". Now you can update the due
-                status of active members.
+                In the member dashboard, click on the &quot;Manage Dues&quot;
+                button and then &quot;Update Dues&quot;. Now you can update the
+                due status of active members.
               </Typography>
-              <img src="/dues.gif" alt="Update dues guide"/>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>How do I view and manage applications?</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
+              <ImageBox>
+                <img src="/dues.gif" alt="Update dues guide" />
+              </ImageBox>
+            </DetailsBox>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <HeaderText>How do I view and manage applications?</HeaderText>
+          </AccordionSummary>
+          <AccordionDetails>
+            <DetailsBox>
               <Typography>
-                In the member dashboard, if you have the permissions, you should be able to see a toggle to view applications which will display the current
-                member applications. From this display, you can accept or deny applications.
+                In the member dashboard, if you have the permissions, you should
+                be able to see a toggle to view applications which will display
+                the current member applications. From this display, you can
+                accept or deny applications.
               </Typography>
-              <img src="/applications.gif" alt="Applications guide"/>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>How do I archive, view archived members, and restore archived members?</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
+              <ImageBox>
+                <img src="/applications.gif" alt="Applications guide" />
+              </ImageBox>
+            </DetailsBox>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <HeaderText>
+              How do I archive, view archived members, and restore archived
+              members?
+            </HeaderText>
+          </AccordionSummary>
+          <AccordionDetails>
+            <DetailsBox>
               <Typography>
-                In the member dashboard, if you have the permissions, you should be able to archive a member in a drop down menu, toggle to view archived members,
-                and restore archived members.
+                In the member dashboard, if you have the permissions, you should
+                be able to archive a member in a drop down menu, toggle to view
+                archived members, and restore archived members.
               </Typography>
-              <img src="/archives.gif" alt="Archives guide"/>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>How do I filter and manage the information displayed for members?</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
+              <ImageBox>
+                <img src="/archives.gif" alt="Archives guide" />
+              </ImageBox>
+            </DetailsBox>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <HeaderText>
+              How do I filter and manage the information displayed for members?
+            </HeaderText>
+          </AccordionSummary>
+          <AccordionDetails>
+            <DetailsBox>
               <Typography>
-                In the member dashboard, you can adjust the columns that are displayed and filter for members with specific details.
+                In the member dashboard, you can adjust the columns that are
+                displayed and filter for members with specific details.
               </Typography>
-              <img src="/members.gif" alt="Member filter guide"/>
-            </AccordionDetails>
-          </Accordion>
-        </Box>
+              <ImageBox>
+                <img src="/members.gif" alt="Member filter guide" />
+              </ImageBox>
+            </DetailsBox>
+          </AccordionDetails>
+        </Accordion>
       </Box>
-    </StyledHelpPageTemplate>
+    </Box>
   );
 };
 

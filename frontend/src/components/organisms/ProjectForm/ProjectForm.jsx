@@ -196,7 +196,12 @@ const ProjectForm = ({
                 >
                   {/* Button to add/remove images from removedImages array */}
                   <DeleteBox
-                    onClick={() => handleExistingImageClick(imageUrl.id)}
+                    isDisabled={projectPreview.length > 0}
+                    onClick={() => {
+                      if (projectPreview.length === 0) {
+                        handleExistingImageClick(imageUrl.id);
+                      }
+                    }}
                   >
                     <Box
                       sx={{ display: "flex", alignItems: "center", gap: "5px" }}
@@ -282,6 +287,7 @@ const ProjectForm = ({
           <Button
             variant="contained"
             component="span"
+            disabled={removedImages?.length > 0}
             startIcon={<UploadIcon />}
           >
             Upload Images
