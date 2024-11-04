@@ -61,7 +61,7 @@ function ProfileTemplate({ params }) {
       await setUserInfo();
     }
     const role2 = await getUserRole();
-    if(role2 === undefined || role2 === "member" || role2 === "none'") {
+    if(role2 === undefined || role2 === "member" || role2 === "none") {
       router.push("/");
     } else {
       try {
