@@ -67,7 +67,7 @@ const HomepageTemplate = () => {
     return <Alert severity="error">{error.message}</Alert>;
   }
 
-  console.log(projects);
+  //console.log(projects);
 
   return (
     <Box>
