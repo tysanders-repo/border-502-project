@@ -33,6 +33,9 @@ import { useRouter } from "next/navigation";
 import PersonIcon from "@mui/icons-material/Person";
 import HardwareIcon from "@mui/icons-material/Hardware";
 import LogoutIcon from "@mui/icons-material/Logout";
+import CloseIcon from "@mui/icons-material/Close";
+import GroupIcon from "@mui/icons-material/Group";
+import HelpIcon from "@mui/icons-material/Help";
 /**
  * A functional component that renders the navigation bar.
  * It includes links to different pages and handles user authentication.
@@ -77,13 +80,47 @@ export default function Navbar() {
         userRole === "internal relations" ||
         userRole === "project lead" ||
         userRole === "admin") && {
-        text: "View Members",
+        text: "Members",
         link: "/Member",
       },
+    userRole &&
+      (userRole === "president" ||
+        userRole === "vice president" ||
+        userRole === "internal relations" ||
+        userRole === "project lead" ||
+        userRole === "admin") && {
+        text: "Projects",
+        link: "/Project",
+      },
+    userRole && { text: "Profile", link: "/Profile" },
+    { text: "Help", link: "/Help" },
   ].filter(Boolean); // Filter out falsy values
 
   const drawer = (
-    <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+    <Drawer
+      anchor="left"
+      open={drawerOpen}
+      onClose={toggleDrawer(false)}
+      PaperProps={{
+        sx: {
+          width: "50%",
+          padding: "30px",
+          backgroundColor: theme.palette.primary.main,
+        },
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          width: "100%",
+          justifyContent: "flex-end",
+        }}
+      >
+        <CloseIcon
+          sx={{ color: "white" }}
+          onClick={() => setDrawerOpen(false)}
+        />
+      </Box>
       <List>
         {menuItems.map((item, index) => (
           <ListItem
@@ -93,10 +130,21 @@ export default function Navbar() {
             href={item.link}
             onClick={toggleDrawer(false)}
           >
-            <ListItemText primary={item.text} />
+            <ListItemText primary={item.text} sx={{ color: "white" }} />
           </ListItem>
         ))}
       </List>
+      <Button
+        variant="outline"
+        sx={{ color: "white", border: "1px solid white" }}
+        onClick={() => {
+          {
+            handleMenuClose(), handleGoogleSignInAndOut();
+          }
+        }}
+      >
+        {userRole ? "Sign Out" : "Sign In"}
+      </Button>
     </Drawer>
   );
 
@@ -186,14 +234,27 @@ export default function Navbar() {
               }}
             >
               {!userRole && (
-                <Button
-                  variant="outlined"
-                  color="inherit"
-                  component={Link}
-                  href="/Member/New"
-                >
-                  New Member?
-                </Button>
+                <>
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    component={Link}
+                    href="/Member/New"
+                  >
+                    New Member?
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    onClick={() => {
+                      {
+                        handleGoogleSignInAndOut();
+                      }
+                    }}
+                  >
+                    Sign In
+                  </Button>
+                </>
               )}
 
               {userRole && (
@@ -230,6 +291,17 @@ export default function Navbar() {
                     <MenuItem
                       onClick={() => {
                         handleMenuClose();
+                        router.push("/Help");
+                      }}
+                    >
+                      <Box sx={{ display: "flex", gap: "5px" }}>
+                        <PersonIcon />
+                        <Typography>Profile</Typography>
+                      </Box>
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
                         router.push("/Project");
                       }}
                     >
@@ -245,18 +317,30 @@ export default function Navbar() {
                       }}
                     >
                       <Box sx={{ display: "flex", gap: "5px" }}>
-                        <PersonIcon />
+                        <GroupIcon />
                         <Typography>Members</Typography>
                       </Box>
                     </MenuItem>
                     <MenuItem
                       onClick={() => {
-                        {
-                          handleMenuClose(), handleGoogleSignInAndOut();
-                        }
+                        handleMenuClose();
+                        router.push("/Help");
                       }}
                     >
                       <Box sx={{ display: "flex", gap: "5px" }}>
+                        <HelpIcon />
+                        <Typography>Help</Typography>
+                      </Box>
+                    </MenuItem>
+                    <MenuItem>
+                      <Box
+                        sx={{ display: "flex", gap: "5px" }}
+                        onClick={() => {
+                          {
+                            handleMenuClose(), handleGoogleSignInAndOut();
+                          }
+                        }}
+                      >
                         <LogoutIcon />
                         <Typography>Sign Out</Typography>
                       </Box>
