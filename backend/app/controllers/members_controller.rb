@@ -5,7 +5,7 @@ class MembersController < ApplicationController
   def index
     @members = Member.includes(
       member_interests: :interest,
-      member_diets: :dietary_restriction 
+      member_diets: :dietary_restriction,
     ).all
   
     members_with_grouped_interests = @members.map do |member|
@@ -18,6 +18,9 @@ class MembersController < ApplicationController
           end,
           dietary_restrictions: member.member_diets.map do |diet|
             { id: diet.dietary_restriction.id, item_name: diet.dietary_restriction.item_name }
+          end,
+          projects: member.projects.map do |project|
+            { id: project.id, title: project.title, description: project.description } # Adjust fields as needed
           end
         )
     end
@@ -43,6 +46,9 @@ class MembersController < ApplicationController
       end,
       dietary_restrictions: @member.member_diets.map do |diet|
         { id: diet.dietary_restriction.id, item_name: diet.dietary_restriction.item_name }
+      end,
+      projects: @member.projects.map do |project|
+        { id: project.id, title: project.title, description: project.description } # Adjust fields as needed
       end
     )
   
