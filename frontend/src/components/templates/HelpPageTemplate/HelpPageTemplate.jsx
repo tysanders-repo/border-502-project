@@ -14,34 +14,19 @@ const HelpPageTemplate = (props) => {
       <Box
         sx={{
           position: "relative",
-          backgroundImage: `url('./homepage1.png')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          color: "white",
-          padding: "100px",
-          height: "50vh",
+          color: "black",
+          padding: "20px",
+          minHeight: "calc(100vh - 64px - 64px)", 
           display: "flex",
           alignItems: "center",
-          justifyContent: "flex-start",
-          "&::before": {
-            content: '""',
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0, 0, 0, 0.4)",
-            zIndex: 1,
-          },
-          zIndex: 2,
+          justifyContent: "center",
         }}
       >
         <Box sx={{ position: "relative", zIndex: 3, color: "white" }}>
-          <Typography variant="h3" gutterBottom>
+          <Typography variant="h3" gutterBottom sx={{ color: "black" }}>
             Help & FAQs
           </Typography>
-          <Typography variant="h4" gutterBottom>
+          <Typography variant="h4" gutterBottom sx={{ color: "black" }}>
             General Use
           </Typography>
           <Accordion>
@@ -79,7 +64,7 @@ const HelpPageTemplate = (props) => {
             </AccordionDetails>
           </Accordion>
           <br></br>
-          <Typography variant="h4" gutterBottom>
+          <Typography variant="h4" gutterBottom sx={{ color: "black" }}>
             Officers
           </Typography>
           <Accordion>
