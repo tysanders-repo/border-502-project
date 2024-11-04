@@ -17,6 +17,25 @@ Member.find_or_create_by!(uin: 123456780) do |member|
   member.accomplishments = { "leadership" => "Organized major event", "awards" => "Outstanding Leadership 2023" }
 end
 
+Member.find_or_create_by!(uin: 123456781) do |member|
+  member.first_name = "EWB"
+  member.last_name = "Admin"
+  member.role = "admin"
+  member.major = "Civil Engineering"
+  member.year = 2024
+  member.email = "ewbappadm@gmail.com"
+  member.phone = 1234567890
+  member.tshirt_size = "M"
+  member.paid_dues = true
+  member.join_date = DateTime.now - 2.years
+  member.aggie_ring_day = DateTime.now + 6.months
+  member.birthday = DateTime.new(2000, 5, 1)
+  member.graduation_day = DateTime.new(2024, 5, 15)
+  member.archived = false
+  member.accepted = true
+  member.accomplishments = { "leadership" => "Organized major event", "awards" => "Outstanding Leadership 2023" }
+end
+
 Member.find_or_create_by!(uin: 123456789) do |member|
   member.first_name = "EWB"
   member.last_name = "President"
