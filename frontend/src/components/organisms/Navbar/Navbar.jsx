@@ -107,9 +107,8 @@ export default function Navbar() {
     const signedin = await signedIn();
     try {
       signedin
-        ? signOut({ callbackUrl: "/" })
-        : (signIn("google", { callbackUrl: "/Profile" }),
-          setUserRole(getUserRole()));
+        ? signOut({ redirectTo: "/" })
+        : signIn("google", { redirectTo: "/Profile" });
     } catch (error) {
       console.error("Google error:", error);
     } finally {
@@ -173,8 +172,7 @@ export default function Navbar() {
       setIsSignedIn(signedin);
       if (signedin) {
         const role = await getUserRole();
-        const uin = await getUserUIN();
-        if (role === undefined || uin === undefined) {
+        if (role === undefined) {
           setUserInfo();
           const role2 = await getUserRole();
           setUserRole(role2);
