@@ -10,105 +10,102 @@ import { HeaderText, ImageBox, DetailsBox } from "./HelpPageTemplate.styles";
 
 const HelpPageTemplate = (props) => {
   return (
-    <Box
-      sx={{
-        position: "relative",
-        backgroundImage: `url('./homepage1.png')`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        color: "white",
-        padding: "100px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        "&::before": {
-          content: '""',
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          backgroundColor: "rgba(0, 0, 0, 0.4)",
-          zIndex: 1,
-        },
-        zIndex: 2,
-      }}
-    >
+    // <StyledHelpPageTemplate>
       <Box
         sx={{
           position: "relative",
-          zIndex: 3,
           color: "black",
-          backgroundColor: "white",
-          padding: "30px",
-          borderRadius: "10px",
+          padding: "20px",
+          minHeight: "calc(100vh - 64px - 64px)", 
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        <Typography variant="h3" gutterBottom>
-          Help & FAQs
-        </Typography>
-        <Typography variant="h5" gutterBottom>
-          General Use
-        </Typography>
-        <Accordion disableGutters>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <HeaderText>How do I become a member?</HeaderText>
-          </AccordionSummary>
-          <AccordionDetails>
-            <DetailsBox>
+        <Box sx={{ position: "relative", zIndex: 3, color: "white" }}>
+          <Typography variant="h3" gutterBottom sx={{ color: "black" }}>
+            Help & FAQs
+          </Typography>
+          <Typography variant="h4" gutterBottom sx={{ color: "black" }}>
+            General Use
+          </Typography>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>How do I become a member?</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
               <Typography>
                 To apply to become a new member, click the &quot;New
                 Member?&quot; button on the top right of the website in order to
                 be taken to the member application form. Submit the form which
                 will be reviewed by organization leaders.
               </Typography>
-              <ImageBox>
-                <img
-                  src="/new_member.gif"
-                  alt="New member guide"
-                  style={{ width: "100%", height: "auto", display: "block" }}
-                />
-              </ImageBox>
-            </DetailsBox>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <HeaderText>How do I sign into my account?</HeaderText>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>
-              To sign into your account, just press sign in on the top right of
-              the website and you will be redirected to a Google sign-in. Use
-              the email that you entered in your application to access your
-              profile and actions.
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
-        <br></br>
-        <Typography variant="h5" gutterBottom>
-          Officers
-        </Typography>
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <HeaderText>
-              What are the specific actions and views available to each officer?
-            </HeaderText>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>WIP</Typography>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <HeaderText>
-              As an officer, how do I access the dashboards to manage
-              organizational members and projects?
-            </HeaderText>
-          </AccordionSummary>
-          <AccordionDetails>
-            <DetailsBox>
+              <img src="/new_member.gif" alt="New member guide"/>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>How do I sign into my account?</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                To sign into your account, just press sign in on the top right of the website and you will be redirected to a Google
+                sign-in. Use the email that you entered in your application to access your profile and actions.
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>I lost my account credentials and/or used a email that isn't compatible with Google sign-in.</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                Ask an officer to delete your account so you can reapply.
+              </Typography>
+              <img src="/new_member.gif" alt="New member guide"/>
+            </AccordionDetails>
+          </Accordion>
+          <br></br>
+          <Typography variant="h4" gutterBottom sx={{ color: "black" }}>
+            Officers
+          </Typography>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>What are the specific actions and views available to each officer?</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                WIP
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>I am unable to use my permissions as an officer even though I am signed in.</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                First refresh the page after signing in. If this still does not allow you to access the dashboards or actions permitted
+                to your role, ask someone with access to an admin account (usually the president) if they can check your role and ensure
+                it is properly set. 
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>How do I update someone's role?</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                WIP
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>As an officer, how do I access the dashboards to manage organizational members and projects?</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
               <Typography>
                 After clicking on the profile icon on the right of the
                 navigation bar, the &quot;Members&quot; option will lead to the
@@ -118,7 +115,6 @@ const HelpPageTemplate = (props) => {
               <ImageBox>
                 <img src="/dashboards.gif" alt="Dashboard guide" />
               </ImageBox>
-            </DetailsBox>
           </AccordionDetails>
         </Accordion>
         <Accordion>
@@ -195,7 +191,8 @@ const HelpPageTemplate = (props) => {
           </AccordionDetails>
         </Accordion>
       </Box>
-    </Box>
+      </Box>
+    // </StyledHelpPageTemplate>
   );
 };
 
