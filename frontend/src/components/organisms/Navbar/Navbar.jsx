@@ -108,7 +108,8 @@ export default function Navbar() {
     try {
       signedin
         ? signOut({ callbackUrl: "/" })
-        : signIn("google", { callbackUrl: "/Profile" });
+        : (signIn("google", { callbackUrl: "/Profile" }),
+          setUserRole(getUserRole()));
     } catch (error) {
       console.error("Google error:", error);
     } finally {
