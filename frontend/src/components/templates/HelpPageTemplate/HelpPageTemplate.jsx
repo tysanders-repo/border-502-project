@@ -67,6 +67,17 @@ const HelpPageTemplate = (props) => {
               </Typography>
             </AccordionDetails>
           </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>I lost my account credentials and/or used a email that isn't compatible with Google sign-in.</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                Ask an officer to delete your account so you can reapply.
+              </Typography>
+              <img src="/new_member.gif" alt="New member guide"/>
+            </AccordionDetails>
+          </Accordion>
           <br></br>
           <Typography variant="h4" gutterBottom>
             Officers
@@ -74,6 +85,28 @@ const HelpPageTemplate = (props) => {
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography>What are the specific actions and views available to each officer?</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                WIP
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>I am unable to use my permissions as an officer even though I am signed in.</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                First refresh the page after signing in. If this still does not allow you to access the dashboards or actions permitted
+                to your role, ask someone with access to an admin account (usually the president) if they can check your role and ensure
+                it is properly set. 
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>How do I update someone's role?</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Typography>
