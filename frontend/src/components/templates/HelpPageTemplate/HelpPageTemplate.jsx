@@ -7,6 +7,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { HeaderText, ImageBox, DetailsBox } from "./HelpPageTemplate.styles";
+import { Details } from "@mui/icons-material";
 
 const HelpPageTemplate = (props) => {
   return (
@@ -31,38 +32,50 @@ const HelpPageTemplate = (props) => {
           </Typography>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>How do I become a member?</Typography>
+              <HeaderText>
+                How do I become a member?
+              </HeaderText>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography>
-                To apply to become a new member, click the &quot;New
-                Member?&quot; button on the top right of the website in order to
-                be taken to the member application form. Submit the form which
-                will be reviewed by organization leaders.
-              </Typography>
-              <img src="/new_member.gif" alt="New member guide"/>
+              <DetailsBox>
+                <Typography>
+                  To apply to become a new member, click the &quot;New
+                  Member?&quot; button on the top right of the website in order to
+                  be taken to the member application form. Submit the form which
+                  will be reviewed by organization leaders.
+                </Typography>
+                <ImageBox>
+                  <img src="/new_member.gif" alt="New member guide"/>
+                </ImageBox>
+              </DetailsBox>
             </AccordionDetails>
           </Accordion>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>How do I sign into my account?</Typography>
+              <HeaderText>How do I sign into my account?</HeaderText>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography>
-                To sign into your account, just press sign in on the top right of the website and you will be redirected to a Google
-                sign-in. Use the email that you entered in your application to access your profile and actions.
-              </Typography>
+              <DetailsBox>
+                <Typography>
+                  To sign into your account, just press sign in on the top right of the website and you will be redirected to a Google
+                  sign-in. Use the email that you entered in your application to access your profile and actions.
+                </Typography>
+                <ImageBox>
+                  <img src="/signin.gif" alt="Sign in guide"/>
+                </ImageBox>
+              </DetailsBox>
             </AccordionDetails>
           </Accordion>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>I lost my account credentials and/or used a email that isn't compatible with Google sign-in.</Typography>
+              <HeaderText>I lost my account credentials and/or used a email that isn't compatible with Google sign-in.</HeaderText>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography>
-                Ask an officer to delete your account so you can reapply.
-              </Typography>
-              <img src="/new_member.gif" alt="New member guide"/>
+              <DetailsBox>
+                <Typography>
+                  Ask an officer to delete your account so you can reapply.
+                </Typography>
+              </DetailsBox>
             </AccordionDetails>
           </Accordion>
           <br></br>
@@ -71,50 +84,62 @@ const HelpPageTemplate = (props) => {
           </Typography>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>What are the specific actions and views available to each officer?</Typography>
+              <HeaderText>What are the specific actions and views available to each officer?</HeaderText>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography>
-                WIP
-              </Typography>
+              <DetailsBox>
+                <Typography>
+                  WIP
+                </Typography>
+              </DetailsBox>
             </AccordionDetails>
           </Accordion>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>I am unable to use my permissions as an officer even though I am signed in.</Typography>
+              <HeaderText>I am unable to use my permissions as an officer even though I am signed in.</HeaderText>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography>
-                First refresh the page after signing in. If this still does not allow you to access the dashboards or actions permitted
-                to your role, ask someone with access to an admin account (usually the president) if they can check your role and ensure
-                it is properly set. 
-              </Typography>
+              <DetailsBox>
+                <Typography>
+                  First refresh the page after signing in. If this still does not allow you to access the dashboards or actions permitted
+                  to your role, ask someone with access to an admin account (usually the president) if they can check your role and ensure
+                  it is properly set. 
+                </Typography>
+              </DetailsBox>
             </AccordionDetails>
           </Accordion>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>How do I update someone's role?</Typography>
+              <HeaderText>How do I update someone's role?</HeaderText>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography>
-                WIP
-              </Typography>
+              <DetailsBox>
+                <Typography>
+                  In the member dashboard, if you have the permissions, you should be able to update member roles from the dropdown menu
+                  at the end of each member row.
+                </Typography>
+                <ImageBox>
+                  <img src="/update_role.gif" alt="Update role guide"/>
+                </ImageBox>
+              </DetailsBox>
             </AccordionDetails>
           </Accordion>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>As an officer, how do I access the dashboards to manage organizational members and projects?</Typography>
+              <HeaderText>As an officer, how do I access the dashboards to manage organizational members and projects?</HeaderText>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography>
-                After clicking on the profile icon on the right of the
-                navigation bar, the &quot;Members&quot; option will lead to the
-                members dashboard while the &quot;Projects&quot; option will
-                lead to the projects dashboard.
-              </Typography>
-              <ImageBox>
+              <DetailsBox>
+                <Typography>
+                  After clicking on the profile icon on the right of the
+                  navigation bar, the &quot;Members&quot; option will lead to the
+                  members dashboard while the &quot;Projects&quot; option will
+                  lead to the projects dashboard.
+                </Typography>
+                <ImageBox>
                 <img src="/dashboards.gif" alt="Dashboard guide" />
-              </ImageBox>
+                </ImageBox>
+              </DetailsBox>
           </AccordionDetails>
         </Accordion>
         <Accordion>
