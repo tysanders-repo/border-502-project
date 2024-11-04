@@ -111,14 +111,13 @@ export default function Navbar() {
     setIsLoading(true);
     const signedin = await signedIn();
     try {
-      if (signedin) await deleteUserInfo();
       signedin
         ? signOut({ callbackUrl: "/" })
         : signIn("google", { callbackUrl: "/Profile" });
     } catch (error) {
       console.error("Google error:", error);
     } finally {
-      // This doesn't run if the sign in/out is successful since they redirect
+      setIsLoading(false);
     }
   };
 
@@ -137,6 +136,8 @@ export default function Navbar() {
         } else {
           setUserRole(role);
         }
+      } else {
+        await deleteUserInfo();
       }
     };
 

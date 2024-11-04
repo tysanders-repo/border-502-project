@@ -42,20 +42,6 @@ function ProjectEditTemplate({ params }) {
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [prevMembers, setPrevMembers] = useState([]);
 
-  useEffect(() => {
-    async function fetchMembers() {
-      try {
-        const data = await fetchAllUsers();
-        setMembers(data);
-      } catch (error) {
-        console.error("Error fetching members: ", error);
-      }
-      setLoading(false);
-    }
-
-    fetchMembers();
-  }, []);
-
   // Only sets array equal to new one if the new one deleted a member, or if the member added exists
   const handleMembersRestrictionChange = async (event, newValue) => {
     if (newValue.length < selectedMembers.length) {
@@ -150,20 +136,10 @@ function ProjectEditTemplate({ params }) {
     if (validateForm()) {
       try {
         const response = await updateProject(id, project, removedImages); // Update project data on the server.
-        let projectMembersDelete = [];
-        let projectMembersCreate = [];
         // O(NM) but it doesn't matter because these arrays won't have many elements...
         // Also didn't want to delete and create the project members again
-        for (const member of selectedMembers) {
-          if (!prevMembers.includes(member)) {
-            projectMembersCreate.push(member);
-          }
-        }
-        for (const member of prevMembers) {
-          if (!selectedMembers.includes(member)) {
-            projectMembersDelete.push(member);
-          }
-        }
+        const projectMembersCreate = selectedMembers.filter((member) => !prevMembers.includes(member));
+        const projectMembersDelete = prevMembers.filter((member) => !selectedMembers.includes(member));
         const projectMembers = await getProjectMembersByProject(id);
         for (const member of projectMembersDelete) {
           for (const pMember of projectMembers) {

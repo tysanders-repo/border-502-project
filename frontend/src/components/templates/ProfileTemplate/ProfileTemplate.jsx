@@ -13,7 +13,7 @@ import {
   useMediaQuery,
   IconButton,
 } from "@mui/material";
-import { signedIn, getUserUIN } from "@services/authService";
+import { signedIn, getUserUIN, getUserRole } from "@services/authService";
 import UserInfo from "@components/organisms/UserInfo";
 import ProgressLoading from "@components/organisms/ProgressLoading";
 import UserEditTemplate from "../UserEditTemplate";
@@ -55,17 +55,22 @@ function ProfileTemplate({ params }) {
 
   const fetchUserData = async () => {
     setLoading(true);
-    try {
-      const isCurrentUser = params.id === undefined;
-      const id = isCurrentUser ? await getUserUIN() : params.id;
-      setThisIsMe(isCurrentUser);
-      const userData = await fetchUser(id);
-      console.log(userData);
-      setUser(userData);
-    } catch (e) {
-      setError(e);
-    } finally {
-      setLoading(false);
+    const role = await getUserRole();
+    if(role === undefined || role === "member" || role === "none"){
+      router.push("/");
+    }else{
+      try {
+        const isCurrentUser = params.id === undefined;
+        const id = isCurrentUser ? await getUserUIN() : params.id;
+        setThisIsMe(isCurrentUser);
+        const userData = await fetchUser(id);
+        console.log(userData);
+        setUser(userData);
+      } catch (e) {
+        setError(e);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
