@@ -13,7 +13,7 @@ import {
   useMediaQuery,
   IconButton,
 } from "@mui/material";
-import { signedIn, getUserUIN, getUserRole } from "@services/authService";
+import { signedIn, getUserUIN, getUserRole, setUserInfo } from "@services/authService";
 import UserInfo from "@components/organisms/UserInfo";
 import ProgressLoading from "@components/organisms/ProgressLoading";
 import UserEditTemplate from "../UserEditTemplate";
@@ -57,6 +57,10 @@ function ProfileTemplate({ params }) {
     setLoading(true);
     const role = await getUserRole();
     if (role === undefined || role === "member" || role === "none") {
+      await setUserInfo();
+    }
+    const role2 = await getUserRole();
+    if(role2 === undefined || role2 === "member" || role2 === "none'") {
       router.push("/");
     } else {
       try {
