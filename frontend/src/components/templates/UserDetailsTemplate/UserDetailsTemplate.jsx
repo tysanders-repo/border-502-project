@@ -16,6 +16,8 @@ import { useRouter } from "next/navigation"; // Import useRouter for navigation
 import ProgressLoading from "@components/organisms/ProgressLoading";
 import UserInfo from "@components/organisms/UserInfo";
 import AccomplishmentBar from "@components/organisms/AccomplishmentBar";
+import { getUserRole } from "@services/authService";
+
 /**
  * UserDetailsTemplate Component
  *

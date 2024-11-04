@@ -287,7 +287,7 @@ const ProjectForm = ({
           <Button
             variant="contained"
             component="span"
-            disabled={removedImages.length > 0}
+            disabled={removedImages?.length > 0}
             startIcon={<UploadIcon />}
           >
             Upload Images
