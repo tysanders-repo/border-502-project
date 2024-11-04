@@ -41,6 +41,7 @@ import HelpIcon from "@mui/icons-material/Help";
  * It includes links to different pages and handles user authentication.
  * @returns {JSX.Element} The rendered Navbar component.
  */
+
 export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false); // State to control the drawer open/close
   const [userRole, setUserRole] = useState(null); // State to store the user's role
@@ -51,6 +52,8 @@ export default function Navbar() {
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  const [isLoading, setIsLoading] = useState(false); // State to manage loading status
+  const [isSignedIn, setIsSignedIn] = useState(false); // State to track sign-in status
 
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -95,6 +98,25 @@ export default function Navbar() {
     { text: "Help", link: "/Help" },
   ].filter(Boolean); // Filter out falsy values
 
+  /**
+   * Handles the Google sign-in and sign-out process.
+   * @returns {Promise<void>} A promise that resolves when the sign-in/sign-out is complete.
+   */
+  const handleGoogleSignInAndOut = async () => {
+    setIsLoading(true);
+    const signedin = await signedIn();
+    try {
+      signedin
+        ? signOut({ callbackUrl: "/" })
+        : signIn("google", { callbackUrl: "/Profile" });
+    } catch (error) {
+      console.error("Google error:", error);
+    } finally {
+      setIsLoading(false);
+      window.location.reload();
+    }
+  };
+
   const drawer = (
     <Drawer
       anchor="left"
@@ -134,40 +156,15 @@ export default function Navbar() {
         ))}
       </List>
       <Button
-        variant="outline"
-        sx={{ color: "white", border: "1px solid white" }}
-        onClick={() => {
-          {
-            handleMenuClose(), handleGoogleSignInAndOut();
-          }
-        }}
+        variant="outlined"
+        color="inherit"
+        onClick={handleGoogleSignInAndOut}
+        disabled={isLoading}
       >
-        {userRole ? "Sign Out" : "Sign In"}
+        {isLoading ? "Loading..." : userRole ? "Sign Out" : "Sign In"}
       </Button>
     </Drawer>
   );
-
-  const [isLoading, setIsLoading] = useState(false); // State to manage loading status
-  const [isSignedIn, setIsSignedIn] = useState(false); // State to track sign-in status
-
-  /**
-   * Handles the Google sign-in and sign-out process.
-   * @returns {Promise<void>} A promise that resolves when the sign-in/sign-out is complete.
-   */
-  const handleGoogleSignInAndOut = async () => {
-    setIsLoading(true);
-    const signedin = await signedIn();
-    try {
-      signedin
-        ? signOut({ callbackUrl: "/" })
-        : signIn("google", { callbackUrl: "/Profile" });
-    } catch (error) {
-      console.error("Google error:", error);
-    } finally {
-      setIsLoading(false);
-      window.location.reload();
-    }
-  };
 
   // Sets up user info, if available
   useEffect(() => {
@@ -246,11 +243,7 @@ export default function Navbar() {
                   <Button
                     variant="outlined"
                     color="inherit"
-                    onClick={() => {
-                      {
-                        handleGoogleSignInAndOut();
-                      }
-                    }}
+                    onClick={handleGoogleSignInAndOut}
                   >
                     Sign In
                   </Button>
