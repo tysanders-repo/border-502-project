@@ -62,7 +62,6 @@ const HelpPageTemplate = (props) => {
               <Typography>
                 Ask an officer to delete your account so you can reapply.
               </Typography>
-              <img src="/new_member.gif" alt="New member guide"/>
             </AccordionDetails>
           </Accordion>
           <br></br>
