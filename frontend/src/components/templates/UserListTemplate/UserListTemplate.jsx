@@ -6,6 +6,7 @@ import {
   fetchAllUsers,
   co,
   updateUserDues,
+  updateUserPresident,
 } from "@services/userService";
 
 import {
