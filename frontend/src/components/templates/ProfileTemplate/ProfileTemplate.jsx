@@ -8,12 +8,12 @@ import {
   Box,
   Tabs,
   Tab,
-  Avatar,
   Typography,
   useMediaQuery,
   IconButton,
+  Button,
 } from "@mui/material";
-import { signedIn, getUserUIN } from "@services/authService";
+import { signedIn, getUserUIN, getUserRole, setUserInfo } from "@services/authService";
 import UserInfo from "@components/organisms/UserInfo";
 import ProgressLoading from "@components/organisms/ProgressLoading";
 import UserEditTemplate from "../UserEditTemplate";
@@ -47,6 +47,7 @@ function ProfileTemplate({ params }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Check if the screen is mobile-sized
 
+  console.log(user);
   useEffect(() => {
     if (!isEdit) {
       fetchUserData();
@@ -55,47 +56,56 @@ function ProfileTemplate({ params }) {
 
   const fetchUserData = async () => {
     setLoading(true);
-    try {
-      const isCurrentUser = params.id === undefined;
-      const id = isCurrentUser ? await getUserUIN() : params.id;
-      setThisIsMe(isCurrentUser);
-      const userData = await fetchUser(id);
-      console.log(userData);
-      setUser(userData);
-    } catch (e) {
-      setError(e);
-    } finally {
-      setLoading(false);
+    const role = await getUserRole();
+    if (role === undefined || role === "member" || role === "none") {
+      await setUserInfo();
+    }
+    const role2 = await getUserRole();
+    if(role2 === undefined || role2 === "member" || role2 === "none") {
+      router.push("/");
+    } else {
+      try {
+        const isCurrentUser = params.id === undefined;
+        const id = isCurrentUser ? await getUserUIN() : params.id;
+        setThisIsMe(isCurrentUser);
+        const userData = await fetchUser(id);
+        console.log(userData);
+        setUser(userData);
+      } catch (e) {
+        setError(e);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
   // Data fetch
-  useEffect(() => {
-    if (!signedIn()) {
-      console.log("not signed in");
-      router.push(`/`);
-      return;
-    }
+  // useEffect(() => {
+  //   if (!signedIn()) {
+  //     console.log("not signed in");
+  //     router.push(`/`);
+  //     return;
+  //   }
 
-    fetchUserData();
-  }, [params]);
+  //   fetchUserData();
+  // }, [params]);
 
   // Run final checks after user is set and loading is complete
-  useEffect(() => {
-    if (!loading && user.first_name === "") {
-      finalChecks();
-    }
-  }, [loading, user]);
+  // useEffect(() => {
+  //   if (!loading && user.first_name === "") {
+  //     finalChecks();
+  //   }
+  // }, [loading, user]);
 
-  function finalChecks() {
-    if (user.first_name === "") {
-      router.push(`/Profile`);
-    }
+  // function finalChecks() {
+  //   if (user.first_name === "") {
+  //     router.push(`/Profile`);
+  //   }
 
-    if (user.uin === null) {
-      router.push(`/`);
-    }
-  }
+  //   if (user.uin === null) {
+  //     router.push(`/`);
+  //   }
+  // }
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -112,10 +122,6 @@ function ProfileTemplate({ params }) {
         <MimicTextBox text={user.email} uppertext={"email"} />
       </div>
     </div>
-  );
-
-  const projectsTab = (
-    <Typography>Associated projects to be displayed soon...</Typography>
   );
 
   if (error) {
@@ -195,7 +201,40 @@ function ProfileTemplate({ params }) {
               profileTab_LoggedOut
             )
           ) : null}
-          {tabValue === 1 && projectsTab}
+          {tabValue === 1 && (
+            <Box sx={{ padding: "30px" }}>
+              {user?.projects?.length > 0 ? (
+                user.projects.map((project) => (
+                  <Box
+                    key={project.id}
+                    sx={{
+                      marginBottom: "16px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Box>
+                      <Typography variant="h6">{project.title}</Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        {project.description}
+                      </Typography>
+                    </Box>
+                    <Button
+                      variant="outlined"
+                      onClick={() => router.push(`Project/${project.id}/View`)}
+                    >
+                      View Project
+                    </Button>
+                  </Box>
+                ))
+              ) : (
+                <Typography>
+                  No Current Projects. Think this is wrong? Contact a EWB
+                  officer for help.
+                </Typography>
+              )}
+            </Box>
+          )}
         </Box>
       </Box>
     </Box>

@@ -72,6 +72,36 @@ RSpec.describe "/members", type: :request do
     end
   end
 
+  describe "GET /member" do
+    it "returns members with grouped interests" do
+      interest1 = Interest.create!(name: "Coding", interest_type: "career")
+      interest2 = Interest.create!(name: "Music", interest_type: "career")
+
+      member = Member.create!(valid_attributes)
+      member.member_interests.create!(interest: interest1)
+      member.member_interests.create!(interest: interest2)
+
+      get "/members"
+
+      expect(response).to have_http_status(:success)
+      json_response = JSON.parse(response.body)
+
+      expect(json_response).to be_an(Array)
+
+      # Find the specific member in the response
+      member_data = json_response.find { |m| m["uin"] == member.uin } # or m["id"] if you use ID
+
+      expect(member_data).to include(
+        "interests" => {
+          "career" => [
+            { "id" => interest1.id, "name" => interest1.name },
+            { "id" => interest2.id, "name" => interest2.name }
+          ]
+        }
+      )
+    end
+  end
+
   describe "POST /create" do
     context "with valid parameters" do
       it "creates a new Member" do
