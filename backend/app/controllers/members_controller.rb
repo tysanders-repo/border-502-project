@@ -7,12 +7,12 @@ class MembersController < ApplicationController
       member_interests: :interest,
       member_diets: :dietary_restriction,
     ).all
-  
+
     members_with_grouped_interests = @members.map do |member|
       grouped_interests = member.member_interests.includes(:interest).group_by do |mi|
         mi.interest.interest_type
       end
-      member.as_json(except: [:created_at, :updated_at]).merge(
+      member.as_json(except: [ :created_at, :updated_at ]).merge(
           interests: grouped_interests.transform_values do |interests|
             interests.map { |mi| { id: mi.interest.id, name: mi.interest.name } }
           end,
@@ -24,23 +24,23 @@ class MembersController < ApplicationController
           end
         )
     end
-  
+
     render json: members_with_grouped_interests
   end
-  
+
   # GET /members/1
   def show
     @member = Member.includes(
       member_interests: :interest,
       member_diets: :dietary_restriction
     ).find(params[:uin])
-  
+
     grouped_interests = @member.member_interests.includes(:interest).group_by do |mi|
       mi.interest.interest_type
     end
-  
+
     # Directly include member data along with grouped interests and dietary restrictions
-    member_with_details = @member.as_json(except: [:created_at, :updated_at]).merge(
+    member_with_details = @member.as_json(except: [ :created_at, :updated_at ]).merge(
       interests: grouped_interests.transform_values do |interests|
         interests.map { |mi| { id: mi.interest.id, name: mi.interest.name } }
       end,
@@ -51,7 +51,7 @@ class MembersController < ApplicationController
         { id: project.id, title: project.title, description: project.description } # Adjust fields as needed
       end
     )
-  
+
     render json: member_with_details
   end
 
