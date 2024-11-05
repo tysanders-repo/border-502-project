@@ -32,7 +32,7 @@ function NewProjectFormTemplate() {
     description: "",
     date: null,
     pictures: null,
-    timeline: null,
+    timeline: [],
     images: [],
     image_urls: [],
   });
@@ -114,8 +114,22 @@ function NewProjectFormTemplate() {
     }
     setLoading(true);
     setError(null);
+
+    const startDateMilestone = {
+      id: 0,
+      title: "Project Started",
+      date: project.date, // Use the start date from the project.
+      status: new Date() > new Date(project.date) ? "completed" : "upcoming",
+    };
+  
+   const updatedProject = {
+      ...project,
+      timeline: [startDateMilestone],
+    };
+
+
     try {
-      const data = await createProject(project); // Call service to create a new project.
+      const data = await createProject(updatedProject); // Call service to create a new project.
       const id = data.id;
       for (const member of selectedMembers) {
         try {

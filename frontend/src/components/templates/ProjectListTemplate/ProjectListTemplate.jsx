@@ -3,10 +3,14 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { fetchAllProjects } from "@services/projectService";
+import { 
+  fetchAllProjects,
+  updateProject
+ } from "@services/projectService";
 import DeleteProjectDialog from "@components/organisms/DeleteProjectDialog";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import { format } from "date-fns";
+import { projectService } from "@services/projectService";
 import {
   Alert,
   Typography,
@@ -25,6 +29,7 @@ import ProgressLoading from "@components/organisms/ProgressLoading";
 import CopySnackbar from "@components/organisms/CopySnackbar";
 import { handleCopyClick } from "@utils/functions";
 import { getUserRole } from "@services/authService";
+import MilestoneDialog from "./MilestoneDialog";
 
 /**
  * ProjectListTemplate component
@@ -43,6 +48,9 @@ function ProjectListTemplate() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [copyStatus, setCopyStatus] = useState(false);
   const [userAuthorized, setUserAuthorized] = useState(false);
+  // milestone context
+  const [milestoneDialogOpen, setMilestoneDialogOpen] = useState(false);
+
   const router = useRouter(); // Next.js router for navigation.
 
   const columns = [
@@ -108,6 +116,14 @@ function ProjectListTemplate() {
               }
             >
               Copy Emails
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                setMilestoneDialogOpen(true);
+                handleCloseMenu();
+              }}
+            >
+              Edit Milestones
             </MenuItem>
           </Menu>
         </div>
@@ -185,6 +201,47 @@ function ProjectListTemplate() {
     handleCloseMenu(); // Close the actions menu.
   };
 
+  /**
+   * milestoneHandleClose Function
+   * @description Closes the milestone dialog.
+   * 
+   */
+  const milestoneHandleClose = () => {
+    setMilestoneDialogOpen(false);
+  };
+
+  const handleAccomplishmentsSubmit = async (accomplishments) => {
+    try {
+      await updateUserPresident(selectedMember.uin, {
+        accomplishments: accomplishments,
+      });
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.uin === selectedMember.uin ? { ...user, accomplishments } : user,
+        ),
+      );
+    } catch (error) {
+      console.error("Error updating accomplishments:", error);
+    }
+  };
+
+
+  const handleMilestoneSubmit = async (milestone) => {
+    try {
+      await updateProject(selectedProject.id, {
+        ...selectedProject,
+        timeline: [...selectedProject.timeline, milestone[milestone.length - 1]],
+      });
+
+    } catch (error) {
+      console.error("Error updating project:", error);
+    }
+  };
+  
+  
+  
+  
+
   // If the data is still loading, show a loading spinner.
   if (loading) {
     return <ProgressLoading />;
@@ -256,6 +313,13 @@ function ProjectListTemplate() {
         snackbarOpen={snackbarOpen}
         setSnackbarOpen={setSnackbarOpen}
         copyStatus={copyStatus}
+      />
+
+      <MilestoneDialog
+        project={selectedProject}
+        open={milestoneDialogOpen}
+        onClose={milestoneHandleClose}
+        onSubmit={handleMilestoneSubmit}
       />
     </>
   );

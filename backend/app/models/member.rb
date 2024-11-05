@@ -3,7 +3,7 @@ require "date"
 class Member < ApplicationRecord
     has_many :project_members, dependent: :destroy, foreign_key: "uin", primary_key: "uin"
     has_many :projects, through: :project_members
-    
+
     has_many :member_diets, dependent: :destroy, foreign_key: "uin", primary_key: "uin"
     has_many :dietary_restrictions, through: :member_diets
 
