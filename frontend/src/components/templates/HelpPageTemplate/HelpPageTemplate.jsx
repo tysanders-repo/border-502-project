@@ -102,8 +102,8 @@ const HelpPageTemplate = (props) => {
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <HeaderText>
-              I lost my account credentials and/or used a email that isn't
-              compatible with Google sign-in.
+              I lost my account credentials or used a email that isn&apos;t
+              compatible with Google sign in.
             </HeaderText>
           </AccordionSummary>
           <AccordionDetails>
@@ -126,77 +126,77 @@ const HelpPageTemplate = (props) => {
           </AccordionSummary>
           <AccordionDetails>
             <List>
+              <ListItem>
+                <ListItemText primary="Project Leads:" />
+              </ListItem>
+              <List disablePadding>
                 <ListItem>
-                  <ListItemText primary="Project Leads:" />
+                  <ListItemText primary="• Create and edit new projects" />
                 </ListItem>
-                <List disablePadding>
-                  <ListItem>
-                    <ListItemText primary="• Create and edit new projects" />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText primary="• Manage project membership" />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText primary="• Manage project milestones" />
-                  </ListItem>
-                </List>
                 <ListItem>
-                  <ListItemText primary="Treasurer:" />
+                  <ListItemText primary="• Manage project membership" />
                 </ListItem>
-                <List disablePadding>
-                  <ListItem>
-                    <ListItemText primary="• View active members" />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText primary="• Update and manage dues" />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText primary="• Create mailing list of members with unpaid dues" />
-                  </ListItem>
-                </List>
                 <ListItem>
-                  <ListItemText primary="Internal Relations:" />
+                  <ListItemText primary="• Manage project milestones" />
                 </ListItem>
-                <List disablePadding>
-                  <ListItem>
-                    <ListItemText primary="• View active, archived members" />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText primary="• Review and approve applicants" />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText primary="• Archive and restore members" />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText primary="• Edit member information" />
-                  </ListItem>
-                </List>
-                <ListItem>
-                  <ListItemText primary="Vice President:" />
-                </ListItem>
-                <List disablePadding>
-                  <ListItem>
-                    <ListItemText primary="• View active, archived members" />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText primary="• Review and approve applicants" />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText primary="• Update roles" />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText primary="• Add and remove accomplishments" />
-                  </ListItem>
-                </List>
-                <ListItem>
-                  <ListItemText primary="President:" />
-                </ListItem>
-                <List disablePadding>
-                  <ListItem>
-                    <ListItemText primary="• All actions of other roles" />
-                  </ListItem>
-                </List>
               </List>
+              <ListItem>
+                <ListItemText primary="Treasurer:" />
+              </ListItem>
+              <List disablePadding>
+                <ListItem>
+                  <ListItemText primary="• View active members" />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="• Update and manage dues" />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="• Create mailing list of members with unpaid dues" />
+                </ListItem>
+              </List>
+              <ListItem>
+                <ListItemText primary="Internal Relations:" />
+              </ListItem>
+              <List disablePadding>
+                <ListItem>
+                  <ListItemText primary="• View active, archived members" />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="• Review and approve applicants" />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="• Archive and restore members" />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="• Edit member information" />
+                </ListItem>
+              </List>
+              <ListItem>
+                <ListItemText primary="Vice President:" />
+              </ListItem>
+              <List disablePadding>
+                <ListItem>
+                  <ListItemText primary="• View active, archived members" />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="• Review and approve applicants" />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="• Update roles" />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="• Add and remove accomplishments" />
+                </ListItem>
+              </List>
+              <ListItem>
+                <ListItemText primary="President:" />
+              </ListItem>
+              <List disablePadding>
+                <ListItem>
+                  <ListItemText primary="• All actions of other roles" />
+                </ListItem>
+              </List>
+            </List>
           </AccordionDetails>
         </Accordion>
         <Accordion>
@@ -220,7 +220,7 @@ const HelpPageTemplate = (props) => {
         </Accordion>
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <HeaderText>How do I update someone's role?</HeaderText>
+            <HeaderText>How do I update someone&rsquo;s role?</HeaderText>
           </AccordionSummary>
           <AccordionDetails>
             <DetailsBox>
