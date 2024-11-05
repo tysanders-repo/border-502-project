@@ -124,12 +124,9 @@ function NewProjectFormTemplate() {
   
    const updatedProject = {
       ...project,
-      timeline: [startDateMilestone, ...project.timeline],
+      timeline: [startDateMilestone],
     };
 
-
-
-    console.log("Submitting project:", updatedProject);
 
     try {
       const data = await createProject(updatedProject); // Call service to create a new project.
