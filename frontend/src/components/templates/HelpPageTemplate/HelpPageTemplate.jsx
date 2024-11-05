@@ -8,6 +8,7 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { HeaderText, ImageBox, DetailsBox } from "./HelpPageTemplate.styles";
 import { Details } from "@mui/icons-material";
+import { List, ListItem, ListItemText } from "@mui/material";
 
 const HelpPageTemplate = (props) => {
   return (
@@ -121,11 +122,82 @@ const HelpPageTemplate = (props) => {
               <HeaderText>What are the specific actions and views available to each officer?</HeaderText>
             </AccordionSummary>
             <AccordionDetails>
-              <DetailsBox>
-                <Typography>
-                  WIP
-                </Typography>
-              </DetailsBox>
+              <List>
+                <ListItem>
+                  <ListItemText primary="Project Leads:" />
+                </ListItem>
+                <List disablePadding>
+                  <ListItem>
+                    <ListItemText primary="• Create and edit new projects" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="• Manage project membership" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="• Manage project milestones" />
+                  </ListItem>
+                </List>
+
+                <ListItem>
+                  <ListItemText primary="Treasurer:" />
+                </ListItem>
+                <List disablePadding>
+                  <ListItem>
+                    <ListItemText primary="• View active members" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="• Update and manage dues" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="• Create mailing list of members with unpaid dues" />
+                  </ListItem>
+                </List>
+
+                <ListItem>
+                  <ListItemText primary="Internal Relations:" />
+                </ListItem>
+                <List disablePadding>
+                  <ListItem>
+                    <ListItemText primary="• View active, archived members" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="• Review and approve applicants" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="• Archive and restore members" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="• Edit member information" />
+                  </ListItem>
+                </List>
+
+                <ListItem>
+                  <ListItemText primary="Vice President:" />
+                </ListItem>
+                <List disablePadding>
+                  <ListItem>
+                    <ListItemText primary="• View active, archived members" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="• Review and approve applicants" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="• Update roles" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="• Add and remove accomplishments" />
+                  </ListItem>
+                </List>
+
+                <ListItem>
+                  <ListItemText primary="President:" />
+                </ListItem>
+                <List disablePadding>
+                  <ListItem>
+                    <ListItemText primary="• All actions of other roles" />
+                  </ListItem>
+                </List>
+              </List>
             </AccordionDetails>
           </Accordion>
           <Accordion>
