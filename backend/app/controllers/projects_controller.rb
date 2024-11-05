@@ -46,7 +46,7 @@ class ProjectsController < ApplicationController
     @project = Project.find(params[:id])
 
     Rails.logger.debug("Received params: #{params.inspect}")
-    
+
     # Parse and set timeline data
     if params[:project][:timeline].present?
       timeline_data = params[:project][:timeline].map do |milestone|
@@ -54,7 +54,7 @@ class ProjectsController < ApplicationController
       end
       params[:project][:timeline] = timeline_data
     end
-    
+
     # Attempt to update the project attributes (excluding images and remove_images)
     if @project.update(project_params.except(:images, :remove_images))
 
@@ -103,6 +103,6 @@ class ProjectsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def project_params
-    params.require(:project).permit(:title, :description, :date, timeline: [:id, :date, :title, :status], images: [], remove_images: [])
+    params.require(:project).permit(:title, :description, :date, timeline: [ :id, :date, :title, :status ], images: [], remove_images: [])
   end
 end
