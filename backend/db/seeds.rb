@@ -150,6 +150,24 @@ Member.find_or_create_by!(uin: 210398211) do |member|
   member.accomplishments = { "projects" => "Built smart home system", "awards" => "Innovation Award" }
 end
 
+Member.find_or_create_by!(uin: 132999484) do |member|
+  member.first_name = "Charles"
+  member.last_name = "Ryan"
+  member.role = "vice president"
+  member.major = "Electrical Engineering"
+  member.year = 2024
+  member.email = "ewbappvicepresident@gmail.com"
+  member.phone = "512-559-1734"
+  member.tshirt_size = "M"
+  member.paid_dues = false
+  member.join_date = DateTime.now - 2.year
+  member.aggie_ring_day = DateTime.now + 1.year
+  member.birthday = DateTime.new(2002, 2, 14)
+  member.graduation_day = DateTime.new(2024, 5, 10)
+  member.archived = false
+  member.accepted = false
+  member.accomplishments = { "projects" => "Built smart home system", "awards" => "Innovation Award" }
+end
 
 dietary_restrictions = [ "Peanuts", "Gluten", "Dairy", "Eggs", "Shellfish", "Soy", "Tree Nuts", "Wheat", "Fish", "Sesame", "Corn", "Pork", "Beef", "Chicken", "Vegan", "Vegetarian", "Halal", "Kosher", "Low Sodium" ]
 
