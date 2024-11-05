@@ -81,7 +81,6 @@ const Footer = () => {
           </a>
         </Box>
       </VeritcalBox>
-      {/* Logo image */}
     </StyledFooter>
   );
 };
