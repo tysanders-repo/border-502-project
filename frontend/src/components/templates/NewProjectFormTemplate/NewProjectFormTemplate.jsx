@@ -49,7 +49,7 @@ function NewProjectFormTemplate() {
   useEffect(() => {
     async function fetchMembers() {
       const role = await getUserRole();
-      if (role !== "project lead" && role !== "president") {
+      if (role !== "project lead" && role !== "president" && role !== "admin") {
         // Redirect non-admin users to homepage
         router.push("/");
       } else {

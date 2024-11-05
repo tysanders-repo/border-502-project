@@ -67,7 +67,7 @@ function ProjectEditTemplate({ params }) {
     if (!id) return;
     const fetchCurrentProject = async () => {
       const role = await getUserRole();
-      if (role !== "project lead" && role !== "president") {
+      if (role !== "project lead" && role !== "president" && role !== "admin") {
         // Redirect non-admin users to homepage
         router.push("/");
       } else {

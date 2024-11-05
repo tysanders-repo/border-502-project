@@ -142,7 +142,7 @@ function ProjectListTemplate() {
       // Redirect non-admin users to homepage
       router.push("/");
     } else {
-      if (role === "project lead" || role === "president")
+      if (role === "project lead" || role === "president" || role === "admin")
         // Only allow president and project lead to edit and delete projects
         setUserAuthorized(true);
       try {
