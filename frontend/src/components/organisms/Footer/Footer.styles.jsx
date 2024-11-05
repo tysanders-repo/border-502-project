@@ -17,3 +17,12 @@ export const VeritcalBox = styled(Box)(() => ({
   flexDirection: "column",
   gap: "10px",
 }));
+
+export const ContactHelpBox = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  [theme.breakpoints.up("md")]: {
+    flexDirection: "row",
+    gap: "50px",
+  },
+}));

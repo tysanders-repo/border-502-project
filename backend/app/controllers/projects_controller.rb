@@ -11,7 +11,7 @@ class ProjectsController < ApplicationController
       methods: :image_urls, # Include project image URLs
       include: {
         members: {
-          only: [:uin, :first_name, :last_name, :email], 
+          only: [ :uin, :first_name, :last_name, :email ]
         }
       }
     )
@@ -19,12 +19,12 @@ class ProjectsController < ApplicationController
   # GET /projects/1
   def show
     @project = Project.includes(:members).find(params[:id])
-  
+
     render json: @project.as_json(
       methods: :image_urls,
       include: {
         members: {
-          only: [:uin, :first_name, :last_name, :email]
+          only: [ :uin, :first_name, :last_name, :email ]
         }
       }
     )

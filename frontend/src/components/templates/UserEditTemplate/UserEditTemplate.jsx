@@ -30,6 +30,7 @@ import {
   deleteMemberInterestsByUin,
 } from "@services/memberInterestService";
 import ProgressLoading from "@components/organisms/ProgressLoading";
+import { getUserRole, getUserUIN } from "@services/authService";
 
 /**
  * UserEditTemplate component
@@ -130,18 +131,24 @@ function UserEditTemplate({
 
     const fetchCurrentUser = async () => {
       setLoading(true);
-      try {
-        // Fetch user data based on ID
-        const userData = await fetchUser(id);
-        setUser(userData);
-        setSelectedDietaryRestrictions(userData.dietary_restrictions);
-        setSelectedPersonalInterests(userData.interests.personal);
-        setSelectedCareerInterests(userData.interests.career);
-        setSelectedCompanyInterests(userData.interests.company);
-      } catch (e) {
-        setError(e);
-      } finally {
-        setLoading(false);
+      const uin = await getUserUIN();
+      const role = await getUserRole();
+      if (uin !== id && role !== "president") {
+        router.push("/");
+      } else {
+        try {
+          // Fetch user data based on ID
+          const userData = await fetchUser(id);
+          setUser(userData);
+          setSelectedDietaryRestrictions(userData.dietary_restrictions);
+          setSelectedPersonalInterests(userData.interests.personal);
+          setSelectedCareerInterests(userData.interests.career);
+          setSelectedCompanyInterests(userData.interests.company);
+        } catch (e) {
+          setError(e);
+        } finally {
+          setLoading(false);
+        }
       }
     };
 
