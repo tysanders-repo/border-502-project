@@ -16,6 +16,8 @@ const HelpPageTemplate = (props) => {
         position: "relative",
         color: "black",
         padding: "20px",
+        width: "80%",
+        margin: "0 auto",
         minHeight: "calc(100vh - 64px - 64px)",
         display: "flex",
         alignItems: "center",
