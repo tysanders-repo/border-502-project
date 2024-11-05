@@ -134,6 +134,8 @@ function UserEditTemplate({
       const uin = await getUserUIN();
       const role = await getUserRole();
       if (uin !== id && role !== "president") {
+        console.log("UIN: "+uin);
+        console.log("ID: "+id);
         router.push("/");
       } else {
         try {
