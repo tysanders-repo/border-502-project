@@ -16,6 +16,8 @@ export const ImageBox = styled(Box)(({ theme }) => ({
 export const DetailsBox = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
+  width: "100%",
+  textAlign: "left",
   gap: "20px",
   alignItems: "center",
   margin: "0 auto",

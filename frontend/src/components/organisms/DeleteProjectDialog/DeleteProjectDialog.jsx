@@ -15,12 +15,12 @@ const DeleteProjectDialog = ({
   handleCloseDialog,
   id,
   setError,
-  onDelete, // New prop to handle deletion
+  onDelete, 
 }) => {
   const deleteProjectHandler = async () => {
     try {
       await deleteProject(id);
-      onDelete(); // Call the onDelete prop to notify parent
+      onDelete(); 
     } catch (error) {
       setError(error);
     }

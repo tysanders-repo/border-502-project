@@ -224,6 +224,7 @@ function ProjectDetailsTemplate({ params }) {
               handleCloseDialog={handleCloseDialog}
               id={id}
               setError={setError}
+              onDelete={() => router.push("/Project")}
             />
           </Box>
         </Box>
