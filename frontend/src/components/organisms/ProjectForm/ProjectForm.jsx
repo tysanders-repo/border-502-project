@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  TextField,
-  Button,
-  CircularProgress,
-  Alert,
-  Box,
-  Typography,
-} from "@mui/material";
+import { TextField, Button, Alert, Box, Typography } from "@mui/material";
 import {
   SideBySideBox,
   VisuallyHiddenInput,
@@ -19,7 +12,8 @@ import ImageListItem from "@mui/material/ImageListItem";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
 import UploadIcon from "@mui/icons-material/Upload";
-import { useTheme } from "@emotion/react";
+import ProgressLoading from "../ProgressLoading";
+import Autocomplete from "@mui/material/Autocomplete";
 
 /**
  * ProjectForm Component
@@ -54,6 +48,9 @@ const ProjectForm = ({
   onSubmit,
   handleCancel,
   handleImageChange,
+  selectedMembers,
+  members,
+  handleMembersRestrictionChange,
 }) => {
   // Local state to hold preview images for display before uploading
   const projectCurrent = project.image_urls; // Contains existing image URLs fetched from the database
@@ -164,6 +161,21 @@ const ProjectForm = ({
           rows={5}
         />
 
+        {/* Member Names (Multi-Select AutoComplete) */}
+        <Autocomplete
+          freeSolo
+          multiple
+          value={selectedMembers}
+          options={members}
+          getOptionLabel={(option) =>
+            option.first_name + " " + option.last_name
+          }
+          onChange={handleMembersRestrictionChange}
+          renderInput={(params) => (
+            <TextField {...params} label="Members" variant="outlined" />
+          )}
+        />
+
         {/* Image preview list */}
         {(projectCurrent?.length > 0 || projectPreview?.length > 0) && (
           <ImageList
@@ -184,7 +196,12 @@ const ProjectForm = ({
                 >
                   {/* Button to add/remove images from removedImages array */}
                   <DeleteBox
-                    onClick={() => handleExistingImageClick(imageUrl.id)}
+                    isDisabled={projectPreview.length > 0}
+                    onClick={() => {
+                      if (projectPreview.length === 0) {
+                        handleExistingImageClick(imageUrl.id);
+                      }
+                    }}
                   >
                     <Box
                       sx={{ display: "flex", alignItems: "center", gap: "5px" }}
@@ -270,6 +287,7 @@ const ProjectForm = ({
           <Button
             variant="contained"
             component="span"
+            disabled={removedImages?.length > 0}
             startIcon={<UploadIcon />}
           >
             Upload Images
@@ -285,7 +303,7 @@ const ProjectForm = ({
             sx={{ flex: 1 }}
           >
             {loading ? (
-              <CircularProgress size={24} />
+              <ProgressLoading />
             ) : (
               <span>{project?.id ? "Update" : "Create"}</span>
             )}

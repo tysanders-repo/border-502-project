@@ -79,6 +79,22 @@ RSpec.describe "/project_members", type: :request do
     end
   end
 
+  describe "GET /project/:project_id" do
+    it "renders a successful response" do
+      project_member = ProjectMember.create! valid_attributes
+      get by_project_project_members_path(project.id)
+      expect(response).to be_successful
+    end
+  end
+
+  describe "GET /member/:uin" do
+    it "renders a successful response" do
+      project_member = ProjectMember.create! valid_attributes
+      get by_member_project_members_path(member.uin)
+      expect(response).to be_successful
+    end
+  end
+
   describe "POST /create" do
     context "with valid parameters" do
       it "creates a new ProjectMember" do

@@ -17,7 +17,7 @@ require 'simplecov'
 SimpleCov.start 'rails' do
   add_filter '/spec/'  # Exclude spec files from coverage
   add_filter '/channels/'
-  add_filter '/controllers/api/users_controller.rb' #unused model
+  add_filter '/controllers/users_controller.rb' #unused controller
   add_filter '/jobs/'
   add_filter '/models/user.rb' #unused model
   add_filter '/mailers/' #unused

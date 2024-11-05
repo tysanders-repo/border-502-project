@@ -1,7 +1,7 @@
 "use server";
 
-import { API_URL, TOKEN_NAME } from "../constants"
-import { cookies } from "next/headers"
+import { API_URL, TOKEN_NAME } from "../constants";
+import { cookies } from "next/headers";
 /**
  * Check if the user is signed in by checking for the session token cookie.
  *
@@ -30,14 +30,14 @@ export async function setUserInfo() {
     cache: "no-cache",
   });
 
-  const isOK = response.ok
+  const isOK = response.ok;
   const data = isOK ? await response.json() : null;
 
   cookies().set({
     name: "role",
     value: data?.role !== undefined ? data?.role : "none",
     httpOnly: true,
-    secure: false, // false for now, will be secure once hosted online.
+    secure: false,
     sameSite: "lax",
     path: "/",
     // maxAge: 60 * 60, commented out for now until I find a way to refresh efficiently
@@ -47,7 +47,7 @@ export async function setUserInfo() {
     name: "uin",
     value: data?.uin !== undefined ? data?.uin : "none",
     httpOnly: true,
-    secure: false, // false for now, will be secure once hosted online.
+    secure: false,
     sameSite: "lax",
     path: "/",
     // maxAge: 60 * 60, commented out for now until I find a way to refresh efficiently
@@ -70,8 +70,6 @@ export async function deleteUserInfo() {
  * @returns {Promise<string|null>} A promise that resolves to the user's role or null if not found.
  */
 export async function getUserRole() {
-  if(cookies().get("role")?.value === undefined || cookies().get("role")?.value == "none")
-    await setUserInfo();
   return cookies().get("role")?.value;
 }
 
@@ -81,7 +79,5 @@ export async function getUserRole() {
  * @returns {Promise<string|null>} A promise that resolves to the user's UIN or null if not found.
  */
 export async function getUserUIN() {
-  if(cookies().get("uin")?.value === undefined || cookies().get("uin")?.value == "none")
-    await setUserInfo();
   return cookies().get("uin")?.value;
 }

@@ -372,7 +372,7 @@ function NewMemberFormTemplate() {
   }
 
   return (
-    <Container maxWidth="md" sx={{ textAlign: "center" }}>
+    <Container maxWidth="md" sx={{ textAlign: "center", marginTop: "40px" }}>
       {/* Page heading */}
       <Typography variant="h4" component="h1" gutterBottom>
         New Member Form

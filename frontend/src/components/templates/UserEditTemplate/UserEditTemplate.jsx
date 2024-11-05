@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import UserForm from "@components/organisms/UserForm";
-import { Container, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { fetchUser, updateUser } from "@services/userService";
 import { validateUserForm } from "@components/organisms/UserForm/validateUserForm";
 import {
@@ -30,6 +30,7 @@ import {
   deleteMemberInterestsByUin,
 } from "@services/memberInterestService";
 import ProgressLoading from "@components/organisms/ProgressLoading";
+import { getUserRole, getUserUIN } from "@services/authService";
 
 /**
  * UserEditTemplate component
@@ -43,7 +44,12 @@ import ProgressLoading from "@components/organisms/ProgressLoading";
  *
  * @returns {JSX.Element} The rendered component.
  */
-function UserEditTemplate({ params }) {
+function UserEditTemplate({
+  params,
+  isProfile = false,
+  isEdit = false,
+  setIsEdit = null,
+}) {
   // State to hold user data
   const [user, setUser] = useState({
     first_name: "",
@@ -57,6 +63,9 @@ function UserEditTemplate({ params }) {
     aggie_ring_day: null,
     birthday: null,
     graduation_day: null,
+    accomplishments: null,
+    interests: null,
+    dietary_restrictions: null,
   });
 
   // State to manage loading and error states
@@ -82,7 +91,7 @@ function UserEditTemplate({ params }) {
   const { id } = params;
 
   useEffect(() => {
-    if (!id) return; 
+    if (!id) return;
 
     const fetchDietaryRestrictions = async () => {
       try {
@@ -121,66 +130,26 @@ function UserEditTemplate({ params }) {
     };
 
     const fetchCurrentUser = async () => {
-      try {
-        // Fetch user data based on ID
-        const userData = await fetchUser(id);
-
-        setUser(userData);
-
-        // Fetch current dietary restrictions for the user
-        const currentRestrictions = await getMemberDiet(userData.uin);
-        if (currentRestrictions) {
-          const mappedRestrictions = currentRestrictions.map((restriction) => ({
-            id: restriction.item_id,
-            item_name: restriction.item_name,
-          }));
-          setSelectedDietaryRestrictions(mappedRestrictions);
+      setLoading(true);
+      const uin = await getUserUIN();
+      const role = await getUserRole();
+      if (uin !== id.toString() && role !== "president") {
+        router.push("/");
+      } else {
+        try {
+          // Fetch user data based on ID
+          const userData = await fetchUser(id);
+          setUser(userData);
+          setSelectedDietaryRestrictions(userData.dietary_restrictions);
+          setSelectedPersonalInterests(userData.interests.personal);
+          setSelectedCareerInterests(userData.interests.career);
+          setSelectedCompanyInterests(userData.interests.company);
+        } catch (e) {
+          setError(e);
+        } finally {
+          setLoading(false);
         }
-
-        // Fetch current personal interests for the user
-        const currentPersonalInterests = await getMemberPersonalInterests(
-          userData.uin,
-        );
-        if (currentPersonalInterests) {
-          const mappedPersonalInterests = currentPersonalInterests.map(
-            (interests) => ({
-              id: interests.interest_id,
-              name: interests.name,
-            }),
-          );
-          setSelectedPersonalInterests(mappedPersonalInterests);
-        }
-
-        // Fetch current career interests for the user
-        const currentCareerInterests = await getMemberCareerInterests(
-          userData.uin,
-        );
-        if (currentCareerInterests) {
-          const mappedCareerInterests = currentCareerInterests.map(
-            (interests) => ({
-              id: interests.interest_id,
-              name: interests.name,
-            }),
-          );
-          setSelectedCareerInterests(mappedCareerInterests);
-        }
-
-        // Fetch current company interests for the user
-        const currentCompanyInterests = await getMemberCompanyInterests(
-          userData.uin,
-        );
-        if (currentCompanyInterests) {
-          const mappedCompanyInterests = currentCompanyInterests.map(
-            (interests) => ({
-              id: interests.interest_id,
-              name: interests.name,
-            }),
-          );
-          setSelectedCompanyInterests(mappedCompanyInterests);
-        }
-      } catch (e) {
-        setError(e); // Set error state if fetching fails
-      } 
+      }
     };
 
     const fetchData = async () => {
@@ -217,7 +186,12 @@ function UserEditTemplate({ params }) {
 
   // Cancel button handler to navigate back to the Member page
   const handleCancel = () => {
-    router.push(`/Member`);
+    if (isProfile) {
+      router.push(`/Profile`);
+      setIsEdit(false);
+    } else {
+      router.push(`/Member`);
+    }
   };
 
   /**
@@ -246,10 +220,6 @@ function UserEditTemplate({ params }) {
       try {
         // Update user data
         const response = await updateUser(id, updatedUser);
-
-        // Delete existing dietary restrictions
-        const delRestrictions = await deleteMemberDietsByUin(response.uin);
-        const delInterests = await deleteMemberInterestsByUin(response.uin);
 
         try {
           // Add new dietary restrictions
@@ -399,7 +369,13 @@ function UserEditTemplate({ params }) {
 
         // Navigate back to the Member page after successful update
         setUser(updatedUser);
-        router.push(`/Member`);
+
+        if (isProfile) {
+          router.push(`/Profile`);
+          setIsEdit(false);
+        } else {
+          router.push(`/Member`);
+        }
       } catch (error) {
         console.error("Failed to update user:", error);
         setError("Failed to update user."); // Set error if user update fails
@@ -427,10 +403,10 @@ function UserEditTemplate({ params }) {
   if (error) return <div>Error loading user data. {error.message} </div>;
 
   return (
-    <Container>
-      <Typography variant="h4" component="h1" gutterBottom>
+    <Box sx={{ maxWidth: "md", margin: isEdit ? "0px" : "0 auto" }}>
+      {/* <Typography variant="h5" sx={{ marginBottom: "20px" }} gutterBottom>
         Edit User
-      </Typography>
+      </Typography> */}
       <UserForm
         user={user}
         loading={loading}
@@ -457,8 +433,9 @@ function UserEditTemplate({ params }) {
           handleCompanyInterestRestrictionChange
         }
         selectedCompanyInterests={selectedCompanyInterests}
+        edit={true}
       />
-    </Container>
+    </Box>
   );
 }
 

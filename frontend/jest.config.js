@@ -16,7 +16,10 @@ const config = {
     "^@services/(.*)$": "<rootDir>/src/services/$1",
     "^@utils/(.*)$": "<rootDir>/src/utils/$1",
   },
-  testPathIgnorePatterns: ["/src/components/templates/NewMemberFormTemplate/", "/src/components/organisms/DeleteConfirmationDialog"],
+  testPathIgnorePatterns: [
+    "/src/components/templates/NewMemberFormTemplate/",
+    "/src/components/organisms/DeleteConfirmationDialog",
+  ],
 };
 
 module.exports = createJestConfig(config);

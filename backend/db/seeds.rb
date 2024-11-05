@@ -1,3 +1,41 @@
+Member.find_or_create_by!(uin: 123456780) do |member|
+  member.first_name = "EWB"
+  member.last_name = "ProjectLead"
+  member.role = "project lead"
+  member.major = "Civil Engineering"
+  member.year = 2024
+  member.email = "ewbappprojectlead@gmail.com"
+  member.phone = 1234567890
+  member.tshirt_size = "M"
+  member.paid_dues = true
+  member.join_date = DateTime.now - 2.years
+  member.aggie_ring_day = DateTime.now + 6.months
+  member.birthday = DateTime.new(2000, 5, 1)
+  member.graduation_day = DateTime.new(2024, 5, 15)
+  member.archived = false
+  member.accepted = true
+  member.accomplishments = { "leadership" => "Organized major event", "awards" => "Outstanding Leadership 2023" }
+end
+
+Member.find_or_create_by!(uin: 123456781) do |member|
+  member.first_name = "EWB"
+  member.last_name = "Admin"
+  member.role = "admin"
+  member.major = "Civil Engineering"
+  member.year = 2024
+  member.email = "ewbappadm@gmail.com"
+  member.phone = 1234567890
+  member.tshirt_size = "M"
+  member.paid_dues = true
+  member.join_date = DateTime.now - 2.years
+  member.aggie_ring_day = DateTime.now + 6.months
+  member.birthday = DateTime.new(2000, 5, 1)
+  member.graduation_day = DateTime.new(2024, 5, 15)
+  member.archived = false
+  member.accepted = true
+  member.accomplishments = { "leadership" => "Organized major event", "awards" => "Outstanding Leadership 2023" }
+end
+
 Member.find_or_create_by!(uin: 123456789) do |member|
   member.first_name = "EWB"
   member.last_name = "President"
@@ -75,12 +113,12 @@ Member.find_or_create_by!(uin: 210398210) do |member|
 end
 
 Member.find_or_create_by!(uin: 210398211) do |member|
-  member.first_name = "John"
-  member.last_name = "Doe"
+  member.first_name = "Doe"
+  member.last_name = "John"
   member.role = "member"
   member.major = "Electrical Engineering"
   member.year = 2024
-  member.email = "john.doe2@example.com"
+  member.email = "john.doe3@example.com"
   member.phone = "555-1234"
   member.tshirt_size = "M"
   member.paid_dues = false
@@ -93,6 +131,24 @@ Member.find_or_create_by!(uin: 210398211) do |member|
   member.accomplishments = { "projects" => "Built smart home system", "awards" => "Innovation Award" }
 end
 
+Member.find_or_create_by!(uin: 132999484) do |member|
+  member.first_name = "Charles"
+  member.last_name = "Ryan"
+  member.role = "vice president"
+  member.major = "Electrical Engineering"
+  member.year = 2024
+  member.email = "ewbappvicepresident@gmail.com"
+  member.phone = 1234567890
+  member.tshirt_size = "M"
+  member.paid_dues = false
+  member.join_date = DateTime.now - 2.year
+  member.aggie_ring_day = DateTime.now + 1.year
+  member.birthday = DateTime.new(2002, 2, 14)
+  member.graduation_day = DateTime.new(2024, 5, 10)
+  member.archived = false
+  member.accepted = false
+  member.accomplishments = { "projects" => "Built smart home system", "awards" => "Innovation Award" }
+end
 
 dietary_restrictions = [ "Peanuts", "Gluten", "Dairy", "Eggs", "Shellfish", "Soy", "Tree Nuts", "Wheat", "Fish", "Sesame", "Corn", "Pork", "Beef", "Chicken", "Vegan", "Vegetarian", "Halal", "Kosher", "Low Sodium" ]
 
@@ -169,35 +225,35 @@ projects = [
     description: "A project aimed at providing access to clean and safe drinking water in underserved communities.",
     date: DateTime.new(2024, 10, 1),
     pictures: {},
-    timeline: {}
+    timeline: []
   },
   {
     title: "Sustainable Housing Project",
     description: "Development of sustainable housing solutions for families in need, utilizing eco-friendly materials.",
     date: DateTime.new(2024, 11, 15),
     pictures: {},
-    timeline: {}
+    timeline: []
   },
   {
     title: "Renewable Energy for Rural Areas",
     description: "Implementation of solar energy systems to reduce dependence on non-renewable energy sources.",
     date: DateTime.new(2024, 12, 20),
     pictures: {},
-    timeline: {}
+    timeline: []
   },
   {
     title: "Education and Empowerment Program",
     description: "Creating educational resources and training programs to empower local communities.",
     date: DateTime.new(2025, 1, 10),
     pictures: {},
-    timeline: {}
+    timeline: []
   },
   {
     title: "Food Security Initiative",
     description: "A project focused on improving food security through sustainable agricultural practices.",
     date: DateTime.new(2025, 2, 5),
     pictures: {},
-    timeline: {}
+    timeline: []
   }
 ]
 

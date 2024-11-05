@@ -8,11 +8,13 @@ import {
   Drawer,
   List,
   ListItem,
+  Menu,
+  MenuItem,
   ListItemText,
   Button,
   useMediaQuery,
   Box,
-  CircularProgress,
+  Typography,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
@@ -25,17 +27,37 @@ import {
   getUserUIN,
 } from "@services/authService";
 import { signIn, signOut } from "next-auth/react";
-
+import Avatar from "@mui/material/Avatar";
+import HomeIcon from "@mui/icons-material/Home";
+import { useRouter } from "next/navigation";
+import PersonIcon from "@mui/icons-material/Person";
+import HardwareIcon from "@mui/icons-material/Hardware";
+import LogoutIcon from "@mui/icons-material/Logout";
+import CloseIcon from "@mui/icons-material/Close";
+import GroupIcon from "@mui/icons-material/Group";
+import HelpIcon from "@mui/icons-material/Help";
 /**
  * A functional component that renders the navigation bar.
  * It includes links to different pages and handles user authentication.
  * @returns {JSX.Element} The rendered Navbar component.
  */
+
 export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false); // State to control the drawer open/close
   const [userRole, setUserRole] = useState(null); // State to store the user's role
   const theme = useTheme(); // Access the theme for responsive design
   const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Check if the screen is mobile-sized
+  const router = useRouter();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const [isLoading, setIsLoading] = useState(false); // State to manage loading status
+  const [isSignedIn, setIsSignedIn] = useState(false); // State to track sign-in status
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   /**
    * Toggles the drawer open/close state.
@@ -52,38 +74,29 @@ export default function Navbar() {
     setDrawerOpen(open);
   };
 
+  const privilegedUser =
+    userRole === "president" ||
+    userRole === "vice president" ||
+    userRole === "internal relations" ||
+    userRole === "project lead" ||
+    userRole === "admin";
+
   // Menu items based on user role
   const menuItems = [
     { text: "Home", link: "/" },
-    // Conditionally render "View Members" if role is not "member" and role exists
     userRole &&
-      userRole !== "member" &&
-      userRole !== "subteam lead" && {
-        text: "View Members",
+      privilegedUser && {
+        text: "Members",
         link: "/Member",
       },
+    userRole &&
+      privilegedUser && {
+        text: "Projects",
+        link: "/Project",
+      },
+    userRole && { text: "Profile", link: "/Profile" },
+    { text: "Help", link: "/Help" },
   ].filter(Boolean); // Filter out falsy values
-
-  const drawer = (
-    <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
-      <List>
-        {menuItems.map((item, index) => (
-          <ListItem
-            button
-            key={index}
-            component={Link}
-            href={item.link}
-            onClick={toggleDrawer(false)}
-          >
-            <ListItemText primary={item.text} />
-          </ListItem>
-        ))}
-      </List>
-    </Drawer>
-  );
-
-  const [isLoading, setIsLoading] = useState(false); // State to manage loading status
-  const [isSignedIn, setIsSignedIn] = useState(false); // State to track sign-in status
 
   /**
    * Handles the Google sign-in and sign-out process.
@@ -93,16 +106,64 @@ export default function Navbar() {
     setIsLoading(true);
     const signedin = await signedIn();
     try {
-      if (signedin) await deleteUserInfo();
       signedin
-        ? signOut({ callbackUrl: "/" })
-        : signIn("google", { callbackUrl: "/Profile" });
+        ? signOut({ redirectTo: "/" })
+        : signIn("google", { redirectTo: "/Profile" });
     } catch (error) {
       console.error("Google error:", error);
     } finally {
-      // This doesn't run if the sign in/out is successful since they redirect
+      setIsLoading(false);
     }
   };
+
+  const drawer = (
+    <Drawer
+      anchor="left"
+      open={drawerOpen}
+      onClose={toggleDrawer(false)}
+      PaperProps={{
+        sx: {
+          width: "50%",
+          padding: "30px",
+          backgroundColor: theme.palette.primary.main,
+        },
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          width: "100%",
+          justifyContent: "flex-end",
+        }}
+      >
+        <CloseIcon
+          sx={{ color: "white" }}
+          onClick={() => setDrawerOpen(false)}
+        />
+      </Box>
+      <List>
+        {menuItems.map((item, index) => (
+          <ListItem
+            button
+            key={index}
+            component={Link}
+            href={item.link}
+            onClick={toggleDrawer(false)}
+          >
+            <ListItemText primary={item.text} sx={{ color: "white" }} />
+          </ListItem>
+        ))}
+      </List>
+      <Button
+        variant="outlined"
+        color="inherit"
+        onClick={handleGoogleSignInAndOut}
+        disabled={isLoading}
+      >
+        {isLoading ? "Loading..." : userRole ? "Sign Out" : "Sign In"}
+      </Button>
+    </Drawer>
+  );
 
   // Sets up user info, if available
   useEffect(() => {
@@ -111,31 +172,27 @@ export default function Navbar() {
       setIsSignedIn(signedin);
       if (signedin) {
         const role = await getUserRole();
-        const uin = await getUserUIN();
-        if (role === undefined || uin === undefined) {
+        if (role === undefined) {
           setUserInfo();
           const role2 = await getUserRole();
           setUserRole(role2);
         } else {
           setUserRole(role);
         }
-        console.log(role);
-        console.log(uin);
+      } else {
+        await deleteUserInfo();
       }
     };
 
     setup();
   }, []);
-  console.log(process.env.NEXTAUTH_URL);
-  console.log(process.env.REACT_APP_API_URL);
-  console.log(process.env.NEXT_PUBLIC_AUTHJS_LOCAL_SESSION_COOKIE);
-  console.log("Next line");
+
   return (
     <AppBar
       position="static"
       style={{
-        marginBottom: "30px",
         padding: "10px",
+        borderBottom: "1px solid rgba(255,255,255, 0.5)",
       }}
     >
       <Toolbar>
@@ -148,8 +205,9 @@ export default function Navbar() {
           }}
         >
           <Link href="/" passHref>
-            {/* <Image src="/logo.png" alt="Logo" height={70} /> */}
-            <img src="/logo.png" alt="Logo" style={{ height: "70px" }} />
+            <Box sx={{ paddingTop: "5px" }}>
+              <img src="/logo.png" alt="Logo" style={{ height: "70px" }} />
+            </Box>
           </Link>
           {isMobile ? (
             <>
@@ -170,40 +228,122 @@ export default function Navbar() {
                 gap: "20px",
               }}
             >
-              {menuItems.map((item, index) => (
-                <Button
-                  key={index}
-                  color="inherit"
-                  component={Link}
-                  href={item.link}
-                >
-                  {item.text}
-                </Button>
-              ))}
               {!userRole && (
-                <Button
-                  variant="outlined"
-                  color="inherit"
-                  component={Link}
-                  href="/Member/New"
-                >
-                  New Member?
-                </Button>
+                <>
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    component={Link}
+                    href="/Member/New"
+                  >
+                    New Member?
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    onClick={handleGoogleSignInAndOut}
+                  >
+                    Sign In
+                  </Button>
+                </>
               )}
-              <Button
-                variant="outline"
-                onClick={handleGoogleSignInAndOut}
-                color="inherit"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <CircularProgress color="white" />
-                ) : isSignedIn ? (
-                  "Sign out"
-                ) : (
-                  "Sign in"
-                )}
-              </Button>
+
+              {userRole && (
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Button
+                    sx={{ textTransform: "Capitalize" }}
+                    onClick={handleMenuOpen}
+                  >
+                    <Avatar
+                      sx={{ border: "1px solid white", bgcolor: "transparent" }}
+                    >
+                      <PersonIcon sx={{ color: theme.palette.common.white }} />
+                    </Avatar>
+                  </Button>
+
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    transformOrigin={{ vertical: "top", horizontal: "right" }}
+                  >
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        router.push("/");
+                      }}
+                    >
+                      <Box sx={{ display: "flex", gap: "5px" }}>
+                        <HomeIcon />
+                        <Typography> Home</Typography>
+                      </Box>
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        router.push("/Profile");
+                      }}
+                    >
+                      <Box sx={{ display: "flex", gap: "5px" }}>
+                        <PersonIcon />
+                        <Typography>Profile</Typography>
+                      </Box>
+                    </MenuItem>
+                    {privilegedUser && (
+                      <>
+                        <MenuItem
+                          onClick={() => {
+                            handleMenuClose();
+                            router.push("/Project");
+                          }}
+                        >
+                          <Box sx={{ display: "flex", gap: "5px" }}>
+                            <HardwareIcon />
+                            <Typography> Projects</Typography>
+                          </Box>
+                        </MenuItem>
+
+                        <MenuItem
+                          onClick={() => {
+                            handleMenuClose();
+                            router.push("/Member");
+                          }}
+                        >
+                          <Box sx={{ display: "flex", gap: "5px" }}>
+                            <GroupIcon />
+                            <Typography>Members</Typography>
+                          </Box>
+                        </MenuItem>
+                      </>
+                    )}
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        router.push("/Help");
+                      }}
+                    >
+                      <Box sx={{ display: "flex", gap: "5px" }}>
+                        <HelpIcon />
+                        <Typography>Help</Typography>
+                      </Box>
+                    </MenuItem>
+                    <MenuItem>
+                      <Box
+                        sx={{ display: "flex", gap: "5px" }}
+                        onClick={() => {
+                          {
+                            handleMenuClose(), handleGoogleSignInAndOut();
+                          }
+                        }}
+                      >
+                        <LogoutIcon />
+                        <Typography>Sign Out</Typography>
+                      </Box>
+                    </MenuItem>
+                  </Menu>
+                </Box>
+              )}
             </Box>
           )}
         </Box>

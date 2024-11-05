@@ -7,12 +7,15 @@
  * On successful submission, the user is redirected to the new project's detail page.
  */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation"; // Next.js router for navigation.
 import { createProject } from "@services/projectService"; // Service function to handle project creation.
 import { Container, Typography } from "@mui/material";
 import ProjectForm from "@components/organisms/ProjectForm/ProjectForm"; // Form component for project details.
 import ProgressLoading from "@components/organisms/ProgressLoading"; // Loading indicator component for async operations.
+import { fetchAllUsers } from "@services/userService";
+import { createProjectMember } from "@services/projectMemberService";
+import { getUserRole } from "@services/authService";
 
 /**
  * NewProjectFormTemplate Component.
@@ -29,17 +32,42 @@ function NewProjectFormTemplate() {
     description: "",
     date: null,
     pictures: null,
-    timeline: null,
+    timeline: [],
     images: [],
     image_urls: [],
   });
-  const [loading, setLoading] = useState(false); // Tracks the loading state during form submission.
+  const [loading, setLoading] = useState(true); // Tracks the loading state during form submission.
   const [error, setError] = useState(null); // Stores error messages, if any.
   const [formError, setFormError] = useState({
     title: false,
     date: false,
     description: false,
   });
+  const [members, setMembers] = useState([]);
+  const [selectedMembers, setSelectedMembers] = useState([]);
+
+  useEffect(() => {
+    async function fetchMembers() {
+      const role = await getUserRole();
+      if (role !== "project lead" && role !== "president" && role !== "admin") {
+        // Redirect non-admin users to homepage
+        router.push("/");
+      } else {
+        try {
+          const data = await fetchAllUsers();
+          setMembers(data);
+        } catch (error) {
+          console.error("Error fetching members: ", error);
+        }
+        setLoading(false);
+      }
+    }
+    fetchMembers();
+  }, []);
+
+  const handleMembersRestrictionChange = async (event, newValue) => {
+    setSelectedMembers(newValue);
+  };
 
   const router = useRouter(); // Next.js router for handling navigation.
 
@@ -86,9 +114,33 @@ function NewProjectFormTemplate() {
     }
     setLoading(true);
     setError(null);
+
+    const startDateMilestone = {
+      id: 0,
+      title: "Project Started",
+      date: project.date, // Use the start date from the project.
+      status: new Date() > new Date(project.date) ? "completed" : "upcoming",
+    };
+  
+   const updatedProject = {
+      ...project,
+      timeline: [startDateMilestone],
+    };
+
+
     try {
-      const data = await createProject(project); // Call service to create a new project.
-      router.push(`/Project/${data.id}`); // Redirect to the project's detail page if successful.
+      const data = await createProject(updatedProject); // Call service to create a new project.
+      const id = data.id;
+      for (const member of selectedMembers) {
+        try {
+          const projectMemberData = { uin: member.uin, project_id: id };
+          await createProjectMember(projectMemberData);
+        } catch (error) {
+          setError("Failed to create project member");
+          console.error("Error: ", error);
+        }
+      }
+      router.push(`/Project/${id}`); // Redirect to the project's detail page if successful.
     } catch (error) {
       // Set error message and log to console in case of failure.
       setError("Failed to create project.");
@@ -144,9 +196,9 @@ function NewProjectFormTemplate() {
   }
 
   return (
-    <Container maxWidth="md" sx={{ textAlign: "center" }}>
+    <Container maxWidth="md" sx={{ textAlign: "center", margin: "50px auto" }}>
       {/* Page heading */}
-      <Typography variant="h4" component="h1" mb="40px">
+      <Typography variant="h3" mb="40px">
         Create A New Project
       </Typography>
 
@@ -163,6 +215,9 @@ function NewProjectFormTemplate() {
         onSubmit={handleSubmit}
         handleCancel={handleCancel}
         handleImageChange={handleImageChange}
+        selectedMembers={selectedMembers}
+        members={members}
+        handleMembersRestrictionChange={handleMembersRestrictionChange}
       />
     </Container>
   );

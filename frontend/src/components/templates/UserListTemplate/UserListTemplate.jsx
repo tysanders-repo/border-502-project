@@ -4,27 +4,42 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   fetchAllUsers,
-  updateUserPresident,
+  co,
   updateUserDues,
 } from "@services/userService";
-import DeleteConfirmationDialog from "@components/organisms/DeleteConfirmationDialog";
-import { Alert, Typography, IconButton, Box, Button } from "@mui/material";
+
+import {
+  Alert,
+  Typography,
+  IconButton,
+  Box,
+  Button,
+  useMediaQuery,
+  Menu,
+  MenuItem,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import { getUserRole } from "@services/authService";
-import { UserRoles } from "@utils/arrays/roles";
-import ProgressLoading from "@components/organisms/ProgressLoading";
-import UpdateRoleDialog from "./UpdateRoleDialog";
-import UserMenu from "./UserMenu";
-import { capitalizeAndReplace } from "@utils/functions";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { Switch } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
+import CopySnackbar from "@components/organisms/CopySnackbar";
+import { getUserRole } from "@services/authService";
+import ProgressLoading from "@components/organisms/ProgressLoading";
+import DeleteConfirmationDialog from "@components/organisms/DeleteConfirmationDialog";
+import AccomplishmentsDialog from "./AccomplishmentsDialog";
+import UpdateRoleDialog from "./UpdateRoleDialog";
+import UserMenu from "./UserMenu";
+import { UserRoles } from "@utils/arrays/roles";
+import { capitalizeAndReplace } from "@utils/functions";
+import MailIcon from "@mui/icons-material/Mail";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import { handleCopyClick } from "@utils/functions";
 
 /**
  * UserListTemplate component
@@ -49,6 +64,47 @@ const UserListTemplate = () => {
   const [selectedRole, setSelectedRole] = useState(null);
   const [updateDues, setUpdateDues] = useState(false);
   const [updatedUsersDues, setUpdatedUsersDues] = useState([]);
+  const [openAccomplishmentsDialog, setOpenAccomplishmentsDialog] =
+    useState(false);
+  const [selectedMember, setSelectedMember] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [copyStatus, setCopyStatus] = useState(false);
+
+  const [duesAnchorEl, setDuesAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setDuesAnchorEl(event.currentTarget);
+  };
+
+
+  const handleClose = () => {
+    setDuesAnchorEl(null);
+  };
+
+  const handleOpenAccomplishmentsDialog = (member) => {
+    setSelectedMember(member);
+    setOpenAccomplishmentsDialog(true);
+  };
+
+  const handleCloseAccomplishmentsDialog = () => {
+    setOpenAccomplishmentsDialog(false);
+    setSelectedMember(null);
+  };
+
+  const handleAccomplishmentsSubmit = async (accomplishments) => {
+    try {
+      await updateUserPresident(selectedMember.uin, {
+        accomplishments: accomplishments,
+      });
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.uin === selectedMember.uin ? { ...user, accomplishments } : user,
+        ),
+      );
+    } catch (error) {
+      console.error("Error updating accomplishments:", error);
+    }
+  };
 
   const router = useRouter();
 
@@ -60,6 +116,11 @@ const UserListTemplate = () => {
   };
   const handleCloseRoleDialog = () => {
     setOpenRoleDialog(false);
+  };
+
+  const handleClickUpdateDues = () => {
+    setUpdateDues(true);
+    handleClose();
   };
 
   const handleRoleChange = async () => {
@@ -79,6 +140,8 @@ const UserListTemplate = () => {
       setError(err);
     }
   };
+
+  console.log(users);
 
   const handleDuesSubmit = async () => {
     if (updatedUsersDues.length > 0) {
@@ -119,6 +182,13 @@ const UserListTemplate = () => {
     graduation_day: false,
     accepted: false,
   });
+
+  useEffect(() => {
+    setColumnVisibilityModel((prevModel) => ({
+      ...prevModel,
+      paid_dues: true,
+    }));
+  }, [updateDues]);
 
   // Adjusting display params when changing screen sizes
   useEffect(() => {
@@ -163,6 +233,9 @@ const UserListTemplate = () => {
 
   // Adjusting display params when changing views
   useEffect(() => {
+    if (isMobile) {
+      return;
+    }
     if (filter === "archived") {
       setColumnVisibilityModel({
         uin: false,
@@ -294,10 +367,13 @@ const UserListTemplate = () => {
           handleArchive={handleArchive}
           handleDeleteClick={handleDeleteClick}
           handleOpenRoleDialog={() => setOpenRoleDialog(true)}
+          handleOpenAccomplishmentsDialog={handleOpenAccomplishmentsDialog}
           handleMenuClick={handleMenuClick}
           handleCloseMenu={handleCloseMenu}
           anchorEl={anchorEl}
           selectedUser={selectedUser}
+          setSnackbarOpen={setSnackbarOpen}
+          setCopyStatus={setCopyStatus}
         />
       ),
     },
@@ -310,6 +386,7 @@ const UserListTemplate = () => {
     async function loadUsers() {
       try {
         const data = await fetchAllUsers();
+        console.log(data);
         setUsers(data); // Set the fetched users
       } catch (e) {
         setError(e); // Set the error if fetching users fails
@@ -330,7 +407,12 @@ const UserListTemplate = () => {
     // Load role and users in parallel
     const fetchData = async () => {
       await Promise.all([loadUsers(), loadRole()]);
-      setLoading(false); // Set loading to false after both are completed
+      const role = await getUserRole();
+      if (role === undefined || role === "none") {
+        router.push("/");
+      } else {
+        setLoading(false); // Set loading to false after both are completed
+      }
     };
 
     fetchData();
@@ -392,6 +474,7 @@ const UserListTemplate = () => {
     return <Alert severity="error">{error.message}</Alert>;
   }
 
+  console.log(users);
   return (
     <div>
       <Box
@@ -399,7 +482,7 @@ const UserListTemplate = () => {
           display: "flex",
           flexDirection: "column",
           width: "80%",
-          margin: "0 auto",
+          margin: "50px auto",
           gap: "10px",
         }}
       >
@@ -411,7 +494,7 @@ const UserListTemplate = () => {
           }}
         >
           <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-            <Typography variant="h4">EWB Members</Typography>
+            <Typography variant="h3">Members</Typography>
             {userRole && (
               <Typography variant="caption" gutterBottom>
                 Current User: {capitalizeAndReplace(userRole)}
@@ -419,11 +502,11 @@ const UserListTemplate = () => {
             )}
           </Box>
           <Button
-            variant="outlined"
+            variant="contained"
             onClick={() => router.push(`/Project`)}
             startIcon={<ManageAccountsIcon />}
           >
-            {isMobile ? "Projects" : "Manage Projects"}
+            {isMobile ? "Projects" : "View Projects"}
           </Button>
         </Box>
 
@@ -462,6 +545,7 @@ const UserListTemplate = () => {
             {userRole && (
               <>
                 {(userRole === "president" ||
+                  userRole === "admin" ||
                   userRole === "vice president" ||
                   userRole === "internal relations") && (
                   <>
@@ -532,29 +616,85 @@ const UserListTemplate = () => {
               </>
             )}
           </Box>
-          <Box sx={{ display: "flex", gap: "5px" }}>
-            <Button
-              variant={updateDues ? "contained" : "outlined"}
-              onClick={() =>
-                updateDues ? handleDuesSubmit() : setUpdateDues(true)
-              }
-              startIcon={<AttachMoneyIcon />}
-            >
-              {updateDues ? "Submit Dues" : "Update Dues"}
-            </Button>
-            {updateDues && (
-              <Button
-                variant={"outlined"}
-                color="secondary"
-                onClick={() => {
-                  setUpdateDues(false);
-                  setUpdatedUsersDues([]);
-                  window.location.reload();
-                }}
-                startIcon={<ClearIcon />}
-              >
-                Cancel Update
-              </Button>
+          <Box>
+            {filter === "active" && (
+              <Box sx={{ display: "flex", gap: "5px", alignItems: "center" }}>
+                {isMobile && updateDues && (
+                  <Typography variant="h6">Submit:</Typography>
+                )}
+
+                {updateDues ? (
+                  isMobile ? (
+                    <IconButton onClick={handleDuesSubmit}>
+                      <CheckIcon sx={{ color: "green" }} />
+                    </IconButton>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      onClick={handleDuesSubmit}
+                      startIcon={<AttachMoneyIcon />}
+                    >
+                      Submit Dues
+                    </Button>
+                  )
+                ) : (
+                  <Button
+                    variant="outlined"
+                    onClick={handleClick}
+                    startIcon={<AttachMoneyIcon />}
+                  >
+                    Manage Dues
+                  </Button>
+                )}
+                {updateDues &&
+                  (isMobile ? (
+                    <IconButton
+                      onClick={() => {
+                        setUpdateDues(false);
+                        setUpdatedUsersDues([]);
+                        window.location.reload();
+                      }}
+                    >
+                      <CloseIcon sx={{ color: "red" }} />
+                    </IconButton>
+                  ) : (
+                    <Button
+                      variant="outlined"
+                      onClick={() => {
+                        setUpdateDues(false);
+                        setUpdatedUsersDues([]);
+                        window.location.reload();
+                      }}
+                      startIcon={<ClearIcon />}
+                    >
+                      Cancel
+                    </Button>
+                  ))}
+
+                <Menu
+                  anchorEl={duesAnchorEl}
+                  open={Boolean(duesAnchorEl)}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={handleClickUpdateDues}>
+                    Update Dues
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() =>
+                      handleCopyClick(
+                        filteredUsers
+                          .filter((member) => !member.paid_dues)
+                          .map((member) => member.email)
+                          .join(", "),
+                        setCopyStatus,
+                        setSnackbarOpen,
+                      )
+                    }
+                  >
+                    Copy Unpaid Emails
+                  </MenuItem>
+                </Menu>
+              </Box>
             )}
           </Box>
         </Box>
@@ -579,6 +719,13 @@ const UserListTemplate = () => {
         setError={setError}
       />
 
+      <AccomplishmentsDialog
+        open={openAccomplishmentsDialog}
+        onClose={handleCloseAccomplishmentsDialog}
+        member={selectedMember}
+        onSubmit={handleAccomplishmentsSubmit}
+      />
+
       <UpdateRoleDialog
         openRoleDialog={openRoleDialog}
         handleCloseRoleDialog={handleCloseRoleDialog}
@@ -587,6 +734,12 @@ const UserListTemplate = () => {
         setSelectedRole={setSelectedRole}
         UserRoles={UserRoles}
         handleRoleChange={handleRoleChange}
+      />
+
+      <CopySnackbar
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+        copyStatus={copyStatus}
       />
     </div>
   );

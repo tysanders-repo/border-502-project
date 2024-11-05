@@ -1,13 +1,22 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
-console.log(process.env.NEXTAUTH_URL);
 const useSecureCookies = process.env.NEXTAUTH_URL.startsWith("https://");
 const cookiePrefix = useSecureCookies ? "__Secure-" : "";
 const hostName = new URL(process.env.NEXTAUTH_URL).hostname;
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   debug: true,
-  providers: [Google],
+  providers: [
+    Google({
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
+    }),
+  ],
   trustHost: true,
   cookies: {
     sessionToken: {

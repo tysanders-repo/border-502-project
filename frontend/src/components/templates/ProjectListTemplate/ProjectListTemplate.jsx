@@ -3,10 +3,14 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { fetchAllProjects } from "@services/projectService";
+import { 
+  fetchAllProjects,
+  updateProject
+ } from "@services/projectService";
 import DeleteProjectDialog from "@components/organisms/DeleteProjectDialog";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import { format } from "date-fns";
+import { projectService } from "@services/projectService";
 import {
   Alert,
   Typography,
@@ -22,6 +26,10 @@ import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ProgressLoading from "@components/organisms/ProgressLoading";
+import CopySnackbar from "@components/organisms/CopySnackbar";
+import { handleCopyClick } from "@utils/functions";
+import { getUserRole } from "@services/authService";
+import MilestoneDialog from "./MilestoneDialog";
 
 /**
  * ProjectListTemplate component
@@ -37,6 +45,11 @@ function ProjectListTemplate() {
   const [openDialog, setOpenDialog] = useState(false); // State to manage the open/close state of the delete confirmation dialog.
   const theme = useTheme(); // Hook to access the theme for responsive design.
   const isMobile = useMediaQuery(theme.breakpoints.down("md")); // Determine if the view is mobile based on the screen size.
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [copyStatus, setCopyStatus] = useState(false);
+  const [userAuthorized, setUserAuthorized] = useState(false);
+  // milestone context
+  const [milestoneDialogOpen, setMilestoneDialogOpen] = useState(false);
 
   const router = useRouter(); // Next.js router for navigation.
 
@@ -67,26 +80,51 @@ function ProjectListTemplate() {
             slotProps={{
               paper: {
                 sx: {
-                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.5)",
+                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
                 },
               },
             }}
           >
+            {userAuthorized ? (
+              <MenuItem
+                component={Link}
+                href={`/Project/${selectedProject?.id}/Edit`}
+                onClick={handleCloseMenu}
+              >
+                Edit
+              </MenuItem>
+            ) : null}
+            {userAuthorized ? (
+              <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
+            ) : null}
             <MenuItem
               component={Link}
               href={`/Project/${selectedProject?.id}`}
               onClick={handleCloseMenu}
             >
-              View
+              View Page
             </MenuItem>
             <MenuItem
-              component={Link}
-              href={`/Project/${selectedProject?.id}/Edit`}
-              onClick={handleCloseMenu}
+              onClick={() =>
+                handleCopyClick(
+                  selectedProject.members
+                    .map((member) => member.email)
+                    .join(", "),
+                  setCopyStatus,
+                  setSnackbarOpen,
+                )
+              }
             >
-              Edit
+              Copy Emails
             </MenuItem>
-            <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
+            <MenuItem
+              onClick={() => {
+                setMilestoneDialogOpen(true);
+                handleCloseMenu();
+              }}
+            >
+              Edit Milestones
+            </MenuItem>
           </Menu>
         </div>
       ),
@@ -98,19 +136,28 @@ function ProjectListTemplate() {
    *
    * @description Fetches all projects from the server and updates the projects state. Handles loading and error states.
    */
-  const loadProjects = async () => {
-    try {
-      const data = await fetchAllProjects(); // Fetch project data from the service.
-      setProjects(data); // Update projects state with fetched data.
-      setLoading(false); // Set loading state to false.
-    } catch (e) {
-      setError(e); // Set error state if the request fails.
-      setLoading(false); // Set loading state to false.
+  const loadProjectsAndSetAuth = async () => {
+    const role = await getUserRole();
+    if (role === undefined || role === "member" || role === "none") {
+      // Redirect non-admin users to homepage
+      router.push("/");
+    } else {
+      if (role === "project lead" || role === "president" || role === "admin")
+        // Only allow president and project lead to edit and delete projects
+        setUserAuthorized(true);
+      try {
+        const data = await fetchAllProjects(); // Fetch project data from the service.
+        setProjects(data); // Update projects state with fetched data.
+        setLoading(false); // Set loading state to false.
+      } catch (e) {
+        setError(e); // Set error state if the request fails.
+        setLoading(false); // Set loading state to false.
+      }
     }
   };
 
   useEffect(() => {
-    loadProjects(); // Load projects when the component mounts.
+    loadProjectsAndSetAuth(); // Load projects when the component mounts.
   }, []);
 
   /**
@@ -154,6 +201,47 @@ function ProjectListTemplate() {
     handleCloseMenu(); // Close the actions menu.
   };
 
+  /**
+   * milestoneHandleClose Function
+   * @description Closes the milestone dialog.
+   * 
+   */
+  const milestoneHandleClose = () => {
+    setMilestoneDialogOpen(false);
+  };
+
+  const handleAccomplishmentsSubmit = async (accomplishments) => {
+    try {
+      await updateUserPresident(selectedMember.uin, {
+        accomplishments: accomplishments,
+      });
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.uin === selectedMember.uin ? { ...user, accomplishments } : user,
+        ),
+      );
+    } catch (error) {
+      console.error("Error updating accomplishments:", error);
+    }
+  };
+
+
+  const handleMilestoneSubmit = async (milestone) => {
+    try {
+      await updateProject(selectedProject.id, {
+        ...selectedProject,
+        timeline: [...selectedProject.timeline, milestone[milestone.length - 1]],
+      });
+
+    } catch (error) {
+      console.error("Error updating project:", error);
+    }
+  };
+  
+  
+  
+  
+
   // If the data is still loading, show a loading spinner.
   if (loading) {
     return <ProgressLoading />;
@@ -171,7 +259,7 @@ function ProjectListTemplate() {
           display: "flex",
           flexDirection: "column",
           width: "80%",
-          margin: "0 auto",
+          margin: "50px auto",
           gap: "10px",
         }}
       >
@@ -182,21 +270,23 @@ function ProjectListTemplate() {
             marginBottom: "15px",
           }}
         >
-          <Typography variant="h4">Projects</Typography>
+          <Typography variant="h3">Projects</Typography>
           <Box sx={{ display: "flex", gap: "10px" }}>
+            {userAuthorized ? (
+              <Button
+                variant="outlined"
+                startIcon={<AddCircleOutlineIcon />}
+                onClick={() => router.push("Project/New")}
+              >
+                {isMobile ? "Project" : "Add Project"}
+              </Button>
+            ) : null}
             <Button
-              variant="outlined"
+              variant="contained"
               onClick={() => router.push("/Member")}
               startIcon={<ManageAccountsIcon />}
             >
               {isMobile ? "Members" : "Manage Members"}
-            </Button>
-            <Button
-              variant="outlined"
-              startIcon={<AddCircleOutlineIcon />}
-              onClick={() => router.push("Project/New")}
-            >
-              {isMobile ? "Project" : "Add Project"}
             </Button>
           </Box>
         </Box>
@@ -216,7 +306,20 @@ function ProjectListTemplate() {
         handleCloseDialog={handleCloseDialog}
         id={selectedProject?.id}
         setError={setError}
-        onDelete={loadProjects} // Callback function to reload projects after deletion.
+        onDelete={loadProjectsAndSetAuth} // Callback function to reload projects after deletion.
+      />
+
+      <CopySnackbar
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+        copyStatus={copyStatus}
+      />
+
+      <MilestoneDialog
+        project={selectedProject}
+        open={milestoneDialogOpen}
+        onClose={milestoneHandleClose}
+        onSubmit={handleMilestoneSubmit}
       />
     </>
   );
