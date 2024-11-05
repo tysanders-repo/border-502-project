@@ -19,8 +19,8 @@ const MilestoneDialog = ({ project, open, onClose, onSubmit }) => {
 
   useEffect(() => {
     if (project) {
-      const initialMilestones = project.milestones || [];
-      console.log("Initial Milestones from Project:", initialMilestones);
+      setMilestones([]);
+      const initialMilestones = project.timeline || [];
       setMilestones(initialMilestones);
     }
   }, [project]);
@@ -34,10 +34,8 @@ const MilestoneDialog = ({ project, open, onClose, onSubmit }) => {
         status: "pending", // Default status
       };
 
-      console.log("Adding Milestone:", newMilestone); // Log the new milestone
       setMilestones((prev) => {
         const updatedMilestones = [...prev, newMilestone];
-        console.log("Updated Milestones State:", updatedMilestones); // Log the updated state
         return updatedMilestones;
       });
 
@@ -54,7 +52,6 @@ const MilestoneDialog = ({ project, open, onClose, onSubmit }) => {
   };
 
   const handleSave = () => {
-    console.log("Milestones to Submit:", milestones); // Log the milestones
     onSubmit(milestones); // Submit the milestones array
     onClose();
   };

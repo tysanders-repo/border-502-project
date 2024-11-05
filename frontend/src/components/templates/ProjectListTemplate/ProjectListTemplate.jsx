@@ -210,29 +210,34 @@ function ProjectListTemplate() {
     setMilestoneDialogOpen(false);
   };
 
+  const handleAccomplishmentsSubmit = async (accomplishments) => {
+    try {
+      await updateUserPresident(selectedMember.uin, {
+        accomplishments: accomplishments,
+      });
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.uin === selectedMember.uin ? { ...user, accomplishments } : user,
+        ),
+      );
+    } catch (error) {
+      console.error("Error updating accomplishments:", error);
+    }
+  };
+
+
   const handleMilestoneSubmit = async (milestone) => {
     try {
-      // Create a new updatedProject object with the new milestone added to the timeline
-      const updatedProject = {
+      await updateProject(selectedProject.id, {
         ...selectedProject,
-        timeline: [...(selectedProject.timeline || []), ...milestone], // Spread to include all milestones
-      };
-  
-  
-      // Update the projects state with the modified project
-      setProjects((prevProjects) =>
-        prevProjects.map((project) =>
-          project.id === selectedProject.id ? updatedProject : project
-        )
-      );
-  
-      // Update the project with the new updatedProject object
-      await updateProject(updatedProject.id, updatedProject, null);
-  
+        timeline: [...selectedProject.timeline, milestone[milestone.length - 1]],
+      });
+
     } catch (error) {
       console.error("Error updating project:", error);
     }
   };
+  
   
   
   
