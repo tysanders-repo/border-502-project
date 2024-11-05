@@ -7,6 +7,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { HeaderText, ImageBox, DetailsBox } from "./HelpPageTemplate.styles";
+import { List, ListItem, ListItemText } from "@mui/material";
 
 const HelpPageTemplate = (props) => {
   return (
