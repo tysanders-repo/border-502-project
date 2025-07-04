@@ -1,3 +1,5 @@
+name: Rails tests
+on: [push, pull_request]
 env:
   RUBY_VERSION: 3.1.2
   POSTGRES_USER: postgres
@@ -13,12 +15,12 @@ env:
   NEXT_PUBLIC_API_URL: http://localhost:3000
   NEXT_PUBLIC_NEXTAUTH_URL: http://localhost:3001
 
-name: Rails tests
-on: [push, pull_request]
 jobs:
   rspec-test:
     name: Automated Testing
-    runs-on: ubuntu-latest
+    # Pin to a stable, supported Ubuntu 22.04 image
+    runs-on: ubuntu-22.04
+
     services:
       postgres:
         image: postgres:12
@@ -27,6 +29,7 @@ jobs:
         env:
           POSTGRES_USER: ${{ env.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+
     steps:
       - uses: actions/checkout@v2
 
@@ -35,19 +38,18 @@ jobs:
           ruby-version: ${{ env.RUBY_VERSION }}
 
       - name: Install postgres client
-        run: sudo apt-get install libpq-dev
+        run: sudo apt-get update && sudo apt-get install -y libpq-dev
 
       - name: Install dependencies
         run: |
           cd backend
           gem install bundler
-          bundler install
+          bundle install
 
       - name: Create database
         run: |
           cd backend
-          bundler exec rails db:create RAILS_ENV=test
-          bundler exec rails db:migrate RAILS_ENV=test
+          bundle exec rails db:create db:migrate RAILS_ENV=test
 
       - name: Install Yarn dependencies
         run: |
@@ -60,7 +62,7 @@ jobs:
           node-version: "16"
 
       - name: Cache Node modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: frontend/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('frontend/package-lock.json') }}
@@ -70,44 +72,44 @@ jobs:
       - name: Install frontend dependencies
         run: |
           cd frontend
-          npm install
+          npm ci
 
       - name: Run Jest tests
         run: |
           cd frontend
-          npm run test
+          npm test
 
-      - name: Run Rspec tests
+      - name: Run RSpec tests
         run: |
           cd backend
-          bundler exec rspec .
+          bundle exec rspec
 
-      - name: Run brakeman
+      - name: Run Brakeman
         run: |
           cd backend
           brakeman -o brakeman.txt
 
-      - name: Run rubocop
+      - name: Run RuboCop
         run: |
           cd backend
-          bundler exec rubocop --force-exclusion --out rubocop.txt
+          bundle exec rubocop --force-exclusion --out rubocop.txt
 
       - name: Upload coverage results
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: coverage-report
           path: backend/coverage
 
-      - name: Upload rubocop report
-        uses: actions/upload-artifact@master
+      - name: Upload RuboCop report
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: rubocop-report.txt
           path: backend/rubocop.txt
 
-      - name: Upload brakeman report
-        uses: actions/upload-artifact@master
+      - name: Upload Brakeman report
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: brakeman-report.txt
