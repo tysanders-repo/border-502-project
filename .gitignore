@@ -2,6 +2,7 @@
 .pnpm-store/
 backend/tmp/
 db_data/
+.DS_Store
 
 #from node's recommended gitignore
 logs
